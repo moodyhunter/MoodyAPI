@@ -24,6 +24,7 @@ func main() {
 
 	var err error
 	common.ConfigFile, err = ini.Load(ConfigPath)
+
 	if err != nil {
 		log.Fatalf("Fail to read file: %v", err)
 	}
@@ -38,18 +39,25 @@ func main() {
 
 	r := gin.Default()
 
+	prefix := "/" + secret_path
+
 	// Server Ping
-	r.GET("/"+secret_path+"/ping", ping.HandlePing)
+	r.GET(prefix+"/ping", ping.HandlePing)
 
 	// Dynamic DNS Processing
-	r.GET("/"+secret_path+"/ddns/", ddns.List)
-	r.GET("/"+secret_path+"/ddns/:ddns", ddns.Get)
-	r.DELETE("/"+secret_path+"/ddns/:ddns", ddns.Delete)
-	r.POST("/"+secret_path+"/ddns/:ddns/update", ddns.Update)
+	r.GET(prefix+"/ddns/", ddns.List)
+	r.GET(prefix+"/ddns/:ddns", ddns.Get)
+	r.DELETE(prefix+"/ddns/:ddns", ddns.Delete)
+	r.POST(prefix+"/ddns/:ddns/update", ddns.Update)
 
 	// Camera motion notification
-	r.POST("/"+secret_path+"/camera/:id/notify", camera.TriggerPushNotification)
+	r.POST(prefix+"/camera/notify", camera.TriggerPushNotification)
+
+	// Camera operations
+	r.GET(prefix+"/camera/state", camera.StartCamera)
+	r.POST(prefix+"/camera/start", camera.StartCamera)
+	r.POST(prefix+"/camera/stop", camera.StopCamera)
+	r.GET(prefix+"/camera/videolist", camera.StopCamera)
 
 	r.Run(listen_addr)
-
 }
