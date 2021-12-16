@@ -1,0 +1,6 @@
+[submodule "QmlApp/3rdparty/android_openssl"]
+	path = QmlApp/3rdparty/android_openssl
+	url = https://github.com/KDAB/android_openssl
+[submodule "QmlApp/QtGraphicalEffects"]
+	path = QmlApp/QtGraphicalEffects
+	url = https://github.com/moodyhunter/QtGraphicalEffects

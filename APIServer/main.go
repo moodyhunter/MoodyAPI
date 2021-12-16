@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/ini.v1"
 
-	"mooody.me/moodyapi/command/camera"
-	"mooody.me/moodyapi/command/ddns"
-	"mooody.me/moodyapi/command/ping"
-	"mooody.me/moodyapi/common"
+	"api.mooody.me/command/camera"
+	"api.mooody.me/command/ddns"
+	"api.mooody.me/command/ping"
+	"api.mooody.me/common"
 )
 
 func main() {

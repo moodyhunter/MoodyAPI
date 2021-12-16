@@ -1,4 +1,4 @@
-module mooody.me/moodyapi
+module api.mooody.me
 
 go 1.17
 
