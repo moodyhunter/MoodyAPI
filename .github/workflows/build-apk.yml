@@ -1,0 +1,39 @@
+name: Build Qml APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: azure
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - run: |
+        export QT_VERSION="6.2.2"
+        export APK_ARCH="android_arm64_v8a"
+        cd QmlApp
+        mkdir build && cd build
+        /mnt/disk/qt6/$QT_VERSION/$APK_ARCH/bin/qt-cmake .. \
+          -DANDROID_SDK_ROOT=/opt/android-sdk/ \
+          -DANDROID_NDK_ROOT=/opt/android-ndk/ \
+          -DANDROID_PLATFORM=30 \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DQT_HOST_PATH=/mnt/disk/qt6/$QT_VERSION/gcc_64/ \
+          -GNinja
+        cmake --build .
+
+    - name: Send APK to telegram
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.GROUP_CHAT_ID }}
+        token: ${{ secrets.BOT_TOKEN }}
+        message: |
+          ${{ github.event.head_commit.message }}
+
+          ${{ github.sha }} on ${{ github.ref }}
+        document: QmlApp/build/android-build/MoodyAppMain.apk
