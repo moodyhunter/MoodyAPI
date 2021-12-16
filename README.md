@@ -1,8 +1,12 @@
 # MoodyAPI
 
-API client/backend for Moody's infrastructure
+API client/back-end for Moody's infrastructure
 
-The API backend currently provides:
+The API back-end currently provides:
 
-- DDNS Records Maintainance.
-- Survailance Camera Notifications.
+- DDNS Records Maintenance.
+- Surveillance Camera Notifications.
+
+The QML Application currently implements:
+
+- Surveillance Camera Power Configuration.
