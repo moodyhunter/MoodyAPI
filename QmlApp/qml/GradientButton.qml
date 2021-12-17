@@ -9,7 +9,8 @@ Control {
     property string text: "Button"
     property color textColor: "#2d2d2d"
 
-    hoverEnabled: true
+    hoverEnabled: PlatformHoverEnabled
+
     property color color1: "black"
     property color colorh1: Qt.lighter(color1)
     property color colorc1: Qt.darker(color1)
@@ -61,24 +62,6 @@ Control {
         }
     }
 
-    //    LinearGradient {
-    //        source: rectangle
-    //        anchors.fill: rectangle
-    //        anchors.margins: rectangle.border.width - 2
-
-    //        start: Qt.point(0, 0)
-    //        end: Qt.point(rectangle.width, rectangle.height)
-    //        gradient: Gradient {
-    //            GradientStop {
-    //                position: 0.0
-    //                color:
-    //            }
-    //            GradientStop {
-    //                position: 1.0
-    //                color: mouse.pressed ? colorc2 : (root.hovered ? colorh2 : color2)
-    //            }
-    //        }
-    //    }
     MouseArea {
         anchors.fill: parent
         onClicked: root.clicked()

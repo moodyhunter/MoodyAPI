@@ -6,8 +6,11 @@
 #include <QSslSocket>
 #include <QUrl>
 
-//
-#include <QDirIterator>
+#ifdef Q_OS_ANDROID
+constexpr auto PlatformHoverEnabled = false;
+#else
+constexpr auto PlatformHoverEnabled = true;
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +27,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterSingletonInstance<ApiProtocol>("client.api.mooody.me", 1, 0, "MoodyApi", new ApiProtocol(&app));
 
-    //    engine.rootContext()->setContextProperty(u"MoodyApi"_qs, new ApiProtocol(&app));
+    engine.rootContext()->setContextProperty(u"PlatformHoverEnabled"_qs, PlatformHoverEnabled);
     engine.addImportPath(app.applicationDirPath());
 
     const QUrl url(u"qrc:/client/api/mooody/me/qml/main.qml"_qs);
