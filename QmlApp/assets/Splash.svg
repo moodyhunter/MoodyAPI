@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1125"
+   height="2436"
+   viewBox="0 0 1125 2436"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <rect
+       x="130.47297"
+       y="685.45976"
+       width="876.35675"
+       height="543.7634"
+       id="rect5131" />
+  </defs>
+  <g
+     id="layer1">
+    <rect
+       style="fill:#a6eaca;fill-opacity:1;stroke:none;stroke-width:7.92069;stroke-miterlimit:0;stroke-opacity:1"
+       id="rect846"
+       width="1116.8499"
+       height="2425.8977"
+       x="5.279953"
+       y="5.2801495"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       id="text5129"
+       style="line-height:1.25;font-family:sans-serif;font-size:48px;white-space:pre;shape-inside:url(#rect5131)" />
+    <text
+       xml:space="preserve"
+       style="font-size:100.275px;line-height:1.25;font-family:sans-serif;fill:#008f6b;fill-opacity:1;stroke-width:2.08906"
+       x="292.94852"
+       y="1091.0494"
+       id="text5379"
+       transform="scale(0.97509786,1.0255381)"><tspan
+         id="tspan5377"
+         x="292.94852"
+         y="1128.6526"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:'SauceCodePro Nerd Font Mono';-inkscape-font-specification:'SauceCodePro Nerd Font Mono Heavy';fill:#008f6b;fill-opacity:1;stroke-width:2.08906">MoodyAPI <tspan
+   style="font-size:46.8346px;fill:#008f6b;fill-opacity:1;stroke-width:2.08906"
+   id="tspan34736" /></tspan><tspan
+         x="292.94852"
+         y="1255.1042"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:'SauceCodePro Nerd Font Mono';-inkscape-font-specification:'SauceCodePro Nerd Font Mono Heavy';fill:#008f6b;fill-opacity:1;stroke-width:2.08906"
+         id="tspan24384" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:50.8019px;line-height:1.25;font-family:'WenQuanYi Micro Hei Mono';-inkscape-font-specification:'WenQuanYi Micro Hei Mono';fill:#366459;fill-opacity:1;stroke-width:0.793779"
+       x="613.24658"
+       y="1224.7167"
+       id="text25466"><tspan
+         id="tspan25464"
+         x="613.24658"
+         y="1224.7167"
+         style="stroke-width:0.793779">Client App</tspan></text>
+    <rect
+       style="fill:#328470;fill-opacity:1;stroke:none;stroke-width:4.51926;stroke-miterlimit:0;stroke-opacity:1"
+       id="rect28900"
+       width="788.07562"
+       height="5.0334849"
+       x="274.75967"
+       y="1156.2128" />
+  </g>
+</svg>
