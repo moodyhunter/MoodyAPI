@@ -78,7 +78,6 @@ ApplicationWindow {
 
         GradientButton {
             color1: "#1adf00"
-            //            color2: "#00c902"
             borderColor: "#188300"
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power On")
@@ -90,7 +89,6 @@ ApplicationWindow {
 
         GradientButton {
             color1: "#eb7500"
-            //            color2: "#e24e00"
             borderColor: "#834900"
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power Off")
