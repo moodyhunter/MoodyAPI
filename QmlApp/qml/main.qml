@@ -4,12 +4,15 @@ import QtQuick.Layouts
 
 import QtGraphicalEffects
 
+import client.api.mooody.me
+
 ApplicationWindow {
     width: 392
     height: 815
     visible: true
     title: qsTr("Moody Camera App")
     id: rootWindow
+    readonly property double buttonSize: Math.min(width / 2.5, height / 4)
 
     LinearGradient {
         anchors.fill: parent
@@ -27,69 +30,21 @@ ApplicationWindow {
         }
     }
 
-    readonly property double buttonSize: Math.min(width / 2.5, height / 4)
+    SvgButton {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 10
+        width: 36
+        height: 36
+        source: "/assets/settings.svg"
+
+        onClicked: {
+            console.log("Settings clicked")
+        }
+    }
 
     component VerticalSpacer: Item {
         Layout.fillHeight: true
-    }
-
-    component GradientButton: Control {
-        signal clicked
-        hoverEnabled: true
-        property color color1: "black"
-        property color colorh1: Qt.lighter(color1)
-        property color colorc1: Qt.darker(color1)
-
-        property color color2: "white"
-        property color colorh2: Qt.lighter(color2)
-        property color colorc2: Qt.darker(color2)
-
-        property color borderColor: "grey"
-        property color borderColorH: Qt.lighter(borderColor)
-        property color borderColorC: Qt.darker(borderColor)
-
-        implicitWidth: buttonSize
-        implicitHeight: buttonSize / 2
-        id: root
-
-        Rectangle {
-            anchors.fill: parent
-            id: rectangle
-
-            border.color: mouse.pressed ? borderColorC : (root.hovered ? borderColorH : borderColor)
-            border.width: 5
-
-            radius: buttonSize / 3
-        }
-
-        LinearGradient {
-            source: rectangle
-            anchors.fill: rectangle
-            anchors.margins: rectangle.border.width - 2
-
-            start: Qt.point(0, 0)
-            end: Qt.point(rectangle.width, rectangle.height)
-            gradient: Gradient {
-                GradientStop {
-                    position: 0.0
-                    color: mouse.pressed ? colorc1 : (root.hovered ? colorh1 : color1)
-                }
-                GradientStop {
-                    position: 1.0
-                    color: mouse.pressed ? colorc2 : (root.hovered ? colorh2 : color2)
-                }
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            id: mouse
-        }
-
-        Label {
-            anchors.centerIn: parent
-            text: "test"
-        }
     }
 
     ColumnLayout {
@@ -113,7 +68,7 @@ ApplicationWindow {
             font.pixelSize: buttonSize / 3
             font.family: "System-ui"
             font.bold: true
-            text: "ON"
+            text: MoodyApi.CameraStatus ? "ON" : "OFF"
             color: "#2d2d2d"
             horizontalAlignment: Qt.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
@@ -123,23 +78,25 @@ ApplicationWindow {
 
         GradientButton {
             color1: "#1adf00"
-            color2: "#00c902"
+            //            color2: "#00c902"
             borderColor: "#188300"
             Layout.alignment: Qt.AlignHCenter
+            text: qsTr("Power On")
 
             onClicked: {
-
+                MoodyApi.CameraStatus = true
             }
         }
 
         GradientButton {
             color1: "#eb7500"
-            color2: "#e24e00"
+            //            color2: "#e24e00"
             borderColor: "#834900"
             Layout.alignment: Qt.AlignHCenter
+            text: qsTr("Power Off")
 
             onClicked: {
-
+                MoodyApi.CameraStatus = false
             }
         }
 

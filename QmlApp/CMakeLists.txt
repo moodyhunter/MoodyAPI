@@ -18,6 +18,25 @@ endif()
 
 qt_add_executable(MoodyAppMain
     src/main.cpp
+    src/ApiProtocol.hpp
+    src/ApiProtocol.cpp
+)
+
+qt_add_qml_module(MoodyAppMain
+    URI "client.api.mooody.me"
+    VERSION 1.0
+    QML_FILES
+        qml/main.qml
+        qml/GradientButton.qml
+        qml/SvgButton.qml
+    DEPENDENCIES qtgraphicaleffects
+)
+
+qt_add_resources(MoodyAppMain "assets"
+    PREFIX "/assets"
+    BASE "${CMAKE_CURRENT_LIST_DIR}/assets"
+    FILES
+        ${CMAKE_CURRENT_LIST_DIR}/assets/settings.svg
 )
 
 set_target_properties(MoodyAppMain
@@ -26,13 +45,6 @@ set_target_properties(MoodyAppMain
         QT_ANDROID_VERSION_CODE "${CMAKE_PROJECT_VERSION_MAJOR}"
         QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/android"
         QT_ANDROID_VERSION_NAME "${CMAKE_PROJECT_VERSION}"
-    )
-
-qt_add_qml_module(MoodyAppMain
-    URI client.api.mooody.me
-    VERSION 1.0
-    QML_FILES qml/main.qml
-    DEPENDENCIES qtgraphicaleffects
 )
 
 target_compile_definitions(MoodyAppMain
@@ -42,4 +54,4 @@ target_compile_definitions(MoodyAppMain
 target_link_libraries(MoodyAppMain
     PRIVATE
         Qt6::Quick
-    )
+)
