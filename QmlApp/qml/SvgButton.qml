@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QtGraphicalEffects
+import client.api.mooody.me
+
 Control {
     id: root
 
@@ -43,6 +46,12 @@ Control {
                 properties: "rotation"
                 easing.type: Easing.OutCubic
             }
+        }
+
+        ColorOverlay {
+            anchors.fill: image
+            source: image
+            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
         }
     }
 

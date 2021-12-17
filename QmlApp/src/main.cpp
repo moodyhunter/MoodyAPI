@@ -1,4 +1,4 @@
-#include "ApiProtocol.hpp"
+#include "AppCore.hpp"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    qmlRegisterSingletonInstance<ApiProtocol>("client.api.mooody.me", 1, 0, "MoodyApi", new ApiProtocol(&app));
+    qmlRegisterSingletonInstance<AppCore>("client.api.mooody.me", 1, 0, "AppCore", new AppCore(&app));
 
     engine.rootContext()->setContextProperty(u"PlatformHoverEnabled"_qs, PlatformHoverEnabled);
     engine.addImportPath(app.applicationDirPath());

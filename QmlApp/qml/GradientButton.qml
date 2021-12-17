@@ -3,21 +3,24 @@ import QtQuick.Controls
 
 import QtGraphicalEffects
 
+import client.api.mooody.me
+
 Control {
     signal clicked
 
     property string text: "Button"
     property color textColor: "#2d2d2d"
+    property color textColorDark: "#cccccc"
 
     hoverEnabled: PlatformHoverEnabled
 
     property color color1: "black"
-    property color colorh1: Qt.lighter(color1)
-    property color colorc1: Qt.darker(color1)
+    property color colorh1: Qt.lighter(color1, 1.3)
+    property color colorc1: Qt.darker(color1, 1.3)
 
     property color borderColor: "grey"
-    property color borderColorH: Qt.lighter(borderColor)
-    property color borderColorC: Qt.darker(borderColor)
+    property color borderColorH: Qt.lighter(borderColor, 1.3)
+    property color borderColorC: Qt.darker(borderColor, 1.3)
 
     implicitWidth: rootWindow.buttonSize
     implicitHeight: rootWindow.buttonSize / 2
@@ -31,7 +34,7 @@ Control {
         border.width: 5
 
         radius: rootWindow.buttonSize / 3
-        color: color1 // mouse.pressed ? colorc1 : (root.hovered ? colorh1 : color1)
+        color: color1
 
         states: [
             State {
@@ -71,7 +74,7 @@ Control {
     Label {
         anchors.centerIn: parent
         font.pixelSize: rootWindow.buttonSize / 8
-        color: root.textColor
+        color: AppCore.DarkMode ? root.textColorDark : root.textColor
         text: root.text
     }
 }

@@ -18,8 +18,8 @@ endif()
 
 qt_add_executable(MoodyAppMain
     src/main.cpp
-    src/ApiProtocol.hpp
-    src/ApiProtocol.cpp
+    src/AppCore.hpp
+    src/AppCore.cpp
 )
 
 qt_add_qml_module(MoodyAppMain

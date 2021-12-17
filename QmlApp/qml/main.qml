@@ -21,11 +21,11 @@ ApplicationWindow {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: "#00d8e9"
+                color: AppCore.DarkMode ? "#1f4042" : "#00d8e9"
             }
             GradientStop {
                 position: 1.0
-                color: "#00c159"
+                color: AppCore.DarkMode ? "#003b1b" : "#00c159"
             }
         }
     }
@@ -39,7 +39,7 @@ ApplicationWindow {
         source: "/assets/settings.svg"
 
         onClicked: {
-            console.log("Settings clicked")
+            AppCore.DarkMode = !AppCore.DarkMode
         }
     }
 
@@ -59,7 +59,7 @@ ApplicationWindow {
             font.family: "System-ui"
             font.bold: true
             text: "Camera Status"
-            color: "#2d2d2d"
+            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
             horizontalAlignment: Qt.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
         }
@@ -68,8 +68,8 @@ ApplicationWindow {
             font.pixelSize: buttonSize / 3
             font.family: "System-ui"
             font.bold: true
-            text: MoodyApi.CameraStatus ? "ON" : "OFF"
-            color: "#2d2d2d"
+            text: AppCore.CameraStatus ? "ON" : "OFF"
+            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
             horizontalAlignment: Qt.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
         }
@@ -77,24 +77,24 @@ ApplicationWindow {
         VerticalSpacer {}
 
         GradientButton {
-            color1: "#1adf00"
-            borderColor: "#188300"
+            color1: AppCore.DarkMode ? "#33712d" : "#1adf00"
+            borderColor: AppCore.DarkMode ? "#063026" : "#188300"
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power On")
 
             onClicked: {
-                MoodyApi.CameraStatus = true
+                AppCore.CameraStatus = true
             }
         }
 
         GradientButton {
-            color1: "#eb7500"
-            borderColor: "#834900"
+            color1: AppCore.DarkMode ? "#84501d" : "#eb7500"
+            borderColor: AppCore.DarkMode ? "#452800" : "#834900"
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power Off")
 
             onClicked: {
-                MoodyApi.CameraStatus = false
+                AppCore.CameraStatus = false
             }
         }
 
