@@ -1,4 +1,5 @@
 #include "AppCore.hpp"
+#include "AppSettings.hpp"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -25,7 +26,10 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    MoodyAppSettings = new AppSettings(&app);
+
     qmlRegisterSingletonInstance<AppCore>("client.api.mooody.me", 1, 0, "AppCore", new AppCore(&app));
+    qmlRegisterSingletonInstance<AppSettings>("client.api.mooody.me", 1, 0, "AppSettings", MoodyAppSettings);
 
     engine.rootContext()->setContextProperty(u"PlatformHoverEnabled"_qs, PlatformHoverEnabled);
     engine.addImportPath(app.applicationDirPath());

@@ -20,6 +20,12 @@ qt_add_executable(MoodyAppMain
     src/main.cpp
     src/AppCore.hpp
     src/AppCore.cpp
+    src/AppSettings.hpp
+    src/AppSettings.cpp
+)
+
+set_source_files_properties(qml/Styles.qml PROPERTIES
+    QT_QML_SINGLETON_TYPE TRUE
 )
 
 qt_add_qml_module(MoodyAppMain
@@ -29,6 +35,7 @@ qt_add_qml_module(MoodyAppMain
         qml/main.qml
         qml/GradientButton.qml
         qml/SvgButton.qml
+        qml/Styles.qml
     DEPENDENCIES qtgraphicaleffects
 )
 

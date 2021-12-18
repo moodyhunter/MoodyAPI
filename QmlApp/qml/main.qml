@@ -21,11 +21,11 @@ ApplicationWindow {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: AppCore.DarkMode ? "#1f4042" : "#00d8e9"
+                color: Styles.background_1
             }
             GradientStop {
                 position: 1.0
-                color: AppCore.DarkMode ? "#003b1b" : "#00c159"
+                color: Styles.background_2
             }
         }
     }
@@ -39,7 +39,7 @@ ApplicationWindow {
         source: "/assets/settings.svg"
 
         onClicked: {
-            AppCore.DarkMode = !AppCore.DarkMode
+            AppSettings.darkMode = !AppSettings.darkMode
         }
     }
 
@@ -59,7 +59,7 @@ ApplicationWindow {
             font.family: "System-ui"
             font.bold: true
             text: "Camera Status"
-            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
+            color: Styles.text
             horizontalAlignment: Qt.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
         }
@@ -69,7 +69,7 @@ ApplicationWindow {
             font.family: "System-ui"
             font.bold: true
             text: AppCore.CameraStatus ? "ON" : "OFF"
-            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
+            color: Styles.text
             horizontalAlignment: Qt.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
         }
@@ -77,8 +77,8 @@ ApplicationWindow {
         VerticalSpacer {}
 
         GradientButton {
-            color1: AppCore.DarkMode ? "#33712d" : "#1adf00"
-            borderColor: AppCore.DarkMode ? "#063026" : "#188300"
+            color1: Styles.button_on
+            borderColor: Styles.button_on_border
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power On")
 
@@ -88,8 +88,8 @@ ApplicationWindow {
         }
 
         GradientButton {
-            color1: AppCore.DarkMode ? "#84501d" : "#eb7500"
-            borderColor: AppCore.DarkMode ? "#452800" : "#834900"
+            color1: Styles.button_off
+            borderColor: Styles.button_off_border
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power Off")
 

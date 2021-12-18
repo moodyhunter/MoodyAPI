@@ -9,8 +9,6 @@ Control {
     signal clicked
 
     property string text: "Button"
-    property color textColor: "#2d2d2d"
-    property color textColorDark: "#cccccc"
 
     hoverEnabled: PlatformHoverEnabled
 
@@ -74,7 +72,7 @@ Control {
     Label {
         anchors.centerIn: parent
         font.pixelSize: rootWindow.buttonSize / 8
-        color: AppCore.DarkMode ? root.textColorDark : root.textColor
+        color: Styles.text
         text: root.text
     }
 }

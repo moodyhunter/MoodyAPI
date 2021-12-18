@@ -31,7 +31,7 @@ Control {
                 }
             },
             State {
-                name: "hovered"
+                name: "pressed"
                 when: mouseArea.pressed
                 PropertyChanges {
                     target: image

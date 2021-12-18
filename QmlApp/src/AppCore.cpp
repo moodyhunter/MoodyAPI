@@ -13,19 +13,7 @@ void AppCore::SetCameraStatus(bool status)
     emit CameraStatusChanged();
 }
 
-bool AppCore::GetCameraStatus()
+bool AppCore::GetCameraStatus() const
 {
     return m_cameraStatus;
-}
-
-void AppCore::SetDarkModeStatus(bool status)
-{
-    qDebug() << "Darkmode status: " << status;
-    m_darkmodeStatus = status;
-    emit DarkModeChanged();
-}
-
-bool AppCore::DarkModeStatus()
-{
-    return m_darkmodeStatus;
 }
