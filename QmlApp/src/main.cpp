@@ -1,6 +1,7 @@
 #include "AppCore.hpp"
 #include "AppSettings.hpp"
 
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance<AppCore>("client.api.mooody.me", 1, 0, "AppCore", new AppCore(&app));
     qmlRegisterSingletonInstance<AppSettings>("client.api.mooody.me", 1, 0, "AppSettings", MoodyAppSettings);
 
+    engine.rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
     engine.rootContext()->setContextProperty(u"PlatformHoverEnabled"_qs, PlatformHoverEnabled);
     engine.addImportPath(app.applicationDirPath());
 

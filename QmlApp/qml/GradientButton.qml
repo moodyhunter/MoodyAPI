@@ -20,8 +20,14 @@ Control {
     property color borderColorH: Qt.lighter(borderColor, 1.3)
     property color borderColorC: Qt.darker(borderColor, 1.3)
 
-    implicitWidth: rootWindow.buttonSize
-    implicitHeight: rootWindow.buttonSize / 2
+    property double buttonSize: 50
+    property int buttonBorderWidth: 5
+
+    property int fontSize: buttonSize / 8
+
+    implicitWidth: buttonSize
+    implicitHeight: buttonSize / 2
+
     id: root
 
     Rectangle {
@@ -29,9 +35,9 @@ Control {
         id: rectangle
 
         border.color: borderColor
-        border.width: 5
+        border.width: buttonBorderWidth
 
-        radius: rootWindow.buttonSize / 3
+        radius: buttonSize / 3
         color: color1
 
         states: [
@@ -71,7 +77,7 @@ Control {
 
     Label {
         anchors.centerIn: parent
-        font.pixelSize: rootWindow.buttonSize / 8
+        font.pixelSize: fontSize
         color: Styles.text
         text: root.text
     }

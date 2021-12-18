@@ -51,7 +51,7 @@ Control {
         ColorOverlay {
             anchors.fill: image
             source: image
-            color: AppCore.DarkMode ? "#a5a5a5" : "#2d2d2d"
+            color: Qt.darker(Styles.text)
         }
     }
 

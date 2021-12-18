@@ -36,6 +36,7 @@ qt_add_qml_module(MoodyAppMain
         qml/GradientButton.qml
         qml/SvgButton.qml
         qml/Styles.qml
+        qml/SettingsPanel.qml
     DEPENDENCIES qtgraphicaleffects
 )
 

@@ -6,6 +6,10 @@ import client.api.mooody.me
 QtObject {
     property color background_1: AppSettings.darkMode ? "#1f4042" : "#00d8e9"
     property color background_2: AppSettings.darkMode ? "#003b1b" : "#00c159"
+
+    property color background_pure: AppSettings.darkMode ? "#34593d" : "#e3e3e3"
+    property color background_pure_border: AppSettings.darkMode ? "#212121" : "#b6b6b6"
+
     property color text: AppSettings.darkMode ? "#a5a5a5" : "#2d2d2d"
 
     property color button_on: AppSettings.darkMode ? "#33712d" : "#1adf00"

@@ -12,7 +12,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("Moody Camera App")
     id: rootWindow
-    readonly property double buttonSize: Math.min(width / 2.5, height / 4)
+    readonly property double standardSize: Math.min(width / 2.5, height / 4)
 
     LinearGradient {
         anchors.fill: parent
@@ -39,7 +39,7 @@ ApplicationWindow {
         source: "/assets/settings.svg"
 
         onClicked: {
-            AppSettings.darkMode = !AppSettings.darkMode
+            settingsPopup.open()
         }
     }
 
@@ -49,13 +49,13 @@ ApplicationWindow {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: buttonSize / 4
+        spacing: standardSize / 4
 
         VerticalSpacer {}
         VerticalSpacer {}
 
         Label {
-            font.pixelSize: buttonSize / 5
+            font.pixelSize: standardSize / 5
             font.family: "System-ui"
             font.bold: true
             text: "Camera Status"
@@ -65,7 +65,7 @@ ApplicationWindow {
         }
 
         Label {
-            font.pixelSize: buttonSize / 3
+            font.pixelSize: standardSize / 3
             font.family: "System-ui"
             font.bold: true
             text: AppCore.CameraStatus ? "ON" : "OFF"
@@ -81,6 +81,7 @@ ApplicationWindow {
             borderColor: Styles.button_on_border
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power On")
+            buttonSize: rootWindow.standardSize
 
             onClicked: {
                 AppCore.CameraStatus = true
@@ -92,6 +93,7 @@ ApplicationWindow {
             borderColor: Styles.button_off_border
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Power Off")
+            buttonSize: rootWindow.standardSize
 
             onClicked: {
                 AppCore.CameraStatus = false
@@ -101,5 +103,30 @@ ApplicationWindow {
         VerticalSpacer {}
         VerticalSpacer {}
         VerticalSpacer {}
+
+        Label {
+            font.pixelSize: 16
+            font.family: "System-ui"
+            font.bold: true
+            text: "Connected"
+            color: Styles.text
+            horizontalAlignment: Qt.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
+            Layout.bottomMargin: 10
+        }
+    }
+
+    DropShadow {
+        source: settingsPopup
+        anchors.fill: settingsPopup
+        transparentBorder: true
+        radius: 10
+        opacity: settingsPopup.opacity
+        scale: settingsPopup.scale
+    }
+    SettingsPanel {
+        id: settingsPopup
+        y: 150
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 }
