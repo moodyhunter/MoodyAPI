@@ -124,15 +124,15 @@
        x="-0.017100612"
        y="-5.5943356" />
     <rect
-       style="fill:#84501d;fill-opacity:1;stroke:#452800;stroke-width:6.19119;stroke-miterlimit:0;stroke-opacity:1"
+       style="fill:#84501d;fill-opacity:1;stroke:#392100;stroke-width:6.19119;stroke-miterlimit:0;stroke-opacity:1"
        id="rect3142-3"
-       width="492.96066"
+       width="492.961"
        height="214.88992"
        x="321.2637"
        y="1268.4425"
        ry="107.23507" />
     <rect
-       style="fill:#33712d;fill-opacity:1;stroke:#063026;stroke-width:6.19119;stroke-miterlimit:0;stroke-opacity:1"
+       style="fill:#33712d;fill-opacity:1;stroke:#00241b;stroke-width:6.19119;stroke-miterlimit:0;stroke-opacity:1"
        id="rect3142-3-5"
        width="491.16782"
        height="220.90285"
@@ -146,15 +146,15 @@
     <text
        xml:space="preserve"
        id="text16437"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:48px;line-height:1.25;font-family:System-ui;-inkscape-font-specification:'System-ui Bold';white-space:pre;shape-inside:url(#rect16439);fill:#cccccc;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:48px;line-height:1.25;font-family:System-ui;-inkscape-font-specification:'System-ui Bold';white-space:pre;shape-inside:url(#rect16439);fill:#c0c0c0;fill-opacity:1;stroke:none"
        x="98.886719"
        y="0"
        transform="translate(114.67988,87.405302)"><tspan
          x="326.711"
          y="964.22374"
-         id="tspan86"><tspan
+         id="tspan87"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan84">Camera On</tspan></tspan></text>
+           id="tspan85">Camera On</tspan></tspan></text>
     <text
        xml:space="preserve"
        id="text27989"
@@ -162,15 +162,15 @@
     <text
        xml:space="preserve"
        id="text16437-7"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:48px;line-height:1.25;font-family:System-ui;-inkscape-font-specification:'System-ui Bold';white-space:pre;shape-inside:url(#rect16439-6);fill:#cce0c4;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:48px;line-height:1.25;font-family:System-ui;-inkscape-font-specification:'System-ui Bold';white-space:pre;shape-inside:url(#rect16439-6);fill:#c0c0c0;fill-opacity:1;stroke:none"
        x="98.886719"
        y="0"
        transform="translate(113.78658,429.51748)"><tspan
          x="322.75098"
          y="964.22374"
-         id="tspan90"><tspan
+         id="tspan91"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan88">Camera Off</tspan></tspan></text>
+           id="tspan89">Camera Off</tspan></tspan></text>
     <text
        xml:space="preserve"
        id="text62622"
@@ -179,9 +179,9 @@
        y="0"><tspan
          x="398.74477"
          y="498.21788"
-         id="tspan94"><tspan
+         id="tspan95"><tspan
            style="font-weight:bold"
-           id="tspan92">Current Status</tspan></tspan></text>
+           id="tspan93">Current Status</tspan></tspan></text>
     <text
        xml:space="preserve"
        id="text86550"
@@ -194,8 +194,8 @@
        y="0"><tspan
          x="502.05434"
          y="681.31561"
-         id="tspan98"><tspan
+         id="tspan99"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan96">ON</tspan></tspan></text>
+           id="tspan97">ON</tspan></tspan></text>
   </g>
 </svg>

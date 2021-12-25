@@ -7,6 +7,12 @@ import client.api.mooody.me
 Rectangle {
     id: root
 
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        preventStealing: true
+    }
+
     color: Styles.background_pure
     radius: 20
     border.color: Styles.background_pure_border
@@ -42,12 +48,17 @@ Rectangle {
             duration: 250
             properties: "opacity,scale"
             easing.type: Easing.OutQuart
+            onFinished: {
+                if (root.state == "closed")
+                    root.visible = false
+            }
         }
     }
 
     property int standardFontSize: 16
 
     function open() {
+        root.visible = true
         root.state = "opened"
     }
 
@@ -59,32 +70,46 @@ Rectangle {
         property int spacerHeight: 20
         implicitHeight: spacerHeight
         Layout.fillWidth: true
-        Layout.columnSpan: 2
     }
 
-    GridLayout {
+    component BackgroundRectangle: Rectangle {
+        color: AppSettings.darkMode ? Qt.darker(
+                                          Styles.background_pure) : Qt.lighter(
+                                          Styles.background_pure)
+        border.color: {
+            if (AppSettings.darkMode)
+                Qt.lighter(Styles.background_pure_border, parent.focus ? 4 : 1)
+            else
+                Qt.darker(Styles.background_pure_border, parent.focus ? 4 : 1)
+        }
+        border.width: 2
+        radius: 5
+    }
+
+    ColumnLayout {
         id: layout
         anchors.fill: parent
         anchors.margins: 20
-        columns: 2
 
-        Label {
+        RowLayout {
             Layout.fillWidth: true
-            font.pixelSize: standardFontSize
-            font.family: "System-ui"
-            font.bold: true
-            text: "DarkMode"
-            color: Styles.text
+
+            Label {
+                Layout.fillWidth: true
+                font.pixelSize: standardFontSize
+                font.family: "System-ui"
+                font.bold: true
+                text: "DarkMode"
+                color: Styles.text
+            }
+
+            Switch {
+                checked: AppSettings.darkMode
+                onCheckedChanged: AppSettings.darkMode = checked
+            }
         }
 
-        Switch {
-            Layout.fillWidth: true
-            checked: AppSettings.darkMode
-            onCheckedChanged: AppSettings.darkMode = checked
-        }
-
         Label {
-            Layout.columnSpan: 2
             Layout.fillWidth: true
             font.pixelSize: standardFontSize
             font.family: "System-ui"
@@ -93,8 +118,9 @@ Rectangle {
             color: Styles.text
         }
 
-        TextEdit {
-            Layout.columnSpan: 2
+        TextField {
+            padding: 10
+            background: BackgroundRectangle {}
             Layout.fillWidth: true
             Layout.leftMargin: 10
             Layout.rightMargin: 10
@@ -111,7 +137,6 @@ Rectangle {
         Spacer {}
 
         Label {
-            Layout.columnSpan: 2
             Layout.fillWidth: true
             font.pixelSize: standardFontSize
             font.family: "System-ui"
@@ -119,8 +144,9 @@ Rectangle {
             color: Styles.text
             text: "API Secret"
         }
-        TextEdit {
-            Layout.columnSpan: 2
+        TextField {
+            padding: 10
+            background: BackgroundRectangle {}
             Layout.fillWidth: true
             Layout.leftMargin: 10
             Layout.rightMargin: 10
@@ -139,7 +165,6 @@ Rectangle {
         }
 
         GradientButton {
-            Layout.columnSpan: 2
             Layout.fillWidth: true
             buttonBorderWidth: 1
             color1: Styles.button_on

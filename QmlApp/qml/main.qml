@@ -49,60 +49,66 @@ ApplicationWindow {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: standardSize / 4
 
-        VerticalSpacer {}
-        VerticalSpacer {}
-
-        Label {
-            font.pixelSize: standardSize / 5
-            font.family: "System-ui"
-            font.bold: true
-            text: "Camera Status"
-            color: Styles.text
-            horizontalAlignment: Qt.AlignHCenter
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter
-        }
 
-        Label {
-            font.pixelSize: standardSize / 3
-            font.family: "System-ui"
-            font.bold: true
-            text: AppCore.CameraStatus ? "ON" : "OFF"
-            color: Styles.text
-            horizontalAlignment: Qt.AlignHCenter
-            Layout.alignment: Qt.AlignHCenter
-        }
+            VerticalSpacer {}
+            VerticalSpacer {}
 
-        VerticalSpacer {}
-
-        GradientButton {
-            color1: Styles.button_on
-            borderColor: Styles.button_on_border
-            Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Power On")
-            buttonSize: rootWindow.standardSize
-
-            onClicked: {
-                AppCore.CameraStatus = true
+            Label {
+                font.pixelSize: standardSize / 5
+                font.family: "System-ui"
+                font.bold: true
+                text: "Camera Status"
+                color: Styles.text
+                horizontalAlignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter
+                Layout.bottomMargin: standardSize / 8
             }
-        }
 
-        GradientButton {
-            color1: Styles.button_off
-            borderColor: Styles.button_off_border
-            Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Power Off")
-            buttonSize: rootWindow.standardSize
-
-            onClicked: {
-                AppCore.CameraStatus = false
+            Label {
+                font.pixelSize: standardSize / 3
+                font.family: "System-ui"
+                font.bold: true
+                text: AppCore.CameraStatus ? "ON" : "OFF"
+                color: Styles.text
+                horizontalAlignment: Qt.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter
             }
-        }
 
-        VerticalSpacer {}
-        VerticalSpacer {}
-        VerticalSpacer {}
+            VerticalSpacer {}
+
+            GradientButton {
+                color1: Styles.button_on
+                borderColor: Styles.button_on_border
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Power On")
+                buttonSize: rootWindow.standardSize
+
+                onClicked: {
+                    AppCore.CameraStatus = true
+                }
+
+                Layout.bottomMargin: standardSize / 8
+            }
+
+            GradientButton {
+                color1: Styles.button_off
+                borderColor: Styles.button_off_border
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Power Off")
+                buttonSize: rootWindow.standardSize
+
+                onClicked: {
+                    AppCore.CameraStatus = false
+                }
+            }
+            VerticalSpacer {}
+            VerticalSpacer {}
+        }
 
         Label {
             font.pixelSize: 16
@@ -111,7 +117,10 @@ ApplicationWindow {
             text: "Connected"
             color: Styles.text
             horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignBottom
             Layout.alignment: Qt.AlignHCenter
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             Layout.bottomMargin: 10
         }
     }
