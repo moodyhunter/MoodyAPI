@@ -48,21 +48,18 @@ Rectangle {
             duration: 250
             properties: "opacity,scale"
             easing.type: Easing.OutQuart
-            onFinished: {
-                if (root.state == "closed")
-                    root.visible = false
-            }
         }
     }
 
     property int standardFontSize: 16
 
     function open() {
-        root.visible = true
+        root.enabled = true
         root.state = "opened"
     }
 
     function close() {
+        root.enabled = false
         root.state = "closed"
     }
 
