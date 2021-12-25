@@ -21,33 +21,25 @@ find_package(Protobuf REQUIRED)
 find_package(gRPC REQUIRED)
 find_program(GRPC_CC_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
 
-list(APPEND PROTO_NAME_LISTS
-    "MoodyApi")
-
 # Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
 # Generate gRPC and protobuf Sources
-foreach(PROTO_NAME ${PROTO_NAME_LISTS})
-    set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.cc")
-    set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.h")
-    set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.cc")
-    set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.h")
-    set(PROTO_DIR "${CMAKE_SOURCE_DIR}/assets/")
-    set(PROTO_FILE "${PROTO_DIR}/${PROTO_NAME}.proto")
+set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.grpc.pb.cc")
+set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.grpc.pb.h")
+set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.pb.cc")
+set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.pb.h")
+set(PROTO_DIR "${CMAKE_SOURCE_DIR}/../")
+set(PROTO_FILE "${PROTO_DIR}/CameraAPI.proto")
 
-    add_custom_command(
-        OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"
-        COMMAND protobuf::protoc
-        ARGS
-            --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
-            --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
-            -I="${PROTO_DIR}"
-            --plugin=protoc-gen-grpc="${GRPC_CC_PLUGIN_EXECUTABLE}"
-            "${PROTO_FILE}"
-        DEPENDS "${PROTO_FILE}")
-
-    list(APPEND PROTOBUF_HEADERS "${GRPC_HEADER}" "${PB_HEADER}")
-    list(APPEND PROTOBUF_SOURCES "${GRPC_SOURCE}" "${PB_SOURCE}")
-endforeach()
+add_custom_command(
+    OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"
+    COMMAND protobuf::protoc
+    ARGS
+        --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
+        -I="${PROTO_DIR}"
+        --plugin=protoc-gen-grpc="${GRPC_CC_PLUGIN_EXECUTABLE}"
+        "${PROTO_FILE}"
+    DEPENDS "${PROTO_FILE}")
 
 qt_add_executable(MoodyAppMain
     src/main.cpp
@@ -55,8 +47,8 @@ qt_add_executable(MoodyAppMain
     src/AppCore.cpp
     src/AppSettings.hpp
     src/AppSettings.cpp
-    ${PROTOBUF_HEADERS}
-    ${PROTOBUF_SOURCES}
+    "${GRPC_HEADER}" "${PB_HEADER}"
+    "${GRPC_SOURCE}" "${PB_SOURCE}"
 )
 
 set_source_files_properties(qml/Styles.qml PROPERTIES

@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/ini.v1"
 
-	"api.mooody.me/api"
+	"api.mooody.me/camapi"
 	"api.mooody.me/command/ddns"
 	"api.mooody.me/command/ping"
 	"api.mooody.me/common"
@@ -52,6 +52,6 @@ func main() {
 	r.GET(prefix+"/ddns/:ddns", ddns.Get)
 	r.POST(prefix+"/ddns/:ddns/update", ddns.Update)
 
-	api.StartAPIServer(cameraapi_addr)
+	camapi.StartAPIServer(cameraapi_addr)
 	r.Run(listen_addr)
 }

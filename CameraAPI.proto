@@ -2,8 +2,8 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-package MoodyAPI;
-option go_package = "api.mooody.me/api";
+package CameraAPI;
+option go_package = "api.mooody.me/camapi";
 
 service CameraService
 {

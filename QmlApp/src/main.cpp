@@ -14,7 +14,7 @@ constexpr auto PlatformHoverEnabled = false;
 constexpr auto PlatformHoverEnabled = true;
 #endif
 
-#include "MoodyApi.grpc.pb.h"
+#include "CameraAPI.grpc.pb.h"
 
 #include <grpcpp/grpcpp.h>
 
@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 
     {
         const auto chan = grpc::CreateChannel("localhost:1920", grpc::InsecureChannelCredentials());
-        auto stub = MoodyAPI::CameraService::NewStub(chan);
+        auto stub = CameraAPI::CameraService::NewStub(chan);
         grpc::ClientContext ctx;
         auto reader = stub->SubscribeCameraStateChange(&ctx, {});
-        MoodyAPI::CameraStateChangedResponses resp;
+        CameraAPI::CameraStateChangedResponses resp;
         while (reader->Read(&resp))
         {
             qDebug() << resp.states_size();
@@ -37,11 +37,11 @@ int main(int argc, char *argv[])
                 const auto state = resp.states(i);
                 switch (state.values_case())
                 {
-                    case MoodyAPI::CameraState::kNewState: qDebug() << state.newstate(); break;
-                    case MoodyAPI::CameraState::kIp4Address: qDebug() << QString::fromStdString(state.ip4address()); break;
-                    case MoodyAPI::CameraState::kIp6Address: qDebug() << QString::fromStdString(state.ip6address()); break;
-                    case MoodyAPI::CameraState::kMotionEventId: qDebug() << QString::fromStdString(state.motioneventid()); break;
-                    case MoodyAPI::CameraState::VALUES_NOT_SET: qDebug() << "???"; break;
+                    case CameraAPI::CameraState::kNewState: qDebug() << state.newstate(); break;
+                    case CameraAPI::CameraState::kIp4Address: qDebug() << QString::fromStdString(state.ip4address()); break;
+                    case CameraAPI::CameraState::kIp6Address: qDebug() << QString::fromStdString(state.ip6address()); break;
+                    case CameraAPI::CameraState::kMotionEventId: qDebug() << QString::fromStdString(state.motioneventid()); break;
+                    case CameraAPI::CameraState::VALUES_NOT_SET: qDebug() << "???"; break;
                 }
             }
         }

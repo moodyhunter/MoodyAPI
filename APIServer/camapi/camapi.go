@@ -1,4 +1,4 @@
-package api
+package camapi
 
 import (
 	context "context"
