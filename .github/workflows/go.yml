@@ -3,15 +3,20 @@ name: Build
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths-ignore:
+      - 'QmlApp/**'
+      - '.github/workflows/build-apk.yml'
 
 jobs:
 
   build:
-    runs-on: raspberrypi
+    runs-on: azure
     steps:
     - uses: actions/checkout@v2
 
     - name: Build
-      run: cd APIServer && go build -v ./...
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        cd APIServer
+        go generate
+        go build -v -o apiserver

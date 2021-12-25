@@ -3,6 +3,9 @@ name: Build Qml APK
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'APIServer/**'
+      - '.github/workflows/go.yml'
 
 jobs:
 
@@ -16,16 +19,26 @@ jobs:
     - run: |
         export QT_VERSION="6.2.2"
         export APK_ARCH="android_arm64_v8a"
+        export VCPKG_TRIPLET="arm64-android"
+        export CI_RESOURCES="/mnt/disk/ci/"
+
+        export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/grpc"
+        export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/protobuf"
+
         cd QmlApp
         mkdir build && cd build
-        /mnt/disk/qt6/$QT_VERSION/$APK_ARCH/bin/qt-cmake .. \
+
+        $CI_RESOURCES/qt6/$QT_VERSION/$APK_ARCH/bin/qt-cmake .. \
           -DANDROID_SDK_ROOT=/opt/android-sdk/ \
           -DANDROID_NDK_ROOT=/opt/android-ndk/ \
           -DANDROID_PLATFORM=30 \
+          -DVCPKG_TARGET_TRIPLET=$VCPKG_TRIPLET \
+          -DQT_CHAINLOAD_TOOLCHAIN_FILE=$CI_RESOURCES/vcpkg/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=/opt/android-ndk/build/cmake/android.toolchain.cmake \
+          -DQT_HOST_PATH=$CI_RESOURCES/qt6/$QT_VERSION/gcc_64/ \
           -DCMAKE_BUILD_TYPE=Release \
-          -DQT_HOST_PATH=/mnt/disk/qt6/$QT_VERSION/gcc_64/ \
           -GNinja
-        cmake --build .
+        cmake --build . --parallel
 
     - name: Send APK to telegram
       uses: appleboy/telegram-action@master
