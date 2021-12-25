@@ -9,6 +9,7 @@ func Get(c *gin.Context) {
 func List(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "List"})
 }
+
 func Update(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Create"})
 }

@@ -14,10 +14,38 @@ constexpr auto PlatformHoverEnabled = false;
 constexpr auto PlatformHoverEnabled = true;
 #endif
 
+#include "MoodyApi.grpc.pb.h"
+
+#include <grpcpp/grpcpp.h>
+
 int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationDisplayName(u"Moody App"_qs);
     QGuiApplication::setApplicationName(u"Moody App"_qs);
+
+    {
+        const auto chan = grpc::CreateChannel("localhost:1920", grpc::InsecureChannelCredentials());
+        auto stub = MoodyAPI::CameraService::NewStub(chan);
+        grpc::ClientContext ctx;
+        auto reader = stub->SubscribeCameraStateChange(&ctx, {});
+        MoodyAPI::CameraStateChangedResponses resp;
+        while (reader->Read(&resp))
+        {
+            qDebug() << resp.states_size();
+            for (auto i = 0; i < resp.states_size(); i++)
+            {
+                const auto state = resp.states(i);
+                switch (state.values_case())
+                {
+                    case MoodyAPI::CameraState::kNewState: qDebug() << state.newstate(); break;
+                    case MoodyAPI::CameraState::kIp4Address: qDebug() << QString::fromStdString(state.ip4address()); break;
+                    case MoodyAPI::CameraState::kIp6Address: qDebug() << QString::fromStdString(state.ip6address()); break;
+                    case MoodyAPI::CameraState::kMotionEventId: qDebug() << QString::fromStdString(state.motioneventid()); break;
+                    case MoodyAPI::CameraState::VALUES_NOT_SET: qDebug() << "???"; break;
+                }
+            }
+        }
+    }
 
     QGuiApplication app(argc, argv);
 

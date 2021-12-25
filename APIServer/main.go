@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/ini.v1"
 
-	"api.mooody.me/command/camera"
+	"api.mooody.me/api"
 	"api.mooody.me/command/ddns"
 	"api.mooody.me/command/ping"
 	"api.mooody.me/common"
@@ -29,17 +29,20 @@ func main() {
 		log.Fatalf("Fail to read file: %v", err)
 	}
 
-	listen_addr := common.ConfigFile.Section("Global").Key("ListenAddress").MustString("127.0.0.1:1919")
-	secret_path := common.ConfigFile.Section("Global").Key("SecretPath").String()
+	common.Secret = common.ConfigFile.Section("Global").Key("SecretPath").String()
 
-	log.Println("MoodyAPI listen at:", listen_addr)
-	if len(secret_path) == 0 {
+	if len(common.Secret) == 0 {
 		log.Fatalln("Must set SecretPath in Global section.")
 	}
 
+	listen_addr := common.ConfigFile.Section("DDNSAPI").Key("ListenAddress").MustString("127.0.0.1:1919")
+	cameraapi_addr := common.ConfigFile.Section("CameraApi").Key("ListenAddress").MustString("127.0.0.1:1920")
+
+	log.Println("MoodyAPI listen at:", listen_addr)
+
 	r := gin.Default()
 
-	prefix := "/" + secret_path
+	prefix := "/" + common.Secret
 
 	// Server Ping
 	r.GET(prefix+"/ping", ping.HandlePing)
@@ -47,17 +50,8 @@ func main() {
 	// Dynamic DNS Processing
 	r.GET(prefix+"/ddns/", ddns.List)
 	r.GET(prefix+"/ddns/:ddns", ddns.Get)
-	r.DELETE(prefix+"/ddns/:ddns", ddns.Delete)
 	r.POST(prefix+"/ddns/:ddns/update", ddns.Update)
 
-	// Camera motion notification
-	r.POST(prefix+"/camera/notify", camera.TriggerPushNotification)
-
-	// Camera operations
-	r.GET(prefix+"/camera/state", camera.StartCamera)
-	r.POST(prefix+"/camera/start", camera.StartCamera)
-	r.POST(prefix+"/camera/stop", camera.StopCamera)
-	r.GET(prefix+"/camera/videolist", camera.StopCamera)
-
+	api.StartAPIServer(cameraapi_addr)
 	r.Run(listen_addr)
 }
