@@ -41,6 +41,7 @@ func main() {
 	log.Println("MoodyAPI listen at:", listen_addr)
 
 	r := gin.Default()
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 
 	prefix := "/" + common.Secret
 

@@ -102,6 +102,7 @@ Rectangle {
             wrapMode: TextEdit.WrapAnywhere
             color: Styles.text
             font.family: fixedFont
+            text: AppSettings.apiHost
             onTextChanged: {
                 AppSettings.apiHost = text
             }

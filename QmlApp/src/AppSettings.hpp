@@ -31,4 +31,4 @@ class AppSettings : public QObject
     static inline QSettings *m_settings = nullptr;
 };
 
-inline AppSettings *MoodyAppSettings;
+inline AppSettings *global_AppSettings;

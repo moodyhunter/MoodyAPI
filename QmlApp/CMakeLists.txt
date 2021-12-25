@@ -47,6 +47,8 @@ qt_add_executable(MoodyAppMain
     src/AppCore.cpp
     src/AppSettings.hpp
     src/AppSettings.cpp
+    src/ServerConnection.hpp
+    src/ServerConnection.cpp
     "${GRPC_HEADER}" "${PB_HEADER}"
     "${GRPC_SOURCE}" "${PB_SOURCE}"
 )

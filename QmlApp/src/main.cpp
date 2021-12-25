@@ -14,39 +14,11 @@ constexpr auto PlatformHoverEnabled = false;
 constexpr auto PlatformHoverEnabled = true;
 #endif
 
-#include "CameraAPI.grpc.pb.h"
-
-#include <grpcpp/grpcpp.h>
-
 int main(int argc, char *argv[])
 {
     QGuiApplication::setApplicationDisplayName(u"Moody App"_qs);
-    QGuiApplication::setApplicationName(u"Moody App"_qs);
-
-    {
-        const auto chan = grpc::CreateChannel("localhost:1920", grpc::InsecureChannelCredentials());
-        auto stub = CameraAPI::CameraService::NewStub(chan);
-        grpc::ClientContext ctx;
-        auto reader = stub->SubscribeCameraStateChange(&ctx, {});
-        CameraAPI::CameraStateChangedResponses resp;
-        while (reader->Read(&resp))
-        {
-            qDebug() << resp.states_size();
-            for (auto i = 0; i < resp.states_size(); i++)
-            {
-                const auto state = resp.states(i);
-                switch (state.values_case())
-                {
-                    case CameraAPI::CameraState::kNewState: qDebug() << state.newstate(); break;
-                    case CameraAPI::CameraState::kIp4Address: qDebug() << QString::fromStdString(state.ip4address()); break;
-                    case CameraAPI::CameraState::kIp6Address: qDebug() << QString::fromStdString(state.ip6address()); break;
-                    case CameraAPI::CameraState::kMotionEventId: qDebug() << QString::fromStdString(state.motioneventid()); break;
-                    case CameraAPI::CameraState::VALUES_NOT_SET: qDebug() << "???"; break;
-                }
-            }
-        }
-    }
-
+    QGuiApplication::setApplicationName(u"MoodyApp"_qs);
+    QGuiApplication::setOrganizationName(u"Moody"_qs);
     QGuiApplication app(argc, argv);
 
     qDebug() << "Device supports OpenSSL: " << QSslSocket::supportsSsl();
@@ -55,10 +27,10 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    MoodyAppSettings = new AppSettings(&app);
+    global_AppSettings = new AppSettings(&app);
 
     qmlRegisterSingletonInstance<AppCore>("client.api.mooody.me", 1, 0, "AppCore", new AppCore(&app));
-    qmlRegisterSingletonInstance<AppSettings>("client.api.mooody.me", 1, 0, "AppSettings", MoodyAppSettings);
+    qmlRegisterSingletonInstance<AppSettings>("client.api.mooody.me", 1, 0, "AppSettings", global_AppSettings);
 
     engine.rootContext()->setContextProperty(u"fixedFont"_qs, QFontDatabase::systemFont(QFontDatabase::FixedFont));
     engine.rootContext()->setContextProperty(u"PlatformHoverEnabled"_qs, PlatformHoverEnabled);
