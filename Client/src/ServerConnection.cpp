@@ -18,7 +18,6 @@ ServerConnection::ServerConnection(const QString &serverAddress, const QString &
 
 ServerConnection::~ServerConnection()
 {
-    StopPolling();
 }
 
 void ServerConnection::run()
@@ -97,9 +96,6 @@ void ServerConnection::StopPolling()
     m_isRunning = false;
     if (m_pollingContext)
         m_pollingContext->TryCancel();
-
-    if (m_serverChannel)
-        m_serverChannel.reset();
 }
 
 void ServerConnection::SetCameraState(bool newState)
