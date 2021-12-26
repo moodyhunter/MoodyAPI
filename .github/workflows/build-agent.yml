@@ -1,0 +1,19 @@
+name: Build Agent
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/build-agent.yml'
+      - 'Agent/**'
+
+jobs:
+  build:
+    runs-on: azure
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cd Agent
+        cargo -v build

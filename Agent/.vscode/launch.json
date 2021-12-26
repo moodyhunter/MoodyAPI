@@ -10,7 +10,10 @@
             "preLaunchTask": "rust: cargo build",
             "name": "Debug",
             "program": "${workspaceFolder}/target/debug/cam_agent",
-            "args": [],
+            "args": [
+                "http://localhost:1920",
+                "3ebd788d-6187-4f9c-8db7-5cda7d428b91"
+            ],
             "cwd": "${workspaceFolder}"
         },
     ]

@@ -1,5 +1,5 @@
 [package]
-authors = "Moody"
+authors = ["Moody <mooodyhunter@outlook.com>"]
 edition = "2021"
 name = "cam_agent"
 version = "0.1.0"
