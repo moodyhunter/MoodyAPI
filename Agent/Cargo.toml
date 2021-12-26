@@ -1,5 +1,5 @@
 [package]
-author = "Moody"
+authors = "Moody"
 edition = "2021"
 name = "cam_agent"
 version = "0.1.0"
