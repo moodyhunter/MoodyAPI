@@ -61,6 +61,7 @@ Rectangle {
     function close() {
         root.enabled = false
         root.state = "closed"
+        AppCore.connectToServer(AppSettings.apiHost, AppSettings.apiSecret)
     }
 
     component Spacer: Item {

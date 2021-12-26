@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"time"
 
@@ -83,9 +84,10 @@ func StartAPIServer(listenAddress string) *CamAPIServer {
 	go func() {
 		for {
 			time.Sleep(1 * time.Second)
+			rand.Seed(time.Now().UnixNano())
 			camAPIServer.BroadcaseEvent(&CameraStateChangedResponse{
 				IsInitial: false,
-				Values:    &CameraStateChangedResponse_MotionEventId{"test"},
+				Values:    &CameraStateChangedResponse_NewState{rand.Intn(2) == 1},
 			})
 		}
 	}()

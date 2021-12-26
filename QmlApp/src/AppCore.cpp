@@ -1,19 +1,51 @@
 #include "AppCore.hpp"
 
+#include "AppSettings.hpp"
+#include "ServerConnection.hpp"
+
 #include <QtDebug>
 
 AppCore::AppCore(QObject *parent) : QObject(parent)
 {
 }
 
-void AppCore::SetCameraStatus(bool status)
+AppCore::~AppCore()
 {
-    qDebug() << "Camera status: " << status;
-    m_cameraStatus = status;
+    if (m_worker)
+    {
+        m_worker->StopPolling();
+        m_worker->quit();
+        m_worker->wait();
+        delete m_worker;
+    }
+}
+
+void AppCore::m_HandleCameraStateChanged(bool newState)
+{
+    m_cameraState = newState;
     emit CameraStatusChanged();
+}
+
+void AppCore::connectToServer(const QString &serverAddress, const QString &secret)
+{
+    if (m_worker)
+    {
+        m_worker->StopPolling();
+        m_worker->quit();
+        m_worker->wait();
+        delete m_worker;
+    }
+
+    m_worker = new ServerConnection(serverAddress, secret);
+
+    connect(m_worker, &ServerConnection::onCameraStateChanged, this, &AppCore::m_HandleCameraStateChanged);
+    connect(m_worker, &ServerConnection::onConnectionStatusChanged, this, [this](bool s) { m_connectionStatus = s, emit ConnectionStatusChanged(s); });
+    connect(this, &AppCore::SetCameraState, m_worker, &ServerConnection::SetCameraState);
+
+    m_worker->start();
 }
 
 bool AppCore::GetCameraStatus() const
 {
-    return m_cameraStatus;
+    return m_cameraState;
 }

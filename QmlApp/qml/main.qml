@@ -14,6 +14,10 @@ ApplicationWindow {
     id: rootWindow
     readonly property double standardSize: Math.min(width / 2.5, height / 4)
 
+    Component.onCompleted: {
+        AppCore.connectToServer(AppSettings.apiHost, AppSettings.apiSecret)
+    }
+
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -73,7 +77,7 @@ ApplicationWindow {
                 font.pixelSize: standardSize / 3
                 font.family: "System-ui"
                 font.bold: true
-                text: AppCore.CameraStatus ? "ON" : "OFF"
+                text: AppCore.ServerConnected ? (AppCore.IsRecording ? "ON" : "OFF") : "N/A"
                 color: Styles.text
                 horizontalAlignment: Qt.AlignHCenter
                 Layout.alignment: Qt.AlignHCenter
@@ -114,7 +118,7 @@ ApplicationWindow {
             font.pixelSize: 16
             font.family: "System-ui"
             font.bold: true
-            text: "Connected"
+            text: AppCore.ServerConnected ? "Connected" : "Disconnected"
             color: Styles.text
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignBottom
