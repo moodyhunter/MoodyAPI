@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/build-server.yml'
       - 'Server/**'
+      - 'CameraAPI.proto'
 
 jobs:
   build:
