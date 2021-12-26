@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"time"
 
@@ -18,24 +17,29 @@ import (
 type CamAPIServer struct {
 	UnimplementedCameraServiceServer
 	eventSender *broadcaster.Broadcaster
+	lastEvent   *CameraState
 }
 
 func NewCamAPIServer() *CamAPIServer {
 	server := &CamAPIServer{}
+	server.lastEvent = new(CameraState)
 	server.eventSender = broadcaster.NewBroadcaster()
 	return server
 }
 
-func (s *CamAPIServer) BroadcaseEvent(resp *CameraStateChangedResponse) {
-	s.eventSender.Broadcast(resp)
+func (s *CamAPIServer) BroadcaseEvent(event *CameraState) {
+	s.lastEvent = event
+	s.eventSender.Broadcast(event)
 }
 
 func (s *CamAPIServer) SubscribeCameraStateChange(request *SubscribeCameraStateChangeRequest, server CameraService_SubscribeCameraStateChangeServer) error {
 	log.Printf("New gRPC camera API client connected")
-	if request == nil || request.Auth == nil || request.Auth.Secret != common.Secret {
+	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
-		return errors.New("error: Invalid Eecret")
+		return errors.New("error: Invalid Secret")
 	}
+
+	server.Send(s.lastEvent)
 
 	subscribeId := time.Now().UnixNano()
 	eventChannel, err := s.eventSender.Subscribe(subscribeId)
@@ -49,7 +53,7 @@ done:
 		case signal := <-eventChannel:
 			{
 				fmt.Println("Responsing with new changed response")
-				resp := signal.(*CameraStateChangedResponse)
+				resp := signal.(*CameraState)
 				server.Send(resp)
 			}
 		case <-server.Context().Done():
@@ -65,8 +69,15 @@ done:
 	return nil
 }
 
-func (s *CamAPIServer) SetCameraState(ctx context.Context, req *SetCameraStateRequest) (*emptypb.Empty, error) {
-	return nil, nil
+func (s *CamAPIServer) SetCameraState(ctx context.Context, request *SetCameraStateRequest) (*emptypb.Empty, error) {
+	log.Printf("New gRPC camera API client connected")
+	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
+		return nil, errors.New("error: Invalid Secret")
+	}
+
+	s.BroadcaseEvent(request.State)
+	return new(emptypb.Empty), nil
 }
 
 func StartAPIServer(listenAddress string) *CamAPIServer {
@@ -80,17 +91,5 @@ func StartAPIServer(listenAddress string) *CamAPIServer {
 	server := grpc.NewServer()
 	RegisterCameraServiceServer(server, camAPIServer)
 	go server.Serve(lis)
-
-	go func() {
-		for {
-			time.Sleep(1 * time.Second)
-			rand.Seed(time.Now().UnixNano())
-			camAPIServer.BroadcaseEvent(&CameraStateChangedResponse{
-				IsInitial: false,
-				Values:    &CameraStateChangedResponse_NewState{rand.Intn(2) == 1},
-			})
-		}
-	}()
-
 	return camAPIServer
 }

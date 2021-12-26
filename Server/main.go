@@ -29,10 +29,10 @@ func main() {
 		log.Fatalf("Fail to read file: %v", err)
 	}
 
-	common.Secret = common.ConfigFile.Section("Global").Key("SecretPath").String()
+	common.APISecret = common.ConfigFile.Section("Global").Key("APISecret").String()
 
-	if len(common.Secret) == 0 {
-		log.Fatalln("Must set SecretPath in Global section.")
+	if len(common.APISecret) == 0 {
+		log.Fatalln("Must set APISecret in Global section.")
 	}
 
 	listen_addr := common.ConfigFile.Section("DDNSAPI").Key("ListenAddress").MustString("127.0.0.1:1919")
@@ -43,7 +43,7 @@ func main() {
 	r := gin.Default()
 	r.SetTrustedProxies([]string{"127.0.0.1"})
 
-	prefix := "/" + common.Secret
+	prefix := "/" + common.APISecret
 
 	// Server Ping
 	r.GET(prefix+"/ping", ping.HandlePing)

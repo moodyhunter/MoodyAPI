@@ -108,6 +108,16 @@ void ServerConnection::SetCameraState(bool newState)
 {
     if (!m_isServerConnected)
         return;
+
+    grpc::ClientContext m_pollingContext;
+    auto serverStub = CameraAPI::CameraService::NewStub(m_serverChannel);
+
+    CameraAPI::SetCameraStateRequest request;
+    request.mutable_auth()->set_secret(m_secret.toStdString());
+    request.mutable_state()->set_newstate(newState);
+
+    ::google::protobuf::Empty empty;
+    serverStub->SetCameraState(&m_pollingContext, request, &empty);
 }
 
 ServerConnection::~ServerConnection()
