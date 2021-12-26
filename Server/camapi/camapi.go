@@ -3,7 +3,6 @@ package camapi
 import (
 	context "context"
 	"errors"
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -52,7 +51,6 @@ done:
 		select {
 		case signal := <-eventChannel:
 			{
-				fmt.Println("Responsing with new changed response")
 				resp := signal.(*CameraState)
 				server.Send(resp)
 			}
@@ -70,11 +68,12 @@ done:
 }
 
 func (s *CamAPIServer) SetCameraState(ctx context.Context, request *SetCameraStateRequest) (*emptypb.Empty, error) {
-	log.Printf("New gRPC camera API client connected")
 	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
 		return nil, errors.New("error: Invalid Secret")
 	}
+
+	log.Printf("Applying new camera state: %t", *request.State.NewState)
 
 	s.BroadcaseEvent(request.State)
 	return new(emptypb.Empty), nil
