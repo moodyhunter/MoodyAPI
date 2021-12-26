@@ -1,11 +1,13 @@
-name: Build
+name: Build Server
 
 on:
   push:
     branches: [ main ]
     paths-ignore:
       - 'QmlApp/**'
-      - '.github/workflows/build-apk.yml'
+      - '.github/workflows/build-client.yml'
+      - '.github/workflows/build-agent.yml'
+      - 'CamAgent/**'
 
 jobs:
 

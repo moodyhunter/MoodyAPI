@@ -1,11 +1,13 @@
-name: Build Qml APK
+name: Build Client
 
 on:
   push:
     branches: [ main ]
     paths-ignore:
       - 'APIServer/**'
-      - '.github/workflows/go.yml'
+      - '.github/workflows/build-server.yml'
+      - '.github/workflows/build-agent.yml'
+      - 'CamAgent/**'
 
 jobs:
 
