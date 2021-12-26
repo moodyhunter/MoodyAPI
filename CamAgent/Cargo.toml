@@ -1,0 +1,19 @@
+[package]
+author = "Moody"
+edition = "2021"
+name = "cam_agent"
+version = "0.1.0"
+
+[dependencies]
+prost = "*"
+prost-types = "*"
+tokio = {version = "*", features = ["rt-multi-thread"]}
+tonic = {version = "*", features = ["transport", "tls", "tls-roots", "compression"]}
+
+[build-dependencies]
+protoc-rust-grpc = "0.8.2"
+tonic-build = {version = "*", features = ["compression"]}
+
+[[bin]]
+name = "cam_agent"
+path = "src/main.rs"
