@@ -40,9 +40,13 @@ void AppCore::connectToServer(const QString &serverAddress, const QString &secre
 
     connect(m_worker, &ServerConnection::onCameraStateChanged, this, &AppCore::m_HandleCameraStateChanged);
     connect(m_worker, &ServerConnection::onConnectionStatusChanged, this, [this](bool s) { m_connectionStatus = s, emit ConnectionStatusChanged(s); });
-    connect(this, &AppCore::SetCameraState, m_worker, &ServerConnection::SetCameraState);
 
     m_worker->start();
+}
+
+void AppCore::SetCameraState(bool status)
+{
+    m_worker->SetCameraState(status);
 }
 
 bool AppCore::GetCameraStatus() const

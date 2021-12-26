@@ -16,15 +16,21 @@ ServerConnection::ServerConnection(const QString &serverAddress, const QString &
     m_isRunning = true;
 }
 
+ServerConnection::~ServerConnection()
+{
+    StopPolling();
+}
+
 void ServerConnection::run()
 {
     emit onConnectionStatusChanged(false);
     static QMutex m;
 
+    if (m_pollingContext)
+        m_pollingContext->TryCancel();
+
     if (m_serverChannel)
-    {
         m_serverChannel.reset();
-    }
 
     m.lock();
 
@@ -36,7 +42,7 @@ void ServerConnection::run()
         m_serverChannel = grpc::CreateChannel(m_serverAddress.toStdString(), grpc::SslCredentials({}));
 #endif
 
-        while (m_isServerConnected = m_serverChannel->WaitForConnected(std::chrono::system_clock::now() + 2s), !m_isServerConnected && m_isRunning)
+        while (m_isServerConnected = m_serverChannel->WaitForConnected(std::chrono::system_clock::now() + 1s), m_isRunning && !m_isServerConnected)
             qDebug() << "Server not connected, retry.";
 
         if (!m_isRunning)
@@ -50,49 +56,36 @@ void ServerConnection::run()
 
         while (m_isRunning)
         {
-            grpc::ClientContext m_pollingContext;
+            m_pollingContext.reset(new grpc::ClientContext);
+
             CameraAPI::SubscribeCameraStateChangeRequest request;
             request.mutable_auth()->set_secret(m_secret.toStdString());
 
-            auto reader = serverStub->SubscribeCameraStateChange(&m_pollingContext, request);
-            CameraAPI::CameraStateChangedResponse resp;
+            auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
+
+            CameraAPI::CameraState resp;
             while (reader->Read(&resp) && m_isRunning)
             {
                 emit onConnectionStatusChanged(true);
-                switch (resp.values_case())
+                if (resp.has_newstate())
                 {
-                    case CameraAPI::CameraStateChangedResponse::kNewState:
-                    {
-                        std::cout << std::boolalpha << resp.newstate() << std::endl;
-                        emit onCameraStateChanged(resp.newstate());
-                        break;
-                    }
-                    case CameraAPI::CameraStateChangedResponse::kIp4Address:
-                    {
-                        std::cout << resp.ip4address() << std::endl;
-                        break;
-                    }
-                    case CameraAPI::CameraStateChangedResponse::kIp6Address:
-                    {
-                        std::cout << resp.ip6address() << std::endl;
-                        break;
-                    }
-                    case CameraAPI::CameraStateChangedResponse::kMotionEventId:
-                    {
-                        std::cout << resp.motioneventid() << std::endl;
-                        break;
-                    }
-                    case CameraAPI::CameraStateChangedResponse::VALUES_NOT_SET:
-                    {
-                        std::cout << "???" << std::endl;
-                        break;
-                    }
+                    std::cout << std::boolalpha << resp.newstate() << std::endl;
+                    emit onCameraStateChanged(resp.newstate());
                 }
+
+                if (resp.has_ip4address())
+                    std::cout << resp.ip4address() << std::endl;
+                if (resp.has_ip6address())
+                    std::cout << resp.ip6address() << std::endl;
+                if (resp.has_motioneventid())
+                    std::cout << resp.motioneventid() << std::endl;
+                if (resp.has_imagepng())
+                    emit onNewMotionDetected(QByteArray::fromStdString(resp.imagepng()));
             }
             emit onConnectionStatusChanged(false);
 
             qDebug() << "Cannot read more responses, retry.";
-            m_pollingContext.TryCancel();
+            m_pollingContext->TryCancel();
             QThread::sleep(1);
         }
     }
@@ -102,6 +95,11 @@ void ServerConnection::run()
 void ServerConnection::StopPolling()
 {
     m_isRunning = false;
+    if (m_pollingContext)
+        m_pollingContext->TryCancel();
+
+    if (m_serverChannel)
+        m_serverChannel.reset();
 }
 
 void ServerConnection::SetCameraState(bool newState)
@@ -118,8 +116,4 @@ void ServerConnection::SetCameraState(bool newState)
 
     ::google::protobuf::Empty empty;
     serverStub->SetCameraState(&m_pollingContext, request, &empty);
-}
-
-ServerConnection::~ServerConnection()
-{
 }

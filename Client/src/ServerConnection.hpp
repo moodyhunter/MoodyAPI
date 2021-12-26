@@ -18,11 +18,14 @@ class ServerConnection : public QThread
 
   signals:
     void onCameraStateChanged(bool newState);
+    void onNewMotionDetected(const QByteArray &);
     void onConnectionStatusChanged(bool newState);
 
   private:
     QString m_serverAddress;
     QString m_secret;
+
+    std::unique_ptr<grpc::ClientContext> m_pollingContext = nullptr;
     std::shared_ptr<grpc::Channel> m_serverChannel;
 
     bool m_isRunning = false;

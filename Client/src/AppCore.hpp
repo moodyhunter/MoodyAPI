@@ -18,14 +18,12 @@ class AppCore : public QObject
 
     bool GetCameraStatus() const;
     Q_INVOKABLE void connectToServer(const QString &serverAddress, const QString &secret);
+    void SetCameraState(bool status);
 
   private slots:
     void m_HandleCameraStateChanged(bool newState);
 
   signals:
-    // To ServerConnection
-    void SetCameraState(bool status);
-
     // QML interop
     void ConnectionStatusChanged(bool connected);
     void CameraStatusChanged();

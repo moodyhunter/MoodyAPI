@@ -93,7 +93,7 @@ ApplicationWindow {
                 buttonSize: rootWindow.standardSize
 
                 onClicked: {
-                    AppCore.CameraStatus = true
+                    AppCore.IsRecording = true
                 }
 
                 Layout.bottomMargin: standardSize / 8
@@ -107,7 +107,7 @@ ApplicationWindow {
                 buttonSize: rootWindow.standardSize
 
                 onClicked: {
-                    AppCore.CameraStatus = false
+                    AppCore.IsRecording = false
                 }
             }
             VerticalSpacer {}
