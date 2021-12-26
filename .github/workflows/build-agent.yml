@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: azure
+    runs-on: raspberrypi
     steps:
     - uses: actions/checkout@v2
 
