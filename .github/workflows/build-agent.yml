@@ -17,4 +17,4 @@ jobs:
     - name: Build
       run: |
         cd Agent
-        cargo -v build
+        cargo build --release
