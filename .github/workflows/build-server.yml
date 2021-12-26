@@ -3,14 +3,11 @@ name: Build Server
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'QmlApp/**'
-      - '.github/workflows/build-client.yml'
-      - '.github/workflows/build-agent.yml'
-      - 'CamAgent/**'
+    paths:
+      - '.github/workflows/build-server.yml'
+      - 'Server/**'
 
 jobs:
-
   build:
     runs-on: azure
     steps:
@@ -19,6 +16,6 @@ jobs:
     - name: Build
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
-        cd APIServer
+        cd Server
         go generate
         go build -v -o apiserver
