@@ -20,3 +20,8 @@ jobs:
         cd Server
         go generate
         go build -v -o apiserver
+    - name: Deploy
+      run: |
+        cd Server
+        cp -v ./apiserver /opt/moodyapi
+        sudo /usr/bin/systemctl restart moodyapi-server.service

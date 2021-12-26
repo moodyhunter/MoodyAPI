@@ -1,0 +1,12 @@
+[Unit]
+Description=Moody's Camera API Service
+
+[Service]
+Type=simple
+User=moodyapi
+ExecStart=/opt/moodyapi/apiserver
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+
