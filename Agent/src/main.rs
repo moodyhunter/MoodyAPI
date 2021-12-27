@@ -1,5 +1,9 @@
 use common::GlobalState;
-use std::sync::{atomic::AtomicBool, Arc};
+use std::{
+    sync::{atomic::AtomicBool, Arc},
+    thread::sleep,
+    time::Duration,
+};
 use tonic::transport::Channel;
 
 mod camera_api;
@@ -25,6 +29,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         command_listener::listen_for_state_change(&state).await;
 
-        println!("Hey, server stopped responding, reconnecting.");
+        println!("Hey, server stopped responding, we are reconnecting.");
+        sleep(Duration::from_secs(5));
     }
 }
