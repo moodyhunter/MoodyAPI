@@ -17,9 +17,12 @@ jobs:
     - uses: Swatinem/rust-cache@v1
       with:
         working-directory: 'Agent/'
+        cache-on-failure: true
 
     - name: Build
       run: |
         cd Agent
         cargo build --release
+        sudo systemctl stop moodyapi-agent.service
         cp ./target/release/cam_agent /opt/moodyapi/cam_agent
+        sudo systemctl start moodyapi-agent.service
