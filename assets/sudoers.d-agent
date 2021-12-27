@@ -1,1 +1,6 @@
+github-actions ALL=NOPASSWD: /usr/bin/systemctl start moodyapi-agent.service
 github-actions ALL=NOPASSWD: /usr/bin/systemctl restart moodyapi-agent.service
+github-actions ALL=NOPASSWD: /usr/bin/systemctl stop moodyapi-agent.service
+
+moodyapi ALL=NOPASSWD: /usr/bin/systemctl stop motion.service
+moodyapi ALL=NOPASSWD: /usr/bin/systemctl start motion.service

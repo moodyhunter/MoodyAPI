@@ -1,0 +1,11 @@
+[Unit]
+Description=Moody's Camera Agent
+
+[Service]
+Type=simple
+User=moodyapi
+ExecStart=/opt/moodyapi/cam_agent
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

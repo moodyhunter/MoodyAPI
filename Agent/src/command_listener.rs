@@ -51,7 +51,7 @@ fn update_camera_status(new_status: bool) {
     Command::new("sudo")
         .arg("/usr/bin/systemctl")
         .arg(if new_status { "start" } else { "stop" })
-        .arg("moodyapi-agent.service")
+        .arg("motion.service")
         .output()
         .expect("failed to execute process");
 }
