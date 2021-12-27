@@ -24,6 +24,7 @@ class AppSettings : public QObject
     virtual ~AppSettings();
 
     MoodyApp_Q_PROPERTY_decl(bool, darkMode, DarkMode, toBool());
+    MoodyApp_Q_PROPERTY_decl(bool, disableTLS, DisableTLS, toBool());
     MoodyApp_Q_PROPERTY_decl(QString, apiHost, ApiHost, toString());
     MoodyApp_Q_PROPERTY_decl(QString, apiSecret, ApiSecret, toString());
 

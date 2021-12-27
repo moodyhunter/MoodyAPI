@@ -107,6 +107,24 @@ Rectangle {
             }
         }
 
+        RowLayout {
+            Layout.fillWidth: true
+
+            Label {
+                Layout.fillWidth: true
+                font.pixelSize: standardFontSize
+                font.family: "System-ui"
+                font.bold: true
+                text: "Disable TLS"
+                color: Styles.text
+            }
+
+            Switch {
+                checked: AppSettings.disableTLS
+                onCheckedChanged: AppSettings.disableTLS = checked
+            }
+        }
+
         Label {
             Layout.fillWidth: true
             font.pixelSize: standardFontSize

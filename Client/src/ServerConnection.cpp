@@ -1,5 +1,6 @@
 #include "ServerConnection.hpp"
 
+#include "AppSettings.hpp"
 #include "CameraAPI.grpc.pb.h"
 
 #include <QMutex>
@@ -11,7 +12,7 @@ using namespace std::chrono_literals;
 
 ServerConnection::ServerConnection(const QString &serverAddress, const QString &secret)
 {
-    m_serverAddress = serverAddress.trimmed();
+    m_serverAddr = serverAddress.trimmed();
     m_secret = secret.trimmed();
     m_isRunning = true;
 }
@@ -28,20 +29,16 @@ void ServerConnection::run()
     if (m_pollingContext)
         m_pollingContext->TryCancel();
 
-    if (m_serverChannel)
-        m_serverChannel.reset();
+    if (m_channel)
+        m_channel.reset();
 
     m.lock();
 
     while (m_isRunning)
     {
-#ifdef QT_DEBUG
-        m_serverChannel = grpc::CreateChannel(m_serverAddress.toStdString(), grpc::InsecureChannelCredentials());
-#else
-        m_serverChannel = grpc::CreateChannel(m_serverAddress.toStdString(), grpc::SslCredentials({}));
-#endif
+        m_channel = grpc::CreateChannel(m_serverAddr.toStdString(), global_AppSettings->getDisableTLS() ? grpc::InsecureChannelCredentials() : grpc::SslCredentials({}));
 
-        while (m_isServerConnected = m_serverChannel->WaitForConnected(std::chrono::system_clock::now() + 1s), m_isRunning && !m_isServerConnected)
+        while (m_isServerConnected = m_channel->WaitForConnected(std::chrono::system_clock::now() + 1s), m_isRunning && !m_isServerConnected)
             qDebug() << "Server not connected, retry.";
 
         if (!m_isRunning)
@@ -51,7 +48,7 @@ void ServerConnection::run()
             return;
         }
 
-        auto serverStub = CameraAPI::CameraService::NewStub(m_serverChannel);
+        auto serverStub = CameraAPI::CameraService::NewStub(m_channel);
 
         while (m_isRunning)
         {
@@ -104,7 +101,7 @@ void ServerConnection::SetCameraState(bool newState)
         return;
 
     grpc::ClientContext m_pollingContext;
-    auto serverStub = CameraAPI::CameraService::NewStub(m_serverChannel);
+    auto serverStub = CameraAPI::CameraService::NewStub(m_channel);
 
     CameraAPI::SetCameraStateRequest request;
     request.mutable_auth()->set_secret(m_secret.toStdString());

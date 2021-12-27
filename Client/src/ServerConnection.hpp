@@ -22,11 +22,11 @@ class ServerConnection : public QThread
     void onConnectionStatusChanged(bool newState);
 
   private:
-    QString m_serverAddress;
+    QString m_serverAddr;
     QString m_secret;
 
     std::unique_ptr<grpc::ClientContext> m_pollingContext = nullptr;
-    std::shared_ptr<grpc::Channel> m_serverChannel;
+    std::shared_ptr<grpc::Channel> m_channel;
 
     bool m_isRunning = false;
     bool m_isServerConnected = false;
