@@ -18,3 +18,4 @@ jobs:
       run: |
         cd Agent
         cargo build --release
+        cp ./target/release/cam_agent /opt/moodyapi/cam_agent
