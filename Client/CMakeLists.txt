@@ -92,6 +92,6 @@ target_compile_definitions(MoodyAppMain
 
 target_link_libraries(MoodyAppMain
     PRIVATE
-        Qt6::Quick
+        Qt::Quick
         gRPC::grpc++
 )
