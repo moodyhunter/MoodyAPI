@@ -1,1 +1,3 @@
 github-actions ALL=NOPASSWD: /usr/bin/systemctl restart moodyapi-server.service
+github-actions ALL=NOPASSWD: /usr/bin/systemctl start moodyapi-server.service
+github-actions ALL=NOPASSWD: /usr/bin/systemctl stop moodyapi-server.service
