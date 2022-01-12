@@ -26,7 +26,7 @@ func NewCamAPIServer() *CamAPIServer {
 	return server
 }
 
-func (s *CamAPIServer) BroadcaseEvent(event *CameraState) {
+func (s *CamAPIServer) BroadcastEvent(event *CameraState) {
 	s.lastEvent = event
 	s.eventSender.Broadcast(event)
 }
@@ -75,7 +75,7 @@ func (s *CamAPIServer) SetCameraState(ctx context.Context, request *SetCameraSta
 
 	log.Printf("Applying new camera state: %t", *request.State.NewState)
 
-	s.BroadcaseEvent(request.State)
+	s.BroadcastEvent(request.State)
 	return new(emptypb.Empty), nil
 }
 
@@ -89,6 +89,12 @@ func StartAPIServer(listenAddress string) *CamAPIServer {
 	camAPIServer := NewCamAPIServer()
 	server := grpc.NewServer()
 	RegisterCameraServiceServer(server, camAPIServer)
+	go func() {
+		for {
+			time.Sleep(30 * time.Second)
+			camAPIServer.BroadcastEvent(camAPIServer.lastEvent)
+		}
+	}()
 	go server.Serve(lis)
 	return camAPIServer
 }
