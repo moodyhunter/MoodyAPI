@@ -1,20 +1,27 @@
 #include "ServerConnection.hpp"
 
-#include "AppSettings.hpp"
 #include "CameraAPI.grpc.pb.h"
 
-#include <QMutex>
+#include <QCoreApplication>
+#include <QDateTime>
 #include <QThread>
 #include <QtDebug>
 #include <grpcpp/grpcpp.h>
 
 using namespace std::chrono_literals;
 
-ServerConnection::ServerConnection(const QString &serverAddress, const QString &secret)
+ServerConnection::ServerConnection() : QThread(), m_noTls(false)
 {
-    m_serverAddr = serverAddress.trimmed();
+}
+
+void ServerConnection::SetServerInfo(const QString &host, const QString &secret, bool noTls)
+{
+    m_serverAddr = host.trimmed();
     m_secret = secret.trimmed();
-    m_isRunning = true;
+    m_noTls = noTls;
+    m_serverInfoChanged.storeRelaxed(true);
+    if (m_pollingContext)
+        m_pollingContext->TryCancel();
 }
 
 ServerConnection::~ServerConnection()
@@ -23,34 +30,23 @@ ServerConnection::~ServerConnection()
 
 void ServerConnection::run()
 {
-    emit onConnectionStatusChanged(false);
-    static QMutex m;
-
-    if (m_pollingContext)
-        m_pollingContext->TryCancel();
-
-    if (m_channel)
-        m_channel.reset();
-
-    m.lock();
-
-    while (m_isRunning)
+    while (true)
     {
-        m_channel = grpc::CreateChannel(m_serverAddr.toStdString(), global_AppSettings->getDisableTLS() ? grpc::InsecureChannelCredentials() : grpc::SslCredentials({}));
+        emit onConnectionStatusChanged(false);
+        m_channel = grpc::CreateChannel(m_serverAddr.toStdString(), m_noTls ? grpc::InsecureChannelCredentials() : grpc::SslCredentials({}));
 
-        while (m_isServerConnected = m_channel->WaitForConnected(std::chrono::system_clock::now() + 1s), m_isRunning && !m_isServerConnected)
-            qDebug() << "Server not connected, retry.";
+        m_isServerConnected = m_channel->WaitForConnected(std::chrono::system_clock::now() + 1s); //, true && !m_isServerConnected && ++retry < 5)
 
-        if (!m_isRunning)
+        if (!m_isServerConnected)
         {
-            qDebug() << "Leaving";
-            m.unlock();
-            return;
+            QThread::sleep(1);
+            continue;
         }
 
+        m_serverInfoChanged.storeRelaxed(false);
         auto serverStub = CameraAPI::CameraService::NewStub(m_channel);
 
-        while (m_isRunning)
+        while (!m_serverInfoChanged.loadRelaxed())
         {
             m_pollingContext.reset(new grpc::ClientContext);
 
@@ -60,7 +56,7 @@ void ServerConnection::run()
             auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
 
             CameraAPI::CameraState resp;
-            while (reader->Read(&resp) && m_isRunning)
+            while (reader->Read(&resp) && true)
             {
                 emit onConnectionStatusChanged(true);
                 if (resp.has_newstate())
@@ -78,21 +74,15 @@ void ServerConnection::run()
                 if (resp.has_imagepng())
                     emit onNewMotionDetected(QByteArray::fromStdString(resp.imagepng()));
             }
-            emit onConnectionStatusChanged(false);
 
-            qDebug() << "Cannot read more responses, retry.";
+            qDebug() << "Cannot read more responses, retry." << QDateTime::currentDateTime();
             m_pollingContext->TryCancel();
             QThread::sleep(1);
         }
-    }
-    m.unlock();
-}
 
-void ServerConnection::StopPolling()
-{
-    m_isRunning = false;
-    if (m_pollingContext)
-        m_pollingContext->TryCancel();
+        emit onConnectionStatusChanged(false);
+        QThread::sleep(1);
+    }
 }
 
 void ServerConnection::SetCameraState(bool newState)

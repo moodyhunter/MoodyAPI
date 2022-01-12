@@ -1,7 +1,9 @@
 #pragma once
 
+#include "rep_IPC_merged.h"
+
 #include <QObject>
-#include <QThread>
+#include <QRemoteObjectNode>
 
 class ServerConnection;
 
@@ -13,23 +15,26 @@ class AppCore : public QObject
     explicit AppCore(QObject *parent = nullptr);
     ~AppCore();
 
-    Q_PROPERTY(bool IsRecording READ GetCameraStatus WRITE SetCameraState NOTIFY CameraStatusChanged)
+    Q_PROPERTY(bool IsRecording MEMBER m_cameraState NOTIFY CameraStatusChanged)
     Q_PROPERTY(bool ServerConnected MEMBER m_connectionStatus NOTIFY ConnectionStatusChanged)
 
-    bool GetCameraStatus() const;
-    Q_INVOKABLE void connectToServer(const QString &serverAddress, const QString &secret);
-    void SetCameraState(bool status);
-
-  private slots:
-    void m_HandleCameraStateChanged(bool newState);
+    Q_INVOKABLE void connectToServer(const QString &serverAddress, const QString &secret, bool noTls);
+    Q_INVOKABLE void startRecording();
+    Q_INVOKABLE void stopRecording();
 
   signals:
     // QML interop
-    void ConnectionStatusChanged(bool connected);
     void CameraStatusChanged();
+    void ConnectionStatusChanged();
+
+  private:
+    void m_setCameraState(bool newState);
+    void m_setConnectionStatus(bool newState);
 
   private:
     bool m_connectionStatus = false;
     bool m_cameraState = false;
-    ServerConnection *m_worker = nullptr;
+
+    QSharedPointer<JNIIPCBridgeReplica> m_source;
+    QRemoteObjectNode m_remoteNode;
 };

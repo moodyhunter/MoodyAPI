@@ -1,0 +1,10 @@
+class JNIIPCBridge {
+    PROP(bool APIServerConnected);
+    PROP(bool RecordingStarted);
+
+    SIGNAL(motionDetected());
+
+    SLOT(void StartRecord());
+    SLOT(void StopRecord());
+    SLOT(void SetServerInfo(QString, QString, bool));
+}

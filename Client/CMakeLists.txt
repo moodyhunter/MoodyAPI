@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 6.2 COMPONENTS Quick REQUIRED)
+find_package(Qt6 6.2 COMPONENTS Core Gui Quick RemoteObjects REQUIRED)
 
 add_subdirectory(QtGraphicalEffects)
 
@@ -19,7 +19,7 @@ endif()
 
 find_package(Protobuf REQUIRED)
 find_package(gRPC REQUIRED)
-find_program(GRPC_CC_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
+find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
 
 # Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
 # Generate gRPC and protobuf Sources
@@ -37,7 +37,7 @@ add_custom_command(
         --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
         --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
         -I="${PROTO_DIR}"
-        --plugin=protoc-gen-grpc="${GRPC_CC_PLUGIN_EXECUTABLE}"
+        --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
         "${PROTO_FILE}"
     DEPENDS "${PROTO_FILE}")
 
@@ -49,6 +49,9 @@ qt_add_executable(MoodyAppMain
     src/AppSettings.cpp
     src/ServerConnection.hpp
     src/ServerConnection.cpp
+    src/JNICall.hpp
+    src/JNICall.cpp
+
     "${GRPC_HEADER}" "${PB_HEADER}"
     "${GRPC_SOURCE}" "${PB_SOURCE}"
 )
@@ -69,6 +72,9 @@ qt_add_qml_module(MoodyAppMain
     DEPENDENCIES
         qtgraphicaleffects
 )
+
+qt6_add_repc_merged(MoodyAppMain
+    IPC.rep)
 
 qt_add_resources(MoodyAppMain "assets"
     PREFIX "/assets"
@@ -92,6 +98,9 @@ target_compile_definitions(MoodyAppMain
 
 target_link_libraries(MoodyAppMain
     PRIVATE
+        Qt::Core
+        Qt::CorePrivate
         Qt::Quick
+        Qt::RemoteObjects
         gRPC::grpc++
 )

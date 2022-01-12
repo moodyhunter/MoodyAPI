@@ -11,6 +11,7 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: true
+        enabled: root.state == "opened"
     }
 
     color: Styles.background_pure
@@ -58,14 +59,16 @@ Rectangle {
         root.state = "opened"
     }
 
-    function close() {
+    function close(accept) {
         root.enabled = false
         root.state = "closed"
-        AppCore.connectToServer(AppSettings.apiHost, AppSettings.apiSecret)
+        if (accept)
+            AppCore.connectToServer(AppSettings.apiHost, AppSettings.apiSecret,
+                                    AppSettings.disableTLS)
     }
 
     component Spacer: Item {
-        property int spacerHeight: 20
+        property int spacerHeight: 15
         implicitHeight: spacerHeight
         Layout.fillWidth: true
     }
@@ -177,19 +180,36 @@ Rectangle {
         }
 
         Spacer {
-            spacerHeight: 40
+            spacerHeight: 30
         }
 
-        GradientButton {
+        RowLayout {
             Layout.fillWidth: true
-            buttonBorderWidth: 1
-            color1: Styles.button_on
-            borderColor: Styles.button_on_border
-            buttonSize: 60
-            fontSize: 18
-            text: "OK"
-            onClicked: {
-                root.close()
+
+            GradientButton {
+                Layout.fillWidth: true
+                buttonBorderWidth: 1
+                color1: Styles.button_off
+                borderColor: Styles.button_off_border
+                buttonSize: 60
+                fontSize: 18
+                text: "Cancel"
+                onClicked: {
+                    root.close(false)
+                }
+            }
+
+            GradientButton {
+                Layout.fillWidth: true
+                buttonBorderWidth: 1
+                color1: Styles.button_on
+                borderColor: Styles.button_on_border
+                buttonSize: 60
+                fontSize: 18
+                text: "OK"
+                onClicked: {
+                    root.close(true)
+                }
             }
         }
     }

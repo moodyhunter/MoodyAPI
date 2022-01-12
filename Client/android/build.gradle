@@ -1,33 +1,21 @@
 // clang-format off
 buildscript {
     repositories {
-        google()
         mavenCentral()
+        google()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.2'
-        classpath 'com.google.gms:google-services:4.3.10'  // Google Services plugin
     }
 }
 
 repositories {
-    google()
     mavenCentral()
-}
-
-allprojects {
-  // ...
-
-  repositories {
-    // Check that you have the following line (if not, add it):
-    google()  // Google's Maven repository
-    // ...
-  }
+    google()
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])

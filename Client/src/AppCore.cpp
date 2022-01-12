@@ -1,55 +1,44 @@
 #include "AppCore.hpp"
 
 #include "AppSettings.hpp"
-#include "ServerConnection.hpp"
-
-#include <QtDebug>
 
 AppCore::AppCore(QObject *parent) : QObject(parent)
 {
+    m_remoteNode.connectToNode(QUrl(QStringLiteral("localabstract:replica")));
+    m_source.reset(m_remoteNode.acquire<JNIIPCBridgeReplica>());
+    bool res = m_source->waitForSource();
+    Q_ASSERT(res);
+    connect(m_source.get(), &JNIIPCBridgeReplica::RecordingStartedChanged, this, &AppCore::m_setCameraState);
+    connect(m_source.get(), &JNIIPCBridgeReplica::APIServerConnectedChanged, this, &AppCore::m_setConnectionStatus);
 }
 
 AppCore::~AppCore()
 {
-    if (m_worker)
-    {
-        m_worker->StopPolling();
-        m_worker->quit();
-        m_worker->wait();
-        delete m_worker;
-    }
 }
 
-void AppCore::m_HandleCameraStateChanged(bool newState)
+void AppCore::m_setCameraState(bool newState)
 {
     m_cameraState = newState;
     emit CameraStatusChanged();
 }
 
-void AppCore::connectToServer(const QString &serverAddress, const QString &secret)
+void AppCore::m_setConnectionStatus(bool newState)
 {
-    if (m_worker)
-    {
-        m_worker->StopPolling();
-        m_worker->quit();
-        m_worker->wait();
-        delete m_worker;
-    }
-
-    m_worker = new ServerConnection(serverAddress, secret);
-
-    connect(m_worker, &ServerConnection::onCameraStateChanged, this, &AppCore::m_HandleCameraStateChanged);
-    connect(m_worker, &ServerConnection::onConnectionStatusChanged, this, [this](bool s) { m_connectionStatus = s, emit ConnectionStatusChanged(s); });
-
-    m_worker->start();
+    m_connectionStatus = newState;
+    emit ConnectionStatusChanged();
 }
 
-void AppCore::SetCameraState(bool status)
+void AppCore::connectToServer(const QString &serverAddress, const QString &secret, bool noTls)
 {
-    m_worker->SetCameraState(status);
+    m_source->SetServerInfo(serverAddress, secret, noTls);
 }
 
-bool AppCore::GetCameraStatus() const
+void AppCore::startRecording()
 {
-    return m_cameraState;
+    m_source->StartRecord();
+}
+
+void AppCore::stopRecording()
+{
+    m_source->StopRecord();
 }

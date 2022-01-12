@@ -14,10 +14,6 @@ ApplicationWindow {
     id: rootWindow
     readonly property double standardSize: Math.min(width / 2.5, height / 4)
 
-    Component.onCompleted: {
-        AppCore.connectToServer(AppSettings.apiHost, AppSettings.apiSecret)
-    }
-
     LinearGradient {
         anchors.fill: parent
         start: Qt.point(0, 0)
@@ -93,7 +89,7 @@ ApplicationWindow {
                 buttonSize: rootWindow.standardSize
 
                 onClicked: {
-                    AppCore.IsRecording = true
+                    AppCore.startRecording()
                 }
 
                 Layout.bottomMargin: standardSize / 8
@@ -107,7 +103,7 @@ ApplicationWindow {
                 buttonSize: rootWindow.standardSize
 
                 onClicked: {
-                    AppCore.IsRecording = false
+                    AppCore.stopRecording()
                 }
             }
             VerticalSpacer {}
@@ -139,7 +135,7 @@ ApplicationWindow {
     }
     SettingsPanel {
         id: settingsPopup
-        y: 150
+        y: 100
         anchors.horizontalCenter: parent.horizontalCenter
     }
 }
