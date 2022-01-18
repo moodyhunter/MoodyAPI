@@ -60,6 +60,9 @@ class SSOLED
     //
     SSOLED(int iAddr, bool bFlip, bool bInvert);
 
+    //
+    // Get the underlying device type.
+    //
     OLED_DEVICE_TYPE DeviceType() const;
 
     //
@@ -69,33 +72,33 @@ class SSOLED
     // Pass NULL to revoke the buffer. Make sure you provide a buffer
     // large enough for your display (e.g. 128x64 needs 1K - 1024 bytes)
     //
-    void oledSetBackBuffer(uint8_t *pBuffer);
+    void setBackBuffer(uint8_t *pBuffer);
     //
     // Sets the brightness (0=off, 255=brightest)
     //
-    void oledSetContrast(unsigned char ucContrast);
+    void setContrast(unsigned char ucContrast);
     //
     // Load a 128x64 1-bpp Windows bitmap
     // Pass the pointer to the beginning of the BMP file
     // First pass version assumes a full screen bitmap
     //
-    int oledLoadBMP(uint8_t *pBMP, int bInvert, int bRender);
+    int loadBMP(uint8_t *pBMP, int bInvert, int bRender);
     //
     // Power up/down the display
     // useful for low power situations
     //
-    void oledPower(bool bOn);
+    void setPower(bool bOn);
     //
     // Set the current cursor position
     // The column represents the pixel column (0-127)
     // The row represents the text row (0-7)
     //
-    void oledSetCursor(int x, int y);
+    void setCursorPos(int x, int y);
 
     //
     // Turn text wrap on or off for the oldWriteString() function
     //
-    void oledSetTextWrap(int bWrap);
+    void setTextWrap(int bWrap);
     //
     // Draw a string of normal (8x8), small (6x8) or large (16x32) characters
     // At the given col+row with the given scroll offset. The scroll offset allows you to
@@ -110,19 +113,19 @@ class SSOLED
     //
     //  Returns 0 for success, -1 for invalid parameter
     //
-    int oledWriteString(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
+    int writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, int bInvert, int bRender);
     //
     // Draw a string with a fractional scale in both dimensions
     // the scale is a 16-bit integer with and 8-bit fraction and 8-bit mantissa
     // To draw at 1x scale, set the scale factor to 256. To draw at 2x, use 512
     // The output must be drawn into a memory buffer, not directly to the display
     //
-    int oledScaledString(int x, int y, char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, int iRotation);
+    int scaledString(int x, int y, char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation);
     //
     // Fill the frame buffer with a byte pattern
     // e.g. all off (0x00) or all on (0xff)
     //
-    void oledFill(unsigned char ucData, int bRender);
+    void fill(unsigned char ucData, int bRender);
     //
     // Set (or clear) an individual pixel
     // The local copy of the frame buffer is used to avoid
@@ -131,24 +134,24 @@ class SSOLED
     // This function needs the USE_BACKBUFFER macro to be defined
     // otherwise, new pixels will erase old pixels within the same byte
     //
-    int oledSetPixel(int x, int y, unsigned char ucColor, int bRender);
+    int setPixel(int x, int y, unsigned char ucColor, int bRender);
     //
     // Dump an entire custom buffer to the display
     // useful for custom animation effects
     //
-    void oledDumpBuffer(uint8_t *pBuffer);
+    void dumpBuffer(uint8_t *pBuffer);
     //
     // Render a window of pixels from a provided buffer or the library's internal buffer
     // to the display. The row values refer to byte rows, not pixel rows due to the memory
     // layout of OLEDs. Pass a src pointer of NULL to use the internal backing buffer
     // returns 0 for success, -1 for invalid parameter
     //
-    int oledDrawGFX(uint8_t *pSrc, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch);
+    int drawGFX(uint8_t *pSrc, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch);
 
     //
     // Draw a line between 2 points
     //
-    void oledDrawLine(int x1, int y1, int x2, int y2, int bRender);
+    void drawLine(int x1, int y1, int x2, int y2, int bRender);
     //
     // Play a frame of animation data
     // The animation data is assumed to be encoded for a full frame of the display
@@ -157,14 +160,14 @@ class SSOLED
     // Frame rate control is up to the calling program to manage
     // When it finishes the last frame, it will start again from the beginning
     //
-    uint8_t *oledPlayAnimFrame(uint8_t *pAnimation, uint8_t *pCurrent, int iLen);
+    uint8_t *playAnimFrame(uint8_t *pAnimation, uint8_t *pCurrent, int iLen);
 
     //
     // Scroll the internal buffer by 1 scanline (up/down)
     // width is in pixels, lines is group of 8 rows
     // Returns 0 for success, -1 for invalid parameter
     //
-    int oledScrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, int bUp);
+    int scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, int bUp);
     //
     // Draw a sprite of any size in any position
     // If it goes beyond the left/right or top/bottom edges
@@ -175,7 +178,7 @@ class SSOLED
     // e.g. when 0, the input bitmap acts like a mask to clear
     // the destination where bits are set.
     //
-    void oledDrawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int y, uint8_t iPriority);
+    void drawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int y, uint8_t iPriority);
     //
     // Draw a 16x16 tile in any of 4 rotated positions
     // Assumes input image is laid out like "normal" graphics with
@@ -184,35 +187,37 @@ class SSOLED
     // The function can draw the tile on byte boundaries, so the x value
     // can be from 0 to 112 and y can be from 0 to 6
     //
-    void oledDrawTile(const uint8_t *pTile, int x, int y, int iRotation, int bInvert, int bRender);
+    void drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, int bRender);
     //
     // Draw an outline or filled ellipse
     //
-    void oledEllipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled);
+    void drawEllipse(int iCenterX, int iCenterY, int iRadiusX, int iRadiusY, uint8_t ucColor, uint8_t bFilled);
     //
     // Draw an outline or filled rectangle
     //
-    void oledRectangle(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled);
+    void drawRectangle(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled);
 
   private:
-    void oledWriteFlashBlock(uint8_t *s, int iLen);
-    void oledRepeatByte(uint8_t b, int iLen);
-    void oledWriteDataBlock(unsigned char *ucBuf, int iLen, int bRender);
-    void oledSetPosition(int x, int y, int bRender);
-    void I2CWrite(unsigned char *pData, int iLen);
-    void oledWriteCommand(unsigned char c);
-    void oledWriteCommand(unsigned char c, unsigned char d);
-    void DrawScaledPixel(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor);
-    void DrawScaledLine(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor);
-    void BresenhamCircle(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor, uint8_t bFill);
+    void p_WriteFlashBlock(uint8_t *s, int iLen);
+    void p_WriteDataBlock(unsigned char *ucBuf, int iLen, int bRender);
+    void p_RepeatByte(uint8_t b, int iLen);
+    void p_SetPosition(int x, int y, int bRender);
+    void p_I2CWrite(unsigned char *pData, int iLen);
+    void p_WriteCommand(unsigned char c);
+    void p_WriteCommand(unsigned char c, unsigned char d);
+    void p_DrawScaledPixel(int iCX, int iCY, int x, int y, int iXFrac, int iYFrac, uint8_t ucColor);
+    void p_DrawScaledLine(int iCX, int iCY, int x, int y, int iXFrac, int iYFrac, uint8_t ucColor);
+    void p_BresenhamCircle(int iCX, int iCY, int x, int y, int iXFrac, int iYFrac, uint8_t ucColor, uint8_t bFill);
 
   private:
-    OLED_DEVICE_TYPE deviceType;
-    uint8_t oled_addr; // requested address or 0xff for automatic detection
-    bool oled_wrap, oled_flip;
-    uint8_t *ucScreen;
-    uint8_t iCursorX, iCursorY;
-    uint8_t oled_x, oled_y;
-    int iScreenOffset;
-    I2CDevice *bbi2c;
+    OLED_DEVICE_TYPE m_DeviceType = OLED_NOT_FOUND;
+    // requested address or 0xff for automatic detection
+    uint8_t m_Addr = 0;
+    uint8_t m_CursorX = 0, m_CursorY = 0;
+    uint8_t m_X = 0, m_Y = 0;
+    bool m_Wrap = false;
+    bool m_Flip = false;
+    int m_ScreenOffset = 0;
+    uint8_t *m_ucScreen = nullptr;
+    I2CDevice *m_I2CDevice = nullptr;
 };
