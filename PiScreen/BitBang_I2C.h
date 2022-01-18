@@ -22,52 +22,41 @@
 #include <stdint.h>
 
 // supported devices
-enum
+enum DEVICE_TYPE
 {
     DEVICE_UNKNOWN = 0,
     DEVICE_SSD1306,
     DEVICE_SH1106,
 };
 
-typedef struct mybbi2c
+typedef struct
 {
     int file_i2c;
     int iBus;
 } BBI2C;
-//
-// Read N bytes
-//
+
+/// Read N bytes
 int I2CRead(BBI2C *pI2C, uint8_t iAddr, uint8_t *pData, int iLen);
-//
-// Read N bytes starting at a specific I2C internal register
-//
+
+/// Read N bytes starting at a specific I2C internal register
 int I2CReadRegister(BBI2C *pI2C, uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen);
-//
-// Write I2C data
-// quits if a NACK is received and returns 0
-// otherwise returns the number of bytes written
-//
+
+/// Write I2C data
+/// quits if a NACK is received and returns 0
+/// otherwise returns the number of bytes written
 int I2CWrite(BBI2C *pI2C, uint8_t iAddr, uint8_t *pData, int iLen);
-//
-// Scans for I2C devices on the bus
-// returns a bitmap of devices which are present (128 bits = 16 bytes, LSB first)
-//
-// Test if an address responds
-// returns 0 if no response, 1 if it responds
-//
+
+/// Test if an address responds
+/// returns 0 if no response, 1 if it responds
 uint8_t I2CTest(BBI2C *pI2C, uint8_t addr);
 
-// A set bit indicates that a device responded at that address
-//
+/// Scans for I2C devices on the bus
+/// returns a bitmap of devices which are present (128 bits = 16 bytes, LSB first)
+/// A set bit indicates that a device responded at that address
 void I2CScan(BBI2C *pI2C, uint8_t *pMap);
-//
-// Initialize the I2C BitBang library
-// Pass the pin numbers used for SDA and SCL
-// as well as the clock rate in Hz
-//
+
+/// Initialize the I2C BitBang library
 void I2CInit(BBI2C *pI2C);
-//
-// Figure out what device is at that address
-// returns the enumerated value
-//
-int I2CDiscoverDevice(BBI2C *pI2C, uint8_t i);
+
+/// Figure out what device is at that address returns the enumerated value
+DEVICE_TYPE I2CDiscoverDevice(BBI2C *pI2C, uint8_t i);

@@ -117,8 +117,8 @@ void SpeedTest(void)
     oledWriteString(&ssoled, 0, 0, 0, (char *) "Fill rate", FONT_NORMAL, 0, 1);
     sprintf(szTemp, "%d FPS", (int) (100000 / ms));
     oledWriteString(&ssoled, 0, 0, 1, szTemp, FONT_NORMAL, 0, 1);
+}
 
-} /* SpeedTest() */
 int main(int argc, char *argv[])
 {
     int i, iChannel;

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <BitBang_I2C.h>
-#include <stdint.h>
+#include "BitBang_I2C.h"
 
 typedef struct ssoleds
 {
     uint8_t oled_addr; // requested address or 0xff for automatic detection
-    uint8_t oled_wrap, oled_flip;
+    bool oled_wrap, oled_flip;
     uint8_t *ucScreen;
     uint8_t iCursorX, iCursorY;
     uint8_t oled_x, oled_y;
@@ -73,7 +72,7 @@ enum
 // Otherwise use the Wire library.
 // If you don't need to use a separate reset pin, set it to -1
 //
-int oledInit(SSOLED *pOLED, int iAddr, int bFlip, int bInvert);
+int oledInit(SSOLED *pOLED, int iAddr, bool bFlip, bool bInvert);
 
 //
 // Provide or revoke a back buffer for your OLED graphics
