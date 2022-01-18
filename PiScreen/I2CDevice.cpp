@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "I2CDevice.h"
+#include "I2CDevice.hpp"
 
 #include <fcntl.h>
 #include <linux/i2c-dev.h>

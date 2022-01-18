@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "ss_oled.h"
+#include "SSOLED.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -962,7 +962,7 @@ void SSOLED::setTextWrap(int bWrap)
     m_Wrap = bWrap;
 }
 
-int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, int bInvert, int bRender)
+int SSOLED::writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, int bInvert, int bRender)
 {
     int i, iFontOff, iLen, iFontSkip;
     unsigned char c, *s, ucTemp[40];
@@ -984,10 +984,10 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
     if (iSize == FONT_8x8) // 8x8 font
     {
         i = 0;
-        iFontSkip = iScroll & 7; // number of columns to initially skip
+        iFontSkip = iScrollX & 7; // number of columns to initially skip
         while (m_CursorX < m_X && szMsg[i] != 0 && m_CursorY < m_Y / 8)
         {
-            if (iScroll < 8) // only display visible characters
+            if (iScrollX < 8) // only display visible characters
             {
                 c = (unsigned char) szMsg[i];
                 iFontOff = (int) (c - 32) * 7;
@@ -1010,7 +1010,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                 }
                 iFontSkip = 0;
             }
-            iScroll -= 8;
+            iScrollX -= 8;
             i++;
         } // while
           //     oledCachedFlush(); // write any remaining data
@@ -1019,10 +1019,10 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
     else if (iSize == FONT_16x32) // 16x32 font
     {
         i = 0;
-        iFontSkip = iScroll & 15; // number of columns to initially skip
+        iFontSkip = iScrollX & 15; // number of columns to initially skip
         while (m_CursorX < m_X && m_CursorY < (m_Y / 8) - 3 && szMsg[i] != 0)
         {
-            if (iScroll < 16) // if characters are visible
+            if (iScrollX < 16) // if characters are visible
             {
                 s = (unsigned char *) &ucBigFont[(unsigned char) (szMsg[i] - 32) * 64];
                 iLen = 16 - iFontSkip;
@@ -1063,7 +1063,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                 }
                 iFontSkip = 0;
             } // if character visible from scrolling
-            iScroll -= 16;
+            iScrollX -= 16;
             i++;
         } // while
         return 0;
@@ -1071,11 +1071,11 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
     else if (iSize == FONT_12x16) // 6x8 stretched to 12x16
     {
         i = 0;
-        iFontSkip = iScroll % 12; // number of columns to initially skip
+        iFontSkip = iScrollX % 12; // number of columns to initially skip
         while (m_CursorX < m_X && m_CursorY < (m_Y / 8) - 1 && szMsg[i] != 0)
         {
             // stretch the 'normal' font instead of using the big font
-            if (iScroll < 12) // if characters are visible
+            if (iScrollX < 12) // if characters are visible
             {
                 int tx, ty;
                 c = szMsg[i] - 32;
@@ -1175,7 +1175,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                 }
                 iFontSkip = 0;
             } // if characters are visible
-            iScroll -= 12;
+            iScrollX -= 12;
             i++;
         } // while
         return 0;
@@ -1183,11 +1183,11 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
     else if (iSize == FONT_16x16) // 8x8 stretched to 16x16
     {
         i = 0;
-        iFontSkip = iScroll & 15; // number of columns to initially skip
+        iFontSkip = iScrollX & 15; // number of columns to initially skip
         while (m_CursorX < m_X && m_CursorY < (m_Y / 8) - 1 && szMsg[i] != 0)
         {
             // stretch the 'normal' font instead of using the big font
-            if (iScroll < 16) // if characters are visible
+            if (iScrollX < 16) // if characters are visible
             {
                 int tx, ty;
                 c = szMsg[i] - 32;
@@ -1234,7 +1234,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                 }
                 iFontSkip = 0;
             } // if characters are visible
-            iScroll -= 16;
+            iScrollX -= 16;
             i++;
         } // while
         return 0;
@@ -1242,10 +1242,10 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
     else if (iSize == FONT_6x8) // 6x8 font
     {
         i = 0;
-        iFontSkip = iScroll % 6;
+        iFontSkip = iScrollX % 6;
         while (m_CursorX < m_X && m_CursorY < (m_Y / 8) && szMsg[i] != 0)
         {
-            if (iScroll < 6) // if characters are visible
+            if (iScrollX < 6) // if characters are visible
             {
                 c = szMsg[i] - 32;
                 // we can't directly use the pointer to FLASH memory, so copy to a local buffer
@@ -1257,7 +1257,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                 if (m_CursorX + iLen > m_X) // clip right edge
                     iLen = m_X - m_CursorX;
                 p_WriteDataBlock(&ucTemp[iFontSkip], iLen, bRender); // write character pattern
-                                                                       //         oledCachedWrite(ucTemp, 6);
+                                                                     //         oledCachedWrite(ucTemp, 6);
                 m_CursorX += iLen;
                 iFontSkip = 0;
                 if (m_CursorX >= m_X - 5 && m_Wrap) // word wrap enabled?
@@ -1267,7 +1267,7 @@ int SSOLED::writeString(int iScroll, int x, int y, char *szMsg, OLED_FONT_SIZE i
                     p_SetPosition(m_CursorX, m_CursorY, bRender);
                 }
             } // if characters are visible
-            iScroll -= 6;
+            iScrollX -= 6;
             i++;
         }
         //    oledCachedFlush(); // write any remaining data
@@ -1328,8 +1328,8 @@ void SSOLED::dumpBuffer(uint8_t *pBuffer)
             }
             pSrc += 16;
             pBuffer += 16;
-        }                              // for x
-        pSrc += (128 - m_X);           // for narrow displays, skip to the next line
+        }                    // for x
+        pSrc += (128 - m_X); // for narrow displays, skip to the next line
         pBuffer += (128 - m_X);
     } // for y
 }
@@ -1347,8 +1347,8 @@ void SSOLED::fill(unsigned char ucData, int bRender)
 
     for (y = 0; y < iLines; y++)
     {
-        p_SetPosition(0, y, bRender);        // set to (0,Y)
-        for (x = 0; x < iCols; x++)            // wiring library has a 32-byte buffer, so send 16 bytes so that the data prefix (0x40) can fit
+        p_SetPosition(0, y, bRender); // set to (0,Y)
+        for (x = 0; x < iCols; x++)   // wiring library has a 32-byte buffer, so send 16 bytes so that the data prefix (0x40) can fit
         {
             p_WriteDataBlock(temp, 16, bRender);
         } // for x
@@ -1398,8 +1398,8 @@ void SSOLED::drawLine(int x1, int y1, int x2, int y2, int bRender)
             dy = -dy;
             yinc = -1;
         }
-        p = pStart = &m_ucScreen[x1 + ((y >> 3) << 7)];      // point to current spot in back buffer
-        mask = 1 << (y & 7);                                 // current bit offset
+        p = pStart = &m_ucScreen[x1 + ((y >> 3) << 7)]; // point to current spot in back buffer
+        mask = 1 << (y & 7);                            // current bit offset
         for (x = x1; x1 <= x2; x1++)
         {
             *p++ |= mask; // set pixel and increment x pointer
@@ -1414,8 +1414,8 @@ void SSOLED::drawLine(int x1, int y1, int x2, int y2, int bRender)
                 if (mask == 0) // we've moved outside the current row, write the data we changed
                 {
                     p_SetPosition(x, y >> 3, bRender);
-                    p_WriteDataBlock(pStart, (int) (p - pStart), bRender);        // write the row we changed
-                    x = x1 + 1;                                                     // we've already written the byte at x1
+                    p_WriteDataBlock(pStart, (int) (p - pStart), bRender); // write the row we changed
+                    x = x1 + 1;                                            // we've already written the byte at x1
                     y1 = y + yinc;
                     p += (yinc > 0) ? 128 : -128;
                     pStart = p;
@@ -1444,9 +1444,9 @@ void SSOLED::drawLine(int x1, int y1, int x2, int y2, int bRender)
             y2 = temp;
         }
 
-        p = &m_ucScreen[x1 + ((y1 >> 3) * 128)];      // point to current spot in back buffer
-        bOld = bNew = p[0];                           // current data at that address
-        mask = 1 << (y1 & 7);                         // current bit offset
+        p = &m_ucScreen[x1 + ((y1 >> 3) * 128)]; // point to current spot in back buffer
+        bOld = bNew = p[0];                      // current data at that address
+        mask = 1 << (y1 & 7);                    // current bit offset
         dx = (x2 - x1);
         error = dy >> 1;
         xinc = 1;

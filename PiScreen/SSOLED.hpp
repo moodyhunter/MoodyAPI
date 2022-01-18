@@ -1,6 +1,6 @@
 #pragma once
 
-#include "I2CDevice.h"
+#include "I2CDevice.hpp"
 
 // Make the Linux library interface C instead of C++
 

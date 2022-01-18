@@ -1,7 +1,7 @@
 //
 // oled test program
 // Written by Larry Bank
-#include "ss_oled.h"
+#include "SSOLED.hpp"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -30,7 +30,7 @@ void SpeedTest(SSOLED *ssoled)
     char szTemp[32];
     unsigned long ms;
 
-    ssoled->fill(0x0, 1);
+    ssoled->fill(0, 1);
     ssoled->writeString(0, 16, 0, (char *) "ss_oled Demo", FONT_NORMAL, 0, 1);
     ssoled->writeString(0, 0, 1, (char *) "Written by Larry Bank", FONT_SMALL, 1, 1);
     ssoled->writeString(0, 0, 3, (char *) "**Demo**", FONT_LARGE, 0, 1);

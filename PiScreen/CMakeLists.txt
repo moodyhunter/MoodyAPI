@@ -10,12 +10,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_executable(PiScreen
     I2CDevice.cpp
-    I2CDevice.h
-    # multi_oled.cpp
-    # sample.cpp
-    speed_test.cpp
-    ss_oled.cpp
-    ss_oled.h
+    I2CDevice.hpp
+    main.cpp
+    SSOLED.cpp
+    SSOLED.hpp
 )
 
 # target_link_libraries(PiScreen PRIVATE pigpio)
