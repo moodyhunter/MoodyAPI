@@ -63,7 +63,7 @@ class SSOLED
     //
     // Get the underlying device type.
     //
-    OLED_DEVICE_TYPE DeviceType() const;
+    OLED_DEVICE_TYPE getDeviceType() const;
 
     //
     // Provide or revoke a back buffer for your OLED graphics
@@ -82,7 +82,7 @@ class SSOLED
     // Pass the pointer to the beginning of the BMP file
     // First pass version assumes a full screen bitmap
     //
-    int loadBMP(uint8_t *pBMP, int bInvert, int bRender);
+    int loadBMP(uint8_t *pBMP, int bInvert, bool bRender);
     //
     // Power up/down the display
     // useful for low power situations
@@ -98,7 +98,7 @@ class SSOLED
     //
     // Turn text wrap on or off for the oldWriteString() function
     //
-    void setTextWrap(int bWrap);
+    void setTextWrap(bool bWrap);
     //
     // Draw a string of normal (8x8), small (6x8) or large (16x32) characters
     // At the given col+row with the given scroll offset. The scroll offset allows you to
@@ -113,7 +113,7 @@ class SSOLED
     //
     //  Returns 0 for success, -1 for invalid parameter
     //
-    int writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, int bInvert, int bRender);
+    int writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize = FONT_NORMAL, bool bInvert = false, bool bRender = true);
     //
     // Draw a string with a fractional scale in both dimensions
     // the scale is a 16-bit integer with and 8-bit fraction and 8-bit mantissa
@@ -134,7 +134,7 @@ class SSOLED
     // This function needs the USE_BACKBUFFER macro to be defined
     // otherwise, new pixels will erase old pixels within the same byte
     //
-    int setPixel(int x, int y, unsigned char ucColor, int bRender);
+    int setPixel(int x, int y, unsigned char ucColor, bool bRender);
     //
     // Dump an entire custom buffer to the display
     // useful for custom animation effects
@@ -151,7 +151,7 @@ class SSOLED
     //
     // Draw a line between 2 points
     //
-    void drawLine(int x1, int y1, int x2, int y2, int bRender);
+    void drawLine(int x1, int y1, int x2, int y2, bool bRender);
     //
     // Play a frame of animation data
     // The animation data is assumed to be encoded for a full frame of the display
@@ -167,7 +167,7 @@ class SSOLED
     // width is in pixels, lines is group of 8 rows
     // Returns 0 for success, -1 for invalid parameter
     //
-    int scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, int bUp);
+    int scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, bool bUp);
     //
     // Draw a sprite of any size in any position
     // If it goes beyond the left/right or top/bottom edges
@@ -187,7 +187,7 @@ class SSOLED
     // The function can draw the tile on byte boundaries, so the x value
     // can be from 0 to 112 and y can be from 0 to 6
     //
-    void drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, int bRender);
+    void drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, bool bRender);
     //
     // Draw an outline or filled ellipse
     //
@@ -199,9 +199,9 @@ class SSOLED
 
   private:
     void p_WriteFlashBlock(uint8_t *s, int iLen);
-    void p_WriteDataBlock(unsigned char *ucBuf, int iLen, int bRender);
+    void p_WriteDataBlock(unsigned char *ucBuf, int iLen, bool bRender);
     void p_RepeatByte(uint8_t b, int iLen);
-    void p_SetPosition(int x, int y, int bRender);
+    void p_SetPosition(int x, int y, bool bRender);
     void p_I2CWrite(unsigned char *pData, int iLen);
     void p_WriteCommand(unsigned char c);
     void p_WriteCommand(unsigned char c, unsigned char d);

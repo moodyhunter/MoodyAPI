@@ -422,7 +422,7 @@ SSOLED::SSOLED(int iAddr, bool bFlip, bool bInvert)
     m_Y = 64;
 }
 
-OLED_DEVICE_TYPE SSOLED::DeviceType() const
+OLED_DEVICE_TYPE SSOLED::getDeviceType() const
 {
     return m_DeviceType;
 }
@@ -461,7 +461,7 @@ void SSOLED::setContrast(unsigned char ucContrast)
     p_WriteCommand(0x81, ucContrast);
 }
 
-int SSOLED::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, int bUp)
+int SSOLED::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, bool bUp)
 {
     uint8_t b, *s;
     int col, row;
@@ -507,7 +507,7 @@ int SSOLED::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow,
     return 0;
 }
 
-void SSOLED::p_SetPosition(int x, int y, int bRender)
+void SSOLED::p_SetPosition(int x, int y, bool bRender)
 {
     unsigned char buf[4];
 
@@ -525,7 +525,7 @@ void SSOLED::p_SetPosition(int x, int y, int bRender)
     p_I2CWrite(buf, 4);
 }
 
-void SSOLED::p_WriteDataBlock(unsigned char *ucBuf, int iLen, int bRender)
+void SSOLED::p_WriteDataBlock(unsigned char *ucBuf, int iLen, bool bRender)
 {
     unsigned char ucTemp[129];
 
@@ -753,7 +753,7 @@ void SSOLED::drawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int
     } // for ty
 }
 
-void SSOLED::drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, int bRender)
+void SSOLED::drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, bool bRender)
 {
     uint8_t ucTemp[32]; // prepare LCD data here
     uint8_t i, j, k, iOffset, ucMask, uc, ucPixels;
@@ -836,7 +836,7 @@ void SSOLED::drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, 
     p_WriteDataBlock(&ucTemp[16], 16, bRender); // bottom half
 }
 
-int SSOLED::setPixel(int x, int y, unsigned char ucColor, int bRender)
+int SSOLED::setPixel(int x, int y, unsigned char ucColor, bool bRender)
 {
     int i;
     unsigned char uc, ucOld;
@@ -887,7 +887,7 @@ int SSOLED::setPixel(int x, int y, unsigned char ucColor, int bRender)
     return 0;
 }
 
-int SSOLED::loadBMP(uint8_t *pBMP, int bInvert, int bRender)
+int SSOLED::loadBMP(uint8_t *pBMP, int bInvert, bool bRender)
 {
     int16_t i16;
     int iOffBits, q, y, j; // offset to bitmap data
@@ -957,12 +957,12 @@ void SSOLED::setCursorPos(int x, int y)
     m_CursorY = y;
 }
 
-void SSOLED::setTextWrap(int bWrap)
+void SSOLED::setTextWrap(bool bWrap)
 {
     m_Wrap = bWrap;
 }
 
-int SSOLED::writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, int bInvert, int bRender)
+int SSOLED::writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, bool bInvert, bool bRender)
 {
     int i, iFontOff, iLen, iFontSkip;
     unsigned char c, *s, ucTemp[40];
@@ -1362,7 +1362,7 @@ void SSOLED::setBackBuffer(uint8_t *pBuffer)
     m_ucScreen = pBuffer;
 }
 
-void SSOLED::drawLine(int x1, int y1, int x2, int y2, int bRender)
+void SSOLED::drawLine(int x1, int y1, int x2, int y2, bool bRender)
 {
     int temp;
     int dx = x2 - x1;
