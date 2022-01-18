@@ -1294,7 +1294,7 @@ int SSOLED::drawGFX(uint8_t *pBuffer, int iSrcCol, int iSrcRow, int iDestCol, in
     return 0;
 }
 
-void SSOLED::dumpBuffer(uint8_t *pBuffer)
+void SSOLED::drawBuffer(uint8_t *pBuffer)
 {
     if (pBuffer == nullptr)
     {
@@ -1334,7 +1334,7 @@ void SSOLED::dumpBuffer(uint8_t *pBuffer)
     } // for y
 }
 
-void SSOLED::fill(unsigned char ucData, int bRender)
+void SSOLED::fill(unsigned char ucData, bool bRender)
 {
     uint8_t x, y;
     uint8_t iLines, iCols;

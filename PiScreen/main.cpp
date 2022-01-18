@@ -35,11 +35,13 @@ void SpeedTest(SSOLED &ssoled)
     ssoled.writeString(0, 0, 1, (char *) "Written by Larry Bank", FONT_SMALL, 1, 1);
     ssoled.writeString(0, 0, 3, (char *) "**Demo**", FONT_LARGE, 0, 1);
     usleep(2000000);
+    //////////////////////
 
     // Pixel and line functions won't work without a back buffer
     ssoled.fill(0, 1);
     ssoled.writeString(0, 0, 0, (char *) "Backbuffer Test", FONT_NORMAL, 0, 1);
     ssoled.writeString(0, 0, 1, (char *) "3000 Random dots", FONT_NORMAL, 0, 1);
+    //////////////////////
     usleep(2000000);
     ssoled.fill(0, 1);
     ms = millis();
@@ -53,6 +55,7 @@ void SpeedTest(SSOLED &ssoled)
     sprintf(szTemp, "%dms", (int) ms);
     ssoled.writeString(0, 0, 0, szTemp, FONT_NORMAL, 0, 1);
     ssoled.writeString(0, 0, 1, (char *) "Without backbuffer", FONT_SMALL, 0, 1);
+    //////////////////////
     usleep(2000000);
     ssoled.fill(0, 1);
     ms = millis();
@@ -62,12 +65,14 @@ void SpeedTest(SSOLED &ssoled)
         y = random() & (OLED_HEIGHT - 1);
         ssoled.setPixel(x, y, 1, 0);
     }
-    ssoled.dumpBuffer(NULL);
+    ssoled.drawBuffer();
     ms = millis() - ms;
     sprintf(szTemp, "%dms", (int) ms);
     ssoled.writeString(0, 0, 0, szTemp, FONT_NORMAL, 0, 1);
     ssoled.writeString(0, 0, 1, (char *) "With backbuffer", FONT_SMALL, 0, 1);
     usleep(2000000);
+
+    //////////////////////
     ssoled.fill(0, 1);
     ssoled.writeString(0, 0, 0, (char *) "Backbuffer Test", FONT_NORMAL, 0, 1);
     ssoled.writeString(0, 0, 1, (char *) "96 lines", FONT_NORMAL, 0, 1);
@@ -96,7 +101,7 @@ void SpeedTest(SSOLED &ssoled)
     {
         ssoled.drawLine(OLED_WIDTH - 1, y, 0, OLED_HEIGHT - 1 - y, 0);
     }
-    ssoled.dumpBuffer(NULL);
+    ssoled.drawBuffer(NULL);
     ms = millis() - ms;
     sprintf(szTemp, "%dms", (int) ms);
     ssoled.writeString(0, 0, 0, szTemp, FONT_NORMAL, 0, 1);
@@ -129,8 +134,9 @@ int main(int argc, char *argv[])
         if (ssoled.getDeviceType() == OLED_NOT_FOUND)
             continue;
         ssoled.setBackBuffer(ucBackBuf);
-        ssoled.fill(0, 0);
-        ssoled.writeString(0, 0, 0, argv[0]);
+        ssoled.fill(0, false);
+        ssoled.writeString(0, 0, 0, argv[0], FONT_NORMAL, false, false);
+        ssoled.drawBuffer();
         return 0;
     }
 

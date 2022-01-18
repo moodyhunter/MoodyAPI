@@ -125,7 +125,7 @@ class SSOLED
     // Fill the frame buffer with a byte pattern
     // e.g. all off (0x00) or all on (0xff)
     //
-    void fill(unsigned char ucData, int bRender);
+    void fill(unsigned char ucData, bool bRender);
     //
     // Set (or clear) an individual pixel
     // The local copy of the frame buffer is used to avoid
@@ -139,7 +139,7 @@ class SSOLED
     // Dump an entire custom buffer to the display
     // useful for custom animation effects
     //
-    void dumpBuffer(uint8_t *pBuffer);
+    void drawBuffer(uint8_t *pBuffer = nullptr);
     //
     // Render a window of pixels from a provided buffer or the library's internal buffer
     // to the display. The row values refer to byte rows, not pixel rows due to the memory
