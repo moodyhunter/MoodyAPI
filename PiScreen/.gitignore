@@ -1,0 +1,4 @@
+build/
+checks.json
+*.user
+.cache/
