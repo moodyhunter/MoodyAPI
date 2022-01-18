@@ -18,32 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "BitBang_I2C.h"
+#include "I2CDevice.h"
 
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
-#include <stdio.h>
+#include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-void I2CInit(BBI2C *pI2C)
+I2CDevice::I2CDevice(int busId)
 {
-    if (!pI2C)
-        return;
-
-    char filename[32];
-    sprintf(filename, "/dev/i2c-%d", pI2C->iBus);
-    pI2C->file_i2c = open(filename, O_RDWR);
+    iBus = busId;
+    constexpr std::string_view v = "/dev/i2c-";
+    const auto dname = std::string{ v } + std::to_string(busId);
+    fd = open(dname.c_str(), O_RDWR);
 }
 
-uint8_t I2CTest(BBI2C *pI2C, uint8_t addr)
+I2CDevice::~I2CDevice()
 {
-    if (ioctl(pI2C->file_i2c, I2C_SLAVE, addr) >= 0)
+    close(fd);
+}
+
+uint8_t I2CDevice::Test(uint8_t addr)
+{
+    if (ioctl(fd, I2C_SLAVE, addr) >= 0)
         return 1;
     return 0;
 }
 
-void I2CScan(BBI2C *pI2C, uint8_t *pMap)
+void I2CDevice::Scan(uint8_t *pMap)
 {
     // clear the bitmap
     for (auto i = 0; i < 16; i++)
@@ -51,43 +54,43 @@ void I2CScan(BBI2C *pI2C, uint8_t *pMap)
 
     // try every address
     for (auto i = 1; i < 128; i++)
-        if (I2CTest(pI2C, i))
+        if (Test(i))
             pMap[i >> 3] |= (1 << (i & 7));
 }
 
-int I2CWrite(BBI2C *pI2C, uint8_t iAddr, uint8_t *pData, int iLen)
+int I2CDevice::Write(uint8_t iAddr, uint8_t *pData, int iLen)
 {
-    if (ioctl(pI2C->file_i2c, I2C_SLAVE, iAddr) >= 0)
-        if (write(pI2C->file_i2c, pData, iLen) >= 0)
+    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
+        if (write(fd, pData, iLen) >= 0)
             return 1;
     return 0;
 }
 
-int I2CReadRegister(BBI2C *pI2C, uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen)
+int I2CDevice::ReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen)
 {
-    if (ioctl(pI2C->file_i2c, I2C_SLAVE, iAddr) >= 0)
+    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
     {
-        write(pI2C->file_i2c, &u8Register, 1);
-        return read(pI2C->file_i2c, pData, iLen) > 0;
+        write(fd, &u8Register, 1);
+        return read(fd, pData, iLen) > 0;
     }
     return false;
 }
 
-int I2CRead(BBI2C *pI2C, uint8_t iAddr, uint8_t *pData, int iLen)
+int I2CDevice::Read(uint8_t iAddr, uint8_t *pData, int iLen)
 {
     int i = 0;
-    if (ioctl(pI2C->file_i2c, I2C_SLAVE, iAddr) >= 0)
-        i = read(pI2C->file_i2c, pData, iLen);
+    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
+        i = read(fd, pData, iLen);
     return (i > 0);
 }
 
-DEVICE_TYPE I2CDiscoverDevice(BBI2C *pI2C, uint8_t i)
+DEVICE_TYPE I2CDevice::DiscoverDevice(uint8_t i)
 {
     // Probably an OLED display
     if (i == 0x3c || i == 0x3d)
     {
         uint8_t cTemp[8]{ 0 };
-        I2CReadRegister(pI2C, i, 0x00, cTemp, 1);
+        ReadRegister(i, 0x00, cTemp, 1);
         cTemp[0] &= 0xbf;    // mask off power on/off bit
         if (cTemp[0] == 0x8) // SH1106
             return DEVICE_SH1106;

@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.16)
 
 project(MoodyPiScreen)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_executable(PiScreen
-    BitBang_I2C.cpp
-    BitBang_I2C.h
+    I2CDevice.cpp
+    I2CDevice.h
     # multi_oled.cpp
     # sample.cpp
     speed_test.cpp
