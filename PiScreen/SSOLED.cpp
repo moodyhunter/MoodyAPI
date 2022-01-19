@@ -357,7 +357,7 @@ void InvertBytes(uint8_t *pData, uint8_t bLen)
     }
 }
 
-SSOLED::SSOLED(int iAddr, int busId, bool bFlip, bool bInvert)
+SSOLED::SSOLED(int busId, int iAddr, bool bFlip, bool bInvert)
 {
     unsigned char uc[4];
     m_DeviceType = OLED_NOT_FOUND;
