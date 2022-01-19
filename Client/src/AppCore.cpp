@@ -10,6 +10,9 @@ AppCore::AppCore(QObject *parent) : QObject(parent)
     Q_ASSERT(res);
     connect(m_source.get(), &JNIIPCBridgeReplica::RecordingStartedChanged, this, &AppCore::m_setCameraState);
     connect(m_source.get(), &JNIIPCBridgeReplica::APIServerConnectedChanged, this, &AppCore::m_setConnectionStatus);
+
+    m_setCameraState(m_source->RecordingStarted());
+    m_setConnectionStatus(m_source->APIServerConnected());
 }
 
 AppCore::~AppCore()
