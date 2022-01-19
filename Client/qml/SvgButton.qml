@@ -51,7 +51,7 @@ Control {
         ColorOverlay {
             anchors.fill: image
             source: image
-            color: Qt.darker(Styles.text)
+            color: Qt.darker(color_text)
         }
     }
 

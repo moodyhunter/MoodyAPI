@@ -14,9 +14,9 @@ Rectangle {
         enabled: root.state == "opened"
     }
 
-    color: Styles.background_pure
+    color: color_background_pure
     radius: 20
-    border.color: Styles.background_pure_border
+    border.color: color_background_pure_border
     border.width: 5
 
     implicitHeight: layout.implicitHeight + 2 * layout.anchors.margins
@@ -75,13 +75,13 @@ Rectangle {
 
     component BackgroundRectangle: Rectangle {
         color: AppSettings.darkMode ? Qt.darker(
-                                          Styles.background_pure) : Qt.lighter(
-                                          Styles.background_pure)
+                                          color_background_pure) : Qt.lighter(
+                                          color_background_pure)
         border.color: {
             if (AppSettings.darkMode)
-                Qt.lighter(Styles.background_pure_border, parent.focus ? 4 : 1)
+                Qt.lighter(color_background_pure_border, parent.focus ? 4 : 1)
             else
-                Qt.darker(Styles.background_pure_border, parent.focus ? 4 : 1)
+                Qt.darker(color_background_pure_border, parent.focus ? 4 : 1)
         }
         border.width: 2
         radius: 5
@@ -101,7 +101,7 @@ Rectangle {
                 font.family: "System-ui"
                 font.bold: true
                 text: "DarkMode"
-                color: Styles.text
+                color: color_text
             }
 
             Switch {
@@ -119,7 +119,7 @@ Rectangle {
                 font.family: "System-ui"
                 font.bold: true
                 text: "Disable TLS"
-                color: Styles.text
+                color: color_text
             }
 
             Switch {
@@ -134,7 +134,7 @@ Rectangle {
             font.family: "System-ui"
             font.bold: true
             text: "API Server"
-            color: Styles.text
+            color: color_text
         }
 
         TextField {
@@ -145,7 +145,7 @@ Rectangle {
             Layout.rightMargin: 10
             selectByMouse: true
             wrapMode: TextEdit.WrapAnywhere
-            color: Styles.text
+            color: color_text
             font.family: fixedFont
             text: AppSettings.apiHost
             onTextChanged: {
@@ -160,7 +160,7 @@ Rectangle {
             font.pixelSize: standardFontSize
             font.family: "System-ui"
             font.bold: true
-            color: Styles.text
+            color: color_text
             text: "API Secret"
         }
         TextField {
@@ -171,7 +171,7 @@ Rectangle {
             Layout.rightMargin: 10
             selectByMouse: true
             wrapMode: TextEdit.WrapAnywhere
-            color: Styles.text
+            color: color_text
             font.family: fixedFont
             text: AppSettings.apiSecret
             onTextChanged: {
@@ -189,8 +189,8 @@ Rectangle {
             GradientButton {
                 Layout.fillWidth: true
                 buttonBorderWidth: 1
-                color1: Styles.button_off
-                borderColor: Styles.button_off_border
+                color1: color_button_off
+                borderColor: color_button_off_border
                 buttonSize: 60
                 fontSize: 18
                 text: "Cancel"
@@ -202,8 +202,8 @@ Rectangle {
             GradientButton {
                 Layout.fillWidth: true
                 buttonBorderWidth: 1
-                color1: Styles.button_on
-                borderColor: Styles.button_on_border
+                color1: color_button_on
+                borderColor: color_button_on_border
                 buttonSize: 60
                 fontSize: 18
                 text: "OK"

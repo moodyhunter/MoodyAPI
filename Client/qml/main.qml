@@ -7,6 +7,20 @@ import QtGraphicalEffects
 import client.api.mooody.me
 
 ApplicationWindow {
+    property color color_background_1: AppSettings.darkMode ? "#1f4042" : "#00b4c3"
+    property color color_background_2: AppSettings.darkMode ? "#003b1b" : "#008b40"
+
+    property color color_background_pure: AppSettings.darkMode ? "#34593d" : "#e3e3e3"
+    property color color_background_pure_border: AppSettings.darkMode ? "#212121" : "#b6b6b6"
+
+    property color color_text: AppSettings.darkMode ? "#c0c0c0" : "#2d2d2d"
+
+    property color color_button_on: AppSettings.darkMode ? "#33712d" : "#1adf00"
+    property color color_button_on_border: AppSettings.darkMode ? "#00241b" : "#188300"
+
+    property color color_button_off: AppSettings.darkMode ? "#84501d" : "#eb7500"
+    property color color_button_off_border: AppSettings.darkMode ? "#392100" : "#834900"
+
     width: 392
     height: 815
     visible: true
@@ -21,11 +35,11 @@ ApplicationWindow {
         gradient: Gradient {
             GradientStop {
                 position: 0.0
-                color: Styles.background_1
+                color: color_background_1
             }
             GradientStop {
                 position: 1.0
-                color: Styles.background_2
+                color: color_background_2
             }
         }
     }
@@ -63,7 +77,7 @@ ApplicationWindow {
                 font.family: "System-ui"
                 font.bold: true
                 text: "Camera Status"
-                color: Styles.text
+                color: color_text
                 horizontalAlignment: Qt.AlignHCenter
                 Layout.alignment: Qt.AlignHCenter
                 Layout.bottomMargin: standardSize / 8
@@ -74,7 +88,7 @@ ApplicationWindow {
                 font.family: "System-ui"
                 font.bold: true
                 text: AppCore.ServerConnected ? (AppCore.IsRecording ? "ON" : "OFF") : "N/A"
-                color: Styles.text
+                color: color_text
                 horizontalAlignment: Qt.AlignHCenter
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -82,8 +96,8 @@ ApplicationWindow {
             VerticalSpacer {}
 
             GradientButton {
-                color1: Styles.button_on
-                borderColor: Styles.button_on_border
+                color1: color_button_on
+                borderColor: color_button_on_border
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Power On")
                 buttonSize: rootWindow.standardSize
@@ -96,8 +110,8 @@ ApplicationWindow {
             }
 
             GradientButton {
-                color1: Styles.button_off
-                borderColor: Styles.button_off_border
+                color1: color_button_off
+                borderColor: color_button_off_border
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Power Off")
                 buttonSize: rootWindow.standardSize
@@ -115,7 +129,7 @@ ApplicationWindow {
             font.family: "System-ui"
             font.bold: true
             text: AppCore.ServerConnected ? "Connected" : "Disconnected"
-            color: Styles.text
+            color: color_text
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignBottom
             Layout.alignment: Qt.AlignHCenter

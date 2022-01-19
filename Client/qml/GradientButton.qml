@@ -78,7 +78,7 @@ Control {
     Label {
         anchors.centerIn: parent
         font.pixelSize: fontSize
-        color: Styles.text
+        color: color_text
         text: root.text
     }
 }

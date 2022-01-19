@@ -56,10 +56,6 @@ qt_add_executable(MoodyAppMain
     "${GRPC_SOURCE}" "${PB_SOURCE}"
 )
 
-set_source_files_properties(qml/Styles.qml PROPERTIES
-    QT_QML_SINGLETON_TYPE TRUE
-)
-
 qt_add_qml_module(MoodyAppMain
     URI "client.api.mooody.me"
     VERSION 1.0
@@ -67,7 +63,6 @@ qt_add_qml_module(MoodyAppMain
         qml/main.qml
         qml/GradientButton.qml
         qml/SvgButton.qml
-        qml/Styles.qml
         qml/SettingsPanel.qml
     DEPENDENCIES
         qtgraphicaleffects
