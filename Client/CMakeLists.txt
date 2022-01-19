@@ -88,8 +88,8 @@ set_target_properties(MoodyAppMain
     PROPERTIES
         QT_ANDROID_EXTRA_LIBS "${ANDROID_EXTRA_LIBS}"
         QT_ANDROID_VERSION_CODE "${CMAKE_PROJECT_VERSION_MAJOR}"
-        QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/android"
         QT_ANDROID_VERSION_NAME "${CMAKE_PROJECT_VERSION}"
+        QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/android"
 )
 
 target_compile_definitions(MoodyAppMain
@@ -99,8 +99,13 @@ target_compile_definitions(MoodyAppMain
 target_link_libraries(MoodyAppMain
     PRIVATE
         Qt::Core
-        Qt::CorePrivate
         Qt::Quick
         Qt::RemoteObjects
         gRPC::grpc++
 )
+
+if (ANDROID)
+    target_link_libraries(MoodyAppMain
+        PRIVATE
+            Qt::CorePrivate)
+endif()
