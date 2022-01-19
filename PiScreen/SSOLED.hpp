@@ -8,10 +8,11 @@
 enum OLED_FONT_SIZE
 {
     FONT_6x8 = 0,
+#define FONT_SMALL FONT_6x8
     FONT_8x8,
 #define FONT_NORMAL FONT_8x8
     FONT_12x16,
-#define FONT_SMALL FONT_6x8
+#define FONT_MIDDLE FONT_12x16
     FONT_16x16,
 #define FONT_STRETCHED FONT_16x16
     FONT_16x32
@@ -58,7 +59,7 @@ class SSOLED
     // Otherwise use the Wire library.
     // If you don't need to use a separate reset pin, set it to -1
     //
-    SSOLED(int iAddr, bool bFlip, bool bInvert);
+    SSOLED(int busId, int iAddr, bool bFlip, bool bInvert);
 
     //
     // Get the underlying device type.
@@ -113,14 +114,14 @@ class SSOLED
     //
     //  Returns 0 for success, -1 for invalid parameter
     //
-    int writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize = FONT_NORMAL, bool bInvert = false, bool bRender = true);
+    int writeString(int iScrollX, int x, int y, const char *szMsg, OLED_FONT_SIZE iSize = FONT_NORMAL, bool bInvert = false, bool bRender = true);
     //
     // Draw a string with a fractional scale in both dimensions
     // the scale is a 16-bit integer with and 8-bit fraction and 8-bit mantissa
     // To draw at 1x scale, set the scale factor to 256. To draw at 2x, use 512
     // The output must be drawn into a memory buffer, not directly to the display
     //
-    int scaledString(int x, int y, char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation);
+    int scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation);
     //
     // Fill the frame buffer with a byte pattern
     // e.g. all off (0x00) or all on (0xff)

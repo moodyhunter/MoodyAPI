@@ -357,7 +357,7 @@ void InvertBytes(uint8_t *pData, uint8_t bLen)
     }
 }
 
-SSOLED::SSOLED(int iAddr, bool bFlip, bool bInvert)
+SSOLED::SSOLED(int iAddr, int busId, bool bFlip, bool bInvert)
 {
     unsigned char uc[4];
     m_DeviceType = OLED_NOT_FOUND;
@@ -366,7 +366,7 @@ SSOLED::SSOLED(int iAddr, bool bFlip, bool bInvert)
     m_Flip = bFlip;
     m_Wrap = 0; // default - disable text wrap
 
-    m_I2CDevice = new I2CDevice(1); // on Linux, SDA = bus number, SCL = device address
+    m_I2CDevice = new I2CDevice(busId); // on Linux, SDA = bus number, SCL = device address
 
     // find the device address if requested
     if (iAddr == -1 || iAddr == 0 || iAddr == 0xff) // find it
@@ -962,7 +962,7 @@ void SSOLED::setTextWrap(bool bWrap)
     m_Wrap = bWrap;
 }
 
-int SSOLED::writeString(int iScrollX, int x, int y, char *szMsg, OLED_FONT_SIZE iSize, bool bInvert, bool bRender)
+int SSOLED::writeString(int iScrollX, int x, int y, const char *szMsg, OLED_FONT_SIZE iSize, bool bInvert, bool bRender)
 {
     int i, iFontOff, iLen, iFontSkip;
     unsigned char c, *s, ucTemp[40];
@@ -1495,7 +1495,7 @@ void SSOLED::drawLine(int x1, int y1, int x2, int y2, bool bRender)
     } // y major case
 }
 
-int SSOLED::scaledString(int x, int y, char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation)
+int SSOLED::scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation)
 {
     uint32_t row, col, dx, dy;
     uint32_t sx, sy;
