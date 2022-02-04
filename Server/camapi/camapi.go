@@ -10,6 +10,7 @@ import (
 	"api.mooody.me/broadcaster"
 	"api.mooody.me/common"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -89,6 +90,8 @@ func StartAPIServer(listenAddress string) *CamAPIServer {
 	camAPIServer := NewCamAPIServer()
 	server := grpc.NewServer()
 	RegisterCameraServiceServer(server, camAPIServer)
+	// Register reflection service on gRPC server.
+	reflection.Register(server)
 	go func() {
 		for {
 			time.Sleep(30 * time.Second)
