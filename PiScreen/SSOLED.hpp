@@ -18,8 +18,9 @@ enum OLED_FONT_SIZE
     FONT_16x32
 #define FONT_LARGE FONT_16x32
 };
+
 // 4 possible rotation angles for oledScaledString()
-enum OLED_FLIP_ANGLE
+enum QLedRotationAngle
 {
     ROT_0 = 0,
     ROT_90,
@@ -28,7 +29,7 @@ enum OLED_FLIP_ANGLE
 };
 
 // Rotation and flip angles to draw tiles
-enum OLED_ANGLE
+enum OLedFlipAngle
 {
     ANGLE_0 = 0,
     ANGLE_90,
@@ -39,7 +40,7 @@ enum OLED_ANGLE
 };
 
 // Return value from oledInit()
-enum OLED_DEVICE_TYPE
+enum QLedDeviceType
 {
     OLED_NOT_FOUND = -1, // no display found
     WHYTHIS,             // SSD1306 found at 0x3C
@@ -50,7 +51,7 @@ enum OLED_DEVICE_TYPE
     OLED_SH1107_3D
 };
 
-class SSOLED
+class OLedDevice
 {
   public:
     //
@@ -59,12 +60,12 @@ class SSOLED
     // Otherwise use the Wire library.
     // If you don't need to use a separate reset pin, set it to -1
     //
-    SSOLED(int busId, int iAddr, bool bFlip, bool bInvert);
+    OLedDevice(int busId, int iAddr, bool bFlip, bool bInvert);
 
     //
     // Get the underlying device type.
     //
-    OLED_DEVICE_TYPE getDeviceType() const;
+    QLedDeviceType getDeviceType() const;
 
     //
     // Provide or revoke a back buffer for your OLED graphics
@@ -83,7 +84,7 @@ class SSOLED
     // Pass the pointer to the beginning of the BMP file
     // First pass version assumes a full screen bitmap
     //
-    int loadBMP(uint8_t *pBMP, int bInvert, bool bRender);
+    bool loadBMP(uint8_t *pBMP, int bInvert, bool bRender);
     //
     // Power up/down the display
     // useful for low power situations
@@ -121,7 +122,7 @@ class SSOLED
     // To draw at 1x scale, set the scale factor to 256. To draw at 2x, use 512
     // The output must be drawn into a memory buffer, not directly to the display
     //
-    int scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation);
+    int scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, QLedRotationAngle iRotation);
     //
     // Fill the frame buffer with a byte pattern
     // e.g. all off (0x00) or all on (0xff)
@@ -147,7 +148,7 @@ class SSOLED
     // layout of OLEDs. Pass a src pointer of NULL to use the internal backing buffer
     // returns 0 for success, -1 for invalid parameter
     //
-    int drawGFX(uint8_t *pSrc, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch);
+    bool drawGFX(uint8_t *pSrc, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch);
 
     //
     // Draw a line between 2 points
@@ -188,7 +189,7 @@ class SSOLED
     // The function can draw the tile on byte boundaries, so the x value
     // can be from 0 to 112 and y can be from 0 to 6
     //
-    void drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, bool bRender);
+    void drawTile(const uint8_t *pTile, int x, int y, OLedFlipAngle iRotation, int bInvert, bool bRender);
     //
     // Draw an outline or filled ellipse
     //
@@ -211,7 +212,7 @@ class SSOLED
     void p_BresenhamCircle(int iCX, int iCY, int x, int y, int iXFrac, int iYFrac, uint8_t ucColor, uint8_t bFill);
 
   private:
-    OLED_DEVICE_TYPE m_DeviceType = OLED_NOT_FOUND;
+    QLedDeviceType m_DeviceType = OLED_NOT_FOUND;
     // requested address or 0xff for automatic detection
     uint8_t m_Addr = 0;
     uint8_t m_CursorX = 0, m_CursorY = 0;

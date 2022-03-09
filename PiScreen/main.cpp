@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     while (iChannel < 2)
     {
         iChannel++;
-        SSOLED ssoled{ iChannel, -1, false, false };
+        OLedDevice ssoled{ iChannel, -1, false, false };
         if (ssoled.getDeviceType() == OLED_NOT_FOUND)
             continue;
         ssoled.setBackBuffer(ucBackBuf);

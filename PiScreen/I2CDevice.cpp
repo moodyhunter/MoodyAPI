@@ -26,24 +26,22 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-I2CDevice::I2CDevice(int busId)
+constexpr std::string_view dev_i2c = "/dev/i2c-";
+
+I2CDevice::I2CDevice(int busId) : m_busId(busId)
 {
-    iBus = busId;
-    constexpr std::string_view v = "/dev/i2c-";
-    const auto dname = std::string{ v } + std::to_string(busId);
-    fd = open(dname.c_str(), O_RDWR);
+    const auto deviceName = std::string(dev_i2c) + std::to_string(busId);
+    m_fd = open(deviceName.c_str(), O_RDWR);
 }
 
 I2CDevice::~I2CDevice()
 {
-    close(fd);
+    close(m_fd);
 }
 
-uint8_t I2CDevice::Test(uint8_t addr)
+bool I2CDevice::TestDevice(uint8_t iAddr)
 {
-    if (ioctl(fd, I2C_SLAVE, addr) >= 0)
-        return 1;
-    return 0;
+    return ioctl(m_fd, I2C_SLAVE, iAddr) >= 0;
 }
 
 void I2CDevice::Scan(uint8_t *pMap)
@@ -54,48 +52,31 @@ void I2CDevice::Scan(uint8_t *pMap)
 
     // try every address
     for (auto i = 1; i < 128; i++)
-        if (Test(i))
+        if (TestDevice(i))
             pMap[i >> 3] |= (1 << (i & 7));
 }
 
-int I2CDevice::Write(uint8_t iAddr, uint8_t *pData, int iLen)
+bool I2CDevice::Write(uint8_t iAddr, uint8_t *pData, int iLen)
 {
-    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
-        if (write(fd, pData, iLen) >= 0)
-            return 1;
-    return 0;
+    if (!TestDevice(iAddr))
+        return false;
+
+    return write(m_fd, pData, iLen) >= 0;
 }
 
-int I2CDevice::ReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen)
+bool I2CDevice::ReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen)
 {
-    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
-    {
-        write(fd, &u8Register, 1);
-        return read(fd, pData, iLen) > 0;
-    }
-    return false;
+    if (!TestDevice(iAddr))
+        return false;
+
+    write(m_fd, &u8Register, 1);
+    return read(m_fd, pData, iLen) > 0;
 }
 
-int I2CDevice::Read(uint8_t iAddr, uint8_t *pData, int iLen)
+bool I2CDevice::Read(uint8_t iAddr, uint8_t *pData, int iLen)
 {
-    int i = 0;
-    if (ioctl(fd, I2C_SLAVE, iAddr) >= 0)
-        i = read(fd, pData, iLen);
-    return (i > 0);
-}
+    if (!TestDevice(iAddr))
+        return false;
 
-DEVICE_TYPE I2CDevice::DiscoverDevice(uint8_t i)
-{
-    // Probably an OLED display
-    if (i == 0x3c || i == 0x3d)
-    {
-        uint8_t cTemp[8]{ 0 };
-        ReadRegister(i, 0x00, cTemp, 1);
-        cTemp[0] &= 0xbf;    // mask off power on/off bit
-        if (cTemp[0] == 0x8) // SH1106
-            return DEVICE_SH1106;
-        else if (cTemp[0] == 3 || cTemp[0] == 6)
-            return DEVICE_SSD1306;
-    }
-    return DEVICE_UNKNOWN;
+    return read(m_fd, pData, iLen) > 0;
 }

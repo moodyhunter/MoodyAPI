@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include <cstring>
+#include <iostream>
 
 const uint8_t ucFont[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x5f, 0x5f, 0x06, 0x00, 0x00, 0x07, 0x07, 0x00, 0x07, 0x07, 0x00, 0x14, 0x7f, 0x7f, 0x14, 0x7f, 0x7f,
@@ -313,14 +314,6 @@ const unsigned char oled64_initbuf[] = {
     0x00, /*0xae,*/ 0xa8, 0x3f, 0xd3, 0x00, 0x40, 0xa1, 0xc8, 0xda, 0x12, 0x81, 0xff, 0xa4, 0xa6, 0xd5, 0x80, 0x8d, 0x14, 0xaf, 0x20, 0x02,
 };
 
-// const unsigned char oled32_initbuf[] = {
-// 0x00, 0xae, 0xd5, 0x80, 0xa8, 0x1f, 0xd3, 0x00, 0x40, 0x8d, 0x14, 0xa1, 0xc8, 0xda, 0x02, 0x81, 0x7f, 0xd9, 0xf1, 0xdb, 0x40, 0xa4, 0xa6, 0xaf,
-// };
-
-// const unsigned char oled72_initbuf[] = {
-// 0x00, 0xae, 0xa8, 0x3f, 0xd3, 0x00, 0x40, 0xa1, 0xc8, 0xda, 0x12, 0x81, 0xff, 0xad, 0x30, 0xd9, 0xf1, 0xa4, 0xa6, 0xd5, 0x80, 0x8d, 0x14, 0xaf, 0x20, 0x02,
-// };
-
 // wrapper/adapter functions to make the code work on Linux
 static uint8_t pgm_read_byte(const uint8_t *ptr)
 {
@@ -339,18 +332,6 @@ static int16_t pgm_read_word(const uint8_t *ptr)
 #define OP_REPEATSKIP 0x80
 #define OP_REPEAT 0xc0
 
-// some globals
-// static int iCSPin, iDCPin, iResetPin;
-// static int iScreenOffset; // current write offset of screen data
-// static uint8_t *ucScreen; // backbuffer provided by the user
-// static int oled_wrap, oled_flip, oled_addr, oled_type;
-// static int iCursorX, iCursorY;
-// static uint8_t oled_x, oled_y; // width and height of the display
-// static int iSDAPin, iSCLPin;
-//#define MAX_CACHE 32
-// static byte bCache[MAX_CACHE] = {0x40}; // for faster character drawing
-// static byte bEnd = 1;
-
 void InvertBytes(uint8_t *pData, uint8_t bLen)
 {
     uint8_t i;
@@ -361,7 +342,7 @@ void InvertBytes(uint8_t *pData, uint8_t bLen)
     }
 }
 
-SSOLED::SSOLED(int busId, int iAddr, bool bFlip, bool bInvert)
+OLedDevice::OLedDevice(int busId, int iAddr, bool bFlip, bool bInvert)
 {
     unsigned char uc[4];
     m_DeviceType = OLED_NOT_FOUND;
@@ -375,10 +356,10 @@ SSOLED::SSOLED(int busId, int iAddr, bool bFlip, bool bInvert)
     // find the device address if requested
     if (iAddr == -1 || iAddr == 0 || iAddr == 0xff) // find it
     {
-        m_I2CDevice->Test(0x3c);
-        if (m_I2CDevice->Test(0x3c))
+        m_I2CDevice->TestDevice(0x3c);
+        if (m_I2CDevice->TestDevice(0x3c))
             m_Addr = 0x3c;
-        else if (m_I2CDevice->Test(0x3d))
+        else if (m_I2CDevice->TestDevice(0x3d))
             m_Addr = 0x3d;
         else
             return; // no display found!
@@ -386,8 +367,8 @@ SSOLED::SSOLED(int busId, int iAddr, bool bFlip, bool bInvert)
     else
     {
         m_Addr = iAddr;
-        m_I2CDevice->Test(iAddr);
-        if (!m_I2CDevice->Test(iAddr))
+        m_I2CDevice->TestDevice(iAddr);
+        if (!m_I2CDevice->TestDevice(iAddr))
             return; // no display found
     }
 
@@ -426,22 +407,22 @@ SSOLED::SSOLED(int busId, int iAddr, bool bFlip, bool bInvert)
     m_Y = 64;
 }
 
-OLED_DEVICE_TYPE SSOLED::getDeviceType() const
+QLedDeviceType OLedDevice::getDeviceType() const
 {
     return m_DeviceType;
 }
 
-void SSOLED::p_I2CWrite(unsigned char *pData, int iLen)
+void OLedDevice::p_I2CWrite(unsigned char *pData, int iLen)
 {
     m_I2CDevice->Write(m_Addr, pData, iLen);
 }
 
-void SSOLED::setPower(bool bOn)
+void OLedDevice::setPower(bool bOn)
 {
     p_WriteCommand(bOn ? 0xaf : 0xae); // turn on OLED
 }
 
-void SSOLED::p_WriteCommand(unsigned char c)
+void OLedDevice::p_WriteCommand(unsigned char c)
 {
     unsigned char buf[2];
 
@@ -450,7 +431,7 @@ void SSOLED::p_WriteCommand(unsigned char c)
     p_I2CWrite(buf, 2);
 }
 
-void SSOLED::p_WriteCommand(unsigned char c, unsigned char d)
+void OLedDevice::p_WriteCommand(unsigned char c, unsigned char d)
 {
     unsigned char buf[3];
 
@@ -460,12 +441,12 @@ void SSOLED::p_WriteCommand(unsigned char c, unsigned char d)
     p_I2CWrite(buf, 3);
 }
 
-void SSOLED::setContrast(unsigned char ucContrast)
+void OLedDevice::setContrast(unsigned char ucContrast)
 {
     p_WriteCommand(0x81, ucContrast);
 }
 
-int SSOLED::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, bool bUp)
+int OLedDevice::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow, bool bUp)
 {
     uint8_t b, *s;
     int col, row;
@@ -511,7 +492,7 @@ int SSOLED::scrollBuffer(int iStartCol, int iEndCol, int iStartRow, int iEndRow,
     return 0;
 }
 
-void SSOLED::p_SetPosition(int x, int y, bool bRender)
+void OLedDevice::p_SetPosition(int x, int y, bool bRender)
 {
     unsigned char buf[4];
 
@@ -529,7 +510,7 @@ void SSOLED::p_SetPosition(int x, int y, bool bRender)
     p_I2CWrite(buf, 4);
 }
 
-void SSOLED::p_WriteDataBlock(unsigned char *ucBuf, int iLen, bool bRender)
+void OLedDevice::p_WriteDataBlock(unsigned char *ucBuf, int iLen, bool bRender)
 {
     unsigned char ucTemp[129];
 
@@ -544,13 +525,31 @@ void SSOLED::p_WriteDataBlock(unsigned char *ucBuf, int iLen, bool bRender)
     // Keep a copy in local buffer
     if (m_ucScreen)
     {
+        int x = 0;
+        bool buf[8][8]{ { 0 } };
+        for (auto i = 0; i < iLen; i++)
+        {
+            for (auto b = 0; b < 8; b++)
+                buf[b][x++ / 8] = (ucBuf[i] >> b) & 1;
+            if (x % 64 == 0)
+            {
+                for (const auto aa : buf)
+                {
+                    for (auto b = 0; b < 8; b++)
+                        std::cout << (aa[b] ? '*' : ' ');
+                    std::cout << std::endl;
+                }
+                std::memset(buf, 0, 64);
+            }
+        }
+
         memcpy(&m_ucScreen[m_ScreenOffset], ucBuf, iLen);
         m_ScreenOffset += iLen;
         m_ScreenOffset &= 1023; // we use a fixed stride of 128 no matter what the display size
     }
 }
 
-void SSOLED::p_WriteFlashBlock(uint8_t *s, int iLen)
+void OLedDevice::p_WriteFlashBlock(uint8_t *s, int iLen)
 {
     int iWidthMask = m_X - 1;
     int iSizeMask = ((m_X * m_Y) / 8) - 1;
@@ -572,7 +571,7 @@ void SSOLED::p_WriteFlashBlock(uint8_t *s, int iLen)
     m_ScreenOffset = (m_ScreenOffset + iLen) & iSizeMask;
 }
 
-void SSOLED::p_RepeatByte(uint8_t b, int iLen)
+void OLedDevice::p_RepeatByte(uint8_t b, int iLen)
 {
     int iWidthMask = m_X - 1;
     int iWidthShift = (m_X == 128) ? 7 : 6; // assume 128 or 64 pixels wide
@@ -592,7 +591,7 @@ void SSOLED::p_RepeatByte(uint8_t b, int iLen)
     m_ScreenOffset += iLen;
 }
 
-uint8_t *SSOLED::playAnimFrame(uint8_t *pAnimation, uint8_t *pCurrent, int iLen)
+uint8_t *OLedDevice::playAnimFrame(uint8_t *pAnimation, uint8_t *pCurrent, int iLen)
 {
     uint8_t *s;
     int i, j;
@@ -685,7 +684,7 @@ uint8_t *SSOLED::playAnimFrame(uint8_t *pAnimation, uint8_t *pCurrent, int iLen)
     return s; // return pointer to start of next frame
 }
 
-void SSOLED::drawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int y, uint8_t iPriority)
+void OLedDevice::drawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int y, uint8_t iPriority)
 {
     int tx, ty, dx, dy, iStartX;
     uint8_t *s, *d, uc, pix, ucSrcMask, ucDstMask;
@@ -757,7 +756,7 @@ void SSOLED::drawSprite(uint8_t *pSprite, int cx, int cy, int iPitch, int x, int
     } // for ty
 }
 
-void SSOLED::drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, int bInvert, bool bRender)
+void OLedDevice::drawTile(const uint8_t *pTile, int x, int y, OLedFlipAngle iRotation, int bInvert, bool bRender)
 {
     uint8_t ucTemp[32]; // prepare LCD data here
     uint8_t i, j, k, iOffset, ucMask, uc, ucPixels;
@@ -840,7 +839,7 @@ void SSOLED::drawTile(const uint8_t *pTile, int x, int y, OLED_ANGLE iRotation, 
     p_WriteDataBlock(&ucTemp[16], 16, bRender); // bottom half
 }
 
-int SSOLED::setPixel(int x, int y, unsigned char ucColor, bool bRender)
+int OLedDevice::setPixel(int x, int y, unsigned char ucColor, bool bRender)
 {
     int i;
     unsigned char uc, ucOld;
@@ -891,7 +890,7 @@ int SSOLED::setPixel(int x, int y, unsigned char ucColor, bool bRender)
     return 0;
 }
 
-int SSOLED::loadBMP(uint8_t *pBMP, int bInvert, bool bRender)
+bool OLedDevice::loadBMP(uint8_t *pBMP, int bInvert, bool bRender)
 {
     int16_t i16;
     int iOffBits, q, y, j; // offset to bitmap data
@@ -903,18 +902,18 @@ int SSOLED::loadBMP(uint8_t *pBMP, int bInvert, bool bRender)
 
     i16 = pgm_read_word(pBMP);
     if (i16 != 0x4d42) // must start with 'BM'
-        return -1;     // not a BMP file
+        return false;  // not a BMP file
     i16 = pgm_read_word(pBMP + 18);
     if (i16 != 128) // must be 128 pixels wide
-        return -1;
+        return false;
     i16 = pgm_read_word(pBMP + 22);
     if (i16 != 64 && i16 != -64) // must be 64 pixels tall
-        return -1;
+        return false;
     if (i16 == 64) // BMP is flipped vertically (typical)
         bFlipped = true;
     i16 = pgm_read_word(pBMP + 28);
     if (i16 != 1) // must be 1 bit per pixel
-        return -1;
+        return false;
     iOffBits = pgm_read_word(pBMP + 10);
     iPitch = 16;
     if (bFlipped)
@@ -952,21 +951,21 @@ int SSOLED::loadBMP(uint8_t *pBMP, int bInvert, bool bRender)
             p_WriteDataBlock(ucTemp, 16, bRender);
         } // for j
     }     // for y
-    return 0;
+    return true;
 }
 
-void SSOLED::setCursorPos(int x, int y)
+void OLedDevice::setCursorPos(int x, int y)
 {
     m_CursorX = x;
     m_CursorY = y;
 }
 
-void SSOLED::setTextWrap(bool bWrap)
+void OLedDevice::setTextWrap(bool bWrap)
 {
     m_Wrap = bWrap;
 }
 
-int SSOLED::writeString(int iScrollX, int x, int y, const char *szMsg, OLED_FONT_SIZE iSize, bool bInvert, bool bRender)
+int OLedDevice::writeString(int iScrollX, int x, int y, const char *szMsg, OLED_FONT_SIZE iSize, bool bInvert, bool bRender)
 {
     int i, iFontOff, iLen, iFontSkip;
     unsigned char c, *s, ucTemp[40];
@@ -1280,12 +1279,12 @@ int SSOLED::writeString(int iScrollX, int x, int y, const char *szMsg, OLED_FONT
     return -1; // invalid size
 }
 
-int SSOLED::drawGFX(uint8_t *pBuffer, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch)
+bool OLedDevice::drawGFX(uint8_t *pBuffer, int iSrcCol, int iSrcRow, int iDestCol, int iDestRow, int iWidth, int iHeight, int iSrcPitch)
 {
     int y;
 
     if (iSrcCol < 0 || iSrcCol > 127 || iSrcRow < 0 || iSrcRow > 7 || iDestCol < 0 || iDestCol >= m_X || iDestRow < 0 || iDestRow >= (m_Y >> 3) || iSrcPitch <= 0)
-        return -1; // invalid
+        return false; // invalid
 
     for (y = iSrcRow; y < iSrcRow + iHeight; y++)
     {
@@ -1295,10 +1294,10 @@ int SSOLED::drawGFX(uint8_t *pBuffer, int iSrcCol, int iSrcRow, int iDestCol, in
         pBuffer += iSrcPitch;
         iDestRow++;
     } // for y
-    return 0;
+    return true;
 }
 
-void SSOLED::drawBuffer(uint8_t *pBuffer)
+void OLedDevice::drawBuffer(uint8_t *pBuffer)
 {
     if (pBuffer == nullptr)
     {
@@ -1314,31 +1313,29 @@ void SSOLED::drawBuffer(uint8_t *pBuffer)
     int iCols = m_X >> 4;
     for (int y = 0; y < iLines; y++)
     {
-        uint8_t bNeedPos = 1;           // start of a new line means we need to set the position too
+        bool bNeedPos = true;           // start of a new line means we need to set the position too
         for (int x = 0; x < iCols; x++) // wiring library has a 32-byte buffer, so send 16 bytes so that the data prefix (0x40) can fit
         {
             if (m_ucScreen == nullptr || pBuffer == pSrc || memcmp(pSrc, pBuffer, 16) != 0) // doesn't match, need to send it
             {
-                if (bNeedPos) // need to reposition output cursor?
-                {
-                    bNeedPos = 0;
-                    p_SetPosition(x * 16, y, 1);
-                }
+                // need to reposition output cursor?
+                if (bNeedPos)
+                    bNeedPos = false, p_SetPosition(x * 16, y, 1);
                 p_WriteDataBlock(pBuffer, 16, 1);
             }
             else
             {
-                bNeedPos = 1; // we're skipping a block, so next time will need to set the new position
+                bNeedPos = false; // we're skipping a block, so next time will need to set the new position
             }
             pSrc += 16;
             pBuffer += 16;
         }                    // for x
         pSrc += (128 - m_X); // for narrow displays, skip to the next line
         pBuffer += (128 - m_X);
-    } // for y
+    }
 }
 
-void SSOLED::fill(unsigned char ucData, bool bRender)
+void OLedDevice::fill(unsigned char ucData, bool bRender)
 {
     uint8_t x, y;
     uint8_t iLines, iCols;
@@ -1361,12 +1358,12 @@ void SSOLED::fill(unsigned char ucData, bool bRender)
         memset(m_ucScreen, ucData, (m_X * m_Y) / 8);
 }
 
-void SSOLED::setBackBuffer(uint8_t *pBuffer)
+void OLedDevice::setBackBuffer(uint8_t *pBuffer)
 {
     m_ucScreen = pBuffer;
 }
 
-void SSOLED::drawLine(int x1, int y1, int x2, int y2, bool bRender)
+void OLedDevice::drawLine(int x1, int y1, int x2, int y2, bool bRender)
 {
     int temp;
     int dx = x2 - x1;
@@ -1499,7 +1496,7 @@ void SSOLED::drawLine(int x1, int y1, int x2, int y2, bool bRender)
     } // y major case
 }
 
-int SSOLED::scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, OLED_FLIP_ANGLE iRotation)
+int OLedDevice::scaledString(int x, int y, const char *szMsg, int iSize, int bInvert, int iXScale, int iYScale, QLedRotationAngle iRotation)
 {
     uint32_t row, col, dx, dy;
     uint32_t sx, sy;
@@ -1584,7 +1581,7 @@ int SSOLED::scaledString(int x, int y, const char *szMsg, int iSize, int bInvert
     return 0;
 }
 
-void SSOLED::p_DrawScaledPixel(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor)
+void OLedDevice::p_DrawScaledPixel(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor)
 {
     uint8_t *d, ucMask;
 
@@ -1606,7 +1603,7 @@ void SSOLED::p_DrawScaledPixel(int iCX, int iCY, int x, int y, int32_t iXFrac, i
         *d &= ~ucMask;
 }
 
-void SSOLED::p_DrawScaledLine(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor)
+void OLedDevice::p_DrawScaledLine(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor)
 {
     int iLen, x2;
     uint8_t *d, ucMask;
@@ -1643,7 +1640,7 @@ void SSOLED::p_DrawScaledLine(int iCX, int iCY, int x, int y, int32_t iXFrac, in
     }
 }
 
-void SSOLED::p_BresenhamCircle(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor, uint8_t bFill)
+void OLedDevice::p_BresenhamCircle(int iCX, int iCY, int x, int y, int32_t iXFrac, int32_t iYFrac, uint8_t ucColor, uint8_t bFill)
 {
     if (bFill) // draw a filled ellipse
     {
@@ -1666,7 +1663,7 @@ void SSOLED::p_BresenhamCircle(int iCX, int iCY, int x, int y, int32_t iXFrac, i
     }
 }
 
-void SSOLED::drawEllipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled)
+void OLedDevice::drawEllipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled)
 {
     int32_t iXFrac, iYFrac;
     int iRadius, iDelta, x, y;
@@ -1707,7 +1704,7 @@ void SSOLED::drawEllipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t i
     }
 }
 
-void SSOLED::drawRectangle(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled)
+void OLedDevice::drawRectangle(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled)
 {
     uint8_t *d, ucMask, ucMask2;
     int tmp, iOff;

@@ -22,7 +22,7 @@
 #include <stdint.h>
 
 // supported devices
-enum DEVICE_TYPE
+enum I2CDeviceType
 {
     DEVICE_UNKNOWN = 0,
     DEVICE_SSD1306,
@@ -36,29 +36,26 @@ class I2CDevice
     ~I2CDevice();
 
     /// Read N bytes
-    int Read(uint8_t iAddr, uint8_t *pData, int iLen);
+    bool Read(uint8_t iAddr, uint8_t *pData, int iLen);
 
     /// Read N bytes starting at a specific I2C internal register
-    int ReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen);
+    bool ReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen);
 
     /// Write I2C data
     /// quits if a NACK is received and returns 0
     /// otherwise returns the number of bytes written
-    int Write(uint8_t iAddr, uint8_t *pData, int iLen);
+    bool Write(uint8_t iAddr, uint8_t *pData, int iLen);
 
     /// Test if an address responds
     /// returns 0 if no response, 1 if it responds
-    uint8_t Test(uint8_t addr);
+    bool TestDevice(uint8_t iAddr);
 
     /// Scans for I2C devices on the bus
     /// returns a bitmap of devices which are present (128 bits = 16 bytes, LSB first)
     /// A set bit indicates that a device responded at that address
     void Scan(uint8_t *pMap);
 
-    /// Figure out what device is at that address returns the enumerated value
-    DEVICE_TYPE DiscoverDevice(uint8_t i);
-
   private:
-    int fd;
-    int iBus;
+    int m_fd = -1;
+    int m_busId = -1;
 };
