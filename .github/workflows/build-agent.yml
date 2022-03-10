@@ -26,11 +26,3 @@ jobs:
           sudo systemctl stop moodyapi-agent.service
           cp ./target/release/cam_agent /opt/moodyapi/cam_agent
           sudo systemctl start moodyapi-agent.service
-
-      - name: Send Message to Telegram
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.GROUP_CHAT_ID }}
-          token: ${{ secrets.BOT_TOKEN }}
-          message: |
-            Successfully built CameraAgent, revision '${{ github.sha }}'
