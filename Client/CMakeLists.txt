@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(MoodyApp VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -23,12 +24,12 @@ find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
 
 # Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
 # Generate gRPC and protobuf Sources
-set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.grpc.pb.cc")
-set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.grpc.pb.h")
-set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.pb.cc")
-set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/CameraAPI.pb.h")
+set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.cc")
+set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.h")
+set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.cc")
+set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.h")
 set(PROTO_DIR "${CMAKE_SOURCE_DIR}/../")
-set(PROTO_FILE "${PROTO_DIR}/CameraAPI.proto")
+set(PROTO_FILE "${PROTO_DIR}/MoodyAPI.proto")
 
 add_custom_command(
     OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"

@@ -2,27 +2,35 @@ name: Build Server
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '.github/workflows/build-server.yml'
-      - 'Server/**'
-      - 'CameraAPI.proto'
+      - ".github/workflows/build-server.yml"
+      - "Server/**"
+      - "MoodyAPI.proto"
 
 jobs:
   build:
     runs-on: azure
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Build
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        cd Server
-        go generate
-        go build -v -o apiserver
-    - name: Deploy
-      run: |
-        cd Server
-        sudo /usr/bin/systemctl stop moodyapi-server.service
-        cp -v ./apiserver /opt/moodyapi
-        sudo /usr/bin/systemctl start moodyapi-server.service
+      - name: Build
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          cd Server
+          go generate
+          go build -v -o apiserver
+      - name: Deploy
+        run: |
+          cd Server
+          sudo /usr/bin/systemctl stop moodyapi-server.service
+          cp -v ./apiserver /opt/moodyapi
+          sudo /usr/bin/systemctl start moodyapi-server.service
+
+      - name: Send Message to Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.GROUP_CHAT_ID }}
+          token: ${{ secrets.BOT_TOKEN }}
+          message: |
+            Successfully built the API Server, revision '${{ github.sha }}'

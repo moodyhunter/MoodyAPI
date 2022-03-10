@@ -1,6 +1,6 @@
 #include "ServerConnection.hpp"
 
-#include "CameraAPI.grpc.pb.h"
+#include "MoodyAPI.grpc.pb.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -44,18 +44,18 @@ void ServerConnection::run()
         }
 
         m_serverInfoChanged.storeRelaxed(false);
-        auto serverStub = CameraAPI::CameraService::NewStub(m_channel);
+        auto serverStub = MoodyAPI::CameraService::NewStub(m_channel);
 
         while (!m_serverInfoChanged.loadRelaxed())
         {
             m_pollingContext.reset(new grpc::ClientContext);
 
-            CameraAPI::SubscribeCameraStateChangeRequest request;
+            MoodyAPI::SubscribeCameraStateChangeRequest request;
             request.mutable_auth()->set_secret(m_secret.toStdString());
 
             auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
 
-            CameraAPI::CameraState resp;
+            MoodyAPI::CameraState resp;
             while (reader->Read(&resp) && true)
             {
                 emit onConnectionStatusChanged(true);
@@ -91,9 +91,9 @@ void ServerConnection::SetCameraState(bool newState)
         return;
 
     grpc::ClientContext m_pollingContext;
-    auto serverStub = CameraAPI::CameraService::NewStub(m_channel);
+    auto serverStub = MoodyAPI::CameraService::NewStub(m_channel);
 
-    CameraAPI::SetCameraStateRequest request;
+    MoodyAPI::SetCameraStateRequest request;
     request.mutable_auth()->set_secret(m_secret.toStdString());
     request.mutable_state()->set_newstate(newState);
 

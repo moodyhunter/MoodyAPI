@@ -1,7 +1,4 @@
-use std::{
-    process::Command,
-    sync::{atomic::Ordering, Arc},
-};
+use std::{process::Command, sync::atomic::Ordering};
 
 use tonic::Request;
 
@@ -12,7 +9,7 @@ use crate::{
     common::GlobalState,
 };
 
-pub async fn listen_for_state_change(state: &Arc<GlobalState>) {
+pub async fn listen_for_state_change(state: &Box<GlobalState>) {
     let mut client = CameraServiceClient::new(state.channel.clone());
 
     let request = Request::new(SubscribeCameraStateChangeRequest {

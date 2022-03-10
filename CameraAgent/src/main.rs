@@ -1,9 +1,5 @@
 use common::GlobalState;
-use std::{
-    sync::{atomic::AtomicBool, Arc},
-    thread::sleep,
-    time::Duration,
-};
+use std::{sync::atomic::AtomicBool, thread::sleep, time::Duration};
 use tonic::transport::Channel;
 
 mod camera_api;
@@ -21,7 +17,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .await
             .expect("Can't create a channel");
 
-        let state = Arc::new(GlobalState {
+        let state = Box::new(GlobalState {
             api_secret: api_secret.clone(),
             camera_state: AtomicBool::new(false),
             channel,

@@ -2,51 +2,51 @@ name: Build Client
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '.github/workflows/build-client.yml'
-      - 'Client/**'
-      - 'CameraAPI.proto'
+      - ".github/workflows/build-client.yml"
+      - "Client/**"
+      - "MoodyAPI.proto"
 
 jobs:
   build:
     runs-on: azure
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
 
-    - run: |
-        export QT_VERSION="6.2.2"
-        export APK_ARCH="android_arm64_v8a"
-        export VCPKG_TRIPLET="arm64-android"
-        export CI_RESOURCES="/mnt/disk/ci/"
+      - run: |
+          export QT_VERSION="6.2.2"
+          export APK_ARCH="android_arm64_v8a"
+          export VCPKG_TRIPLET="arm64-android"
+          export CI_RESOURCES="/mnt/disk/ci/"
 
-        export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/grpc"
-        export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/protobuf"
+          export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/grpc"
+          export PATH="$PATH:$CI_RESOURCES/vcpkg/installed/x64-linux/tools/protobuf"
 
-        cd Client
-        mkdir build && cd build
+          cd Client
+          mkdir build && cd build
 
-        $CI_RESOURCES/qt6/$QT_VERSION/$APK_ARCH/bin/qt-cmake .. \
-          -DQT_CHAINLOAD_TOOLCHAIN_FILE=$CI_RESOURCES/vcpkg/scripts/buildsystems/vcpkg.cmake \
-          -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=/opt/android-ndk/build/cmake/android.toolchain.cmake \
-          -DVCPKG_TARGET_TRIPLET=$VCPKG_TRIPLET \
-          -DQT_HOST_PATH=$CI_RESOURCES/qt6/$QT_VERSION/gcc_64/ \
-          -DANDROID_SDK_ROOT=/opt/android-sdk/ \
-          -DANDROID_NDK_ROOT=/opt/android-ndk/ \
-          -DANDROID_PLATFORM=30 \
-          -DCMAKE_BUILD_TYPE=Release \
-          -GNinja
-        cmake --build . --parallel
+          $CI_RESOURCES/qt6/$QT_VERSION/$APK_ARCH/bin/qt-cmake .. \
+            -DQT_CHAINLOAD_TOOLCHAIN_FILE=$CI_RESOURCES/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=/opt/android-ndk/build/cmake/android.toolchain.cmake \
+            -DVCPKG_TARGET_TRIPLET=$VCPKG_TRIPLET \
+            -DQT_HOST_PATH=$CI_RESOURCES/qt6/$QT_VERSION/gcc_64/ \
+            -DANDROID_SDK_ROOT=/opt/android-sdk/ \
+            -DANDROID_NDK_ROOT=/opt/android-ndk/ \
+            -DANDROID_PLATFORM=30 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -GNinja
+          cmake --build . --parallel
 
-    - name: Send APK to telegram
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.GROUP_CHAT_ID }}
-        token: ${{ secrets.BOT_TOKEN }}
-        message: |
-          ${{ github.event.head_commit.message }}
+      - name: Send APK to telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.GROUP_CHAT_ID }}
+          token: ${{ secrets.BOT_TOKEN }}
+          message: |
+            ${{ github.event.head_commit.message }}
 
-          ${{ github.sha }} on ${{ github.ref }}
-        document: Client/build/android-build/MoodyAppMain.apk
+            ${{ github.sha }} on ${{ github.ref }}
+          document: Client/build/android-build/MoodyAppMain.apk

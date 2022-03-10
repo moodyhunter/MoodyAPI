@@ -4,12 +4,9 @@ import (
 	"flag"
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"gopkg.in/ini.v1"
 
 	"api.mooody.me/camapi"
-	"api.mooody.me/command/ddns"
-	"api.mooody.me/command/ping"
 	"api.mooody.me/common"
 )
 
@@ -40,19 +37,5 @@ func main() {
 
 	log.Println("MoodyAPI listen at:", listen_addr)
 
-	r := gin.Default()
-	r.SetTrustedProxies([]string{"127.0.0.1"})
-
-	prefix := "/" + common.APISecret
-
-	// Server Ping
-	r.GET(prefix+"/ping", ping.HandlePing)
-
-	// Dynamic DNS Processing
-	r.GET(prefix+"/ddns/", ddns.List)
-	r.GET(prefix+"/ddns/:ddns", ddns.Get)
-	r.POST(prefix+"/ddns/:ddns/update", ddns.Update)
-
 	camapi.StartAPIServer(cameraapi_addr)
-	r.Run(listen_addr)
 }
