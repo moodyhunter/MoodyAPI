@@ -1,0 +1,10 @@
+[package]
+authors = ["Moodyhunter <moodyhunter@outlook.com>"]
+edition = "2021"
+name = "notify_client"
+version = "0.1.0"
+
+[dependencies]
+notify-rust = "4"
+platform-dirs = "0.3.0"
+rust-ini = "0.18.0"
