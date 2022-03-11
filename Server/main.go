@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"time"
 
 	"gopkg.in/ini.v1"
 
@@ -38,4 +39,7 @@ func main() {
 	log.Println("MoodyAPI listen at:", listen_addr)
 
 	camapi.StartAPIServer(cameraapi_addr)
+	for {
+		time.Sleep(10 * time.Second)
+	}
 }
