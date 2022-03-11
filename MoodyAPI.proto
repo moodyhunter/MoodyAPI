@@ -4,19 +4,20 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package MoodyAPI;
-option go_package = "api.mooody.me/camapi";
-
-// ************************************************************
+option go_package = "api.mooody.me/api";
 
 message Auth
 {
     string secret = 1;
 }
 
-service CameraService
+service MoodyAPIService
 {
     rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
     rpc SetCameraState(SetCameraStateRequest) returns (google.protobuf.Empty);
+
+    rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
+    rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
 }
 
 message CameraState
@@ -39,23 +40,23 @@ message SetCameraStateRequest
     CameraState state = 2;
 }
 
-// ************************************************************
-
-service NotificationService
-{
-    rpc SendNotification(Notification) returns (google.protobuf.Empty);
-    rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
-}
-
 message SubscribeNotificationsRequest
 {
     Auth auth = 1;
     int32 channelID = 2;
 }
 
+message SendNotificationRequest
+{
+    Auth auth = 1;
+    Notification notification = 2;
+}
+
 message Notification
 {
     google.protobuf.Timestamp time = 1;
-    string message = 2;
-    int32 channelID = 3;
+    int32 channelId = 2;
+    string title = 3;
+    string message = 4;
+    string icon = 5;
 }

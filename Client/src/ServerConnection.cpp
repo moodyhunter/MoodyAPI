@@ -44,7 +44,7 @@ void ServerConnection::run()
         }
 
         m_serverInfoChanged.storeRelaxed(false);
-        auto serverStub = MoodyAPI::CameraService::NewStub(m_channel);
+        auto serverStub = MoodyAPI::MoodyAPIService::NewStub(m_channel);
 
         while (!m_serverInfoChanged.loadRelaxed())
         {
@@ -91,7 +91,7 @@ void ServerConnection::SetCameraState(bool newState)
         return;
 
     grpc::ClientContext m_pollingContext;
-    auto serverStub = MoodyAPI::CameraService::NewStub(m_channel);
+    auto serverStub = MoodyAPI::MoodyAPIService::NewStub(m_channel);
 
     MoodyAPI::SetCameraStateRequest request;
     request.mutable_auth()->set_secret(m_secret.toStdString());
