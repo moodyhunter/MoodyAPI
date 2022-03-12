@@ -8,6 +8,9 @@ on:
       - "CameraAgent/**"
       - "MoodyAPI.proto"
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   build:
     runs-on: raspberrypi
