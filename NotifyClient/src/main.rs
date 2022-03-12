@@ -85,7 +85,6 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
                 let mut resp_stream = stream.into_inner();
                 loop {
                     match resp_stream.message().await {
-                        Err(e) => println!("something went wrong: {}", &e),
                         Ok(None) => println!("expect a notification object"),
                         Ok(Some(n)) => {
                             println!("Received Notification: {:?}", n);
@@ -97,6 +96,10 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
                                 .hint(Hint::Resident(true))
                                 .show()
                                 .unwrap();
+                        }
+                        Err(e) => {
+                            println!("something went wrong: {}", &e);
+                            break;
                         }
                     }
                     sleep(Duration::from_secs(2));

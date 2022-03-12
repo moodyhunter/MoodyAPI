@@ -2,15 +2,12 @@ use std::{process::Command, sync::atomic::Ordering};
 
 use tonic::Request;
 
-use crate::{
-    camera_api::{
-        camera_service_client::CameraServiceClient, Auth, SubscribeCameraStateChangeRequest,
-    },
-    common::GlobalState,
-};
+use crate::camera_api::moody_api_service_client::MoodyApiServiceClient;
+use crate::camera_api::{Auth, SubscribeCameraStateChangeRequest};
+use crate::common::GlobalState;
 
 pub async fn listen_for_state_change(state: &Box<GlobalState>) {
-    let mut client = CameraServiceClient::new(state.channel.clone());
+    let mut client = MoodyApiServiceClient::new(state.channel.clone());
 
     let request = Request::new(SubscribeCameraStateChangeRequest {
         auth: Some(Auth {
@@ -23,13 +20,11 @@ pub async fn listen_for_state_change(state: &Box<GlobalState>) {
             let mut resp = stream.into_inner();
             loop {
                 match resp.message().await {
-                    Ok(msg) => match msg {
-                        Some(s) => {
-                            update_camera_status(s.new_state());
-                            state.camera_state.store(s.new_state(), Ordering::Relaxed);
-                        }
-                        None => println!("Received an empty message."),
-                    },
+                    Ok(None) => println!("Received an empty message."),
+                    Ok(Some(s)) => {
+                        update_camera_status(s.new_state());
+                        state.camera_state.store(s.new_state(), Ordering::Relaxed);
+                    }
                     Err(e) => {
                         println!("What? {:?}", e.message());
                         break;
