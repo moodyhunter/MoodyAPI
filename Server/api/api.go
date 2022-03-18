@@ -108,7 +108,7 @@ done:
 	return nil
 }
 
-func (s *APIServer) SetCameraState(ctx context.Context, request *UpdateCameraStateRequest) (*emptypb.Empty, error) {
+func (s *APIServer) UpdateCameraState(ctx context.Context, request *UpdateCameraStateRequest) (*emptypb.Empty, error) {
 	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return nil, errors.New("error: Invalid Secret")
