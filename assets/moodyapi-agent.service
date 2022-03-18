@@ -1,5 +1,7 @@
 [Unit]
 Description=Moody's Camera Agent
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple

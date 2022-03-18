@@ -1,6 +1,7 @@
 #include "ServerConnection.hpp"
 
 #include "MoodyAPI.grpc.pb.h"
+#include "MoodyAPI.pb.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -51,7 +52,7 @@ void ServerConnection::run()
             m_pollingContext.reset(new grpc::ClientContext);
 
             MoodyAPI::SubscribeCameraStateChangeRequest request;
-            request.mutable_auth()->set_secret(m_secret.toStdString());
+            request.mutable_auth()->set_clientid(m_secret.toStdString());
 
             auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
 
@@ -59,23 +60,11 @@ void ServerConnection::run()
             while (reader->Read(&resp) && true)
             {
                 emit onConnectionStatusChanged(true);
-                if (resp.has_newstate())
-                {
-                    std::cout << std::boolalpha << resp.newstate() << std::endl;
-                    emit onCameraStateChanged(resp.newstate());
-                }
-
-                if (resp.has_ip4address())
-                    std::cout << resp.ip4address() << std::endl;
-                if (resp.has_ip6address())
-                    std::cout << resp.ip6address() << std::endl;
-                if (resp.has_motioneventid())
-                    std::cout << resp.motioneventid() << std::endl;
-                if (resp.has_imagepng())
-                    emit onNewMotionDetected(QByteArray::fromStdString(resp.imagepng()));
+                if (resp.has_state())
+                    emit onCameraStateChanged(resp.state());
             }
 
-            qDebug() << "Cannot read more responses, retry." << QDateTime::currentDateTime();
+            qDebug() << QDateTime::currentDateTime() << "Cannot read more responses, retry.";
             m_pollingContext->TryCancel();
             QThread::sleep(1);
         }
@@ -93,10 +82,10 @@ void ServerConnection::SetCameraState(bool newState)
     grpc::ClientContext m_pollingContext;
     auto serverStub = MoodyAPI::MoodyAPIService::NewStub(m_channel);
 
-    MoodyAPI::SetCameraStateRequest request;
-    request.mutable_auth()->set_secret(m_secret.toStdString());
-    request.mutable_state()->set_newstate(newState);
+    MoodyAPI::UpdateCameraStateRequest request;
+    request.mutable_auth()->set_clientid(m_secret.toStdString());
+    request.mutable_state()->set_state(newState);
 
     ::google::protobuf::Empty empty;
-    serverStub->SetCameraState(&m_pollingContext, request, &empty);
+    serverStub->UpdateCameraState(&m_pollingContext, request, &empty);
 }

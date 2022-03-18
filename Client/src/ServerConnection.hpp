@@ -18,7 +18,6 @@ class ServerConnection : public QThread
 
   signals:
     void onCameraStateChanged(bool newState);
-    void onNewMotionDetected(const QByteArray &);
     void onConnectionStatusChanged(bool newState);
 
   private:

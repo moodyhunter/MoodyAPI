@@ -1,31 +1,35 @@
-use common::GlobalState;
-use std::{sync::atomic::AtomicBool, thread::sleep, time::Duration};
-use tonic::transport::Channel;
+use ini::Ini;
+use std::{error::Error, time::Duration};
+use tokio::time::sleep;
 
 mod camera_api;
 mod command_listener;
-mod common;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let api_host = std::env::args().nth(1).expect("no api host given");
-    let api_secret = std::env::args().nth(2).expect("no api secret given");
+#[tokio::main(flavor = "multi_thread")]
+async fn main() -> Result<(), Box<dyn Error>> {
+    let conf = Ini::load_from_file("/etc/moodyapi/CameraAgent.ini")?;
 
+    let api_host = conf.general_section().get("Server").unwrap().to_string();
+    let client_id = conf.general_section().get("ClientID").unwrap().to_string();
+
+    tokio::select! {
+        _ = tokio::spawn(process_command(api_host.clone(), client_id.clone())) => unreachable!(),
+        _ = tokio::spawn(report_status(api_host.clone(), client_id.clone())) => unreachable!()
+    };
+}
+
+async fn process_command(api_host: String, client_id: String) {
     loop {
-        let channel = Channel::from_shared(api_host.clone())?
-            .connect()
-            .await
-            .expect("Can't create a channel");
+        match command_listener::listen_for_state_change(&api_host, &client_id).await {
+            Ok(()) => println!("Aborting requests, waiting for retransmission."),
+            Err(e) => println!("Error: {}", e),
+        };
+        sleep(Duration::from_secs(5)).await;
+    }
+}
 
-        let state = Box::new(GlobalState {
-            api_secret: api_secret.clone(),
-            camera_state: AtomicBool::new(false),
-            channel,
-        });
-
-        command_listener::listen_for_state_change(&state).await;
-
-        println!("Hey, server stopped responding, we are reconnecting.");
-        sleep(Duration::from_secs(5));
+async fn report_status(_api_host: String, _client_id: String) {
+    loop {
+        sleep(Duration::from_secs(5)).await;
     }
 }

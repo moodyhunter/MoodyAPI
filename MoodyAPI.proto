@@ -8,12 +8,12 @@ option go_package = "api.mooody.me/api";
 
 message Auth
 {
-    string secret = 1;
+    string clientId = 1;
 }
 
 service MoodyAPIService
 {
-    rpc UpdateCameraState(SetCameraStateRequest) returns (google.protobuf.Empty);
+    rpc UpdateCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
     rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
 
     rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
@@ -22,11 +22,7 @@ service MoodyAPIService
 
 message CameraState
 {
-    optional bool newState = 1;
-    optional string ip4Address = 2;
-    optional string ip6Address = 3;
-    optional string motionEventId = 4;
-    optional bytes imagePng = 5;
+    optional bool state = 1;
 }
 
 message SubscribeCameraStateChangeRequest
@@ -34,7 +30,7 @@ message SubscribeCameraStateChangeRequest
     Auth auth = 1;
 }
 
-message SetCameraStateRequest
+message UpdateCameraStateRequest
 {
     Auth auth = 1;
     CameraState state = 2;

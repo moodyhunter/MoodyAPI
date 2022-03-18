@@ -40,8 +40,8 @@ func (s *APIServer) BroadcastNotification(event *Notification) {
 
 func (s *APIServer) SubscribeCameraStateChange(request *SubscribeCameraStateChangeRequest, server MoodyAPIService_SubscribeCameraStateChangeServer) error {
 	log.Printf("New gRPC camera API client connected")
-	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
+	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return errors.New("error: Invalid Secret")
 	}
 
@@ -76,8 +76,8 @@ done:
 
 func (s *APIServer) SubscribeNotifications(request *SubscribeNotificationsRequest, server MoodyAPIService_SubscribeNotificationsServer) error {
 	log.Printf("New notification client connected")
-	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
+	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return errors.New("error: Invalid Secret")
 	}
 
@@ -108,21 +108,21 @@ done:
 	return nil
 }
 
-func (s *APIServer) SetCameraState(ctx context.Context, request *SetCameraStateRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
+func (s *APIServer) SetCameraState(ctx context.Context, request *UpdateCameraStateRequest) (*emptypb.Empty, error) {
+	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return nil, errors.New("error: Invalid Secret")
 	}
 
-	log.Printf("Changing camera state to: %t", *request.State.NewState)
+	log.Printf("Changing camera state to: %t", request.State.GetState())
 
 	s.BroadcastCameraEvent(request.State)
 	return new(emptypb.Empty), nil
 }
 
 func (s *APIServer) SendNotification(_ context.Context, request *SendNotificationRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil || request.Auth.Secret != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.Secret)
+	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return &emptypb.Empty{}, errors.New("error: Invalid Secret")
 	}
 

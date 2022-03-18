@@ -1,17 +1,21 @@
-use std::{process::Command, sync::atomic::Ordering};
-
+use std::error::Error;
+use std::process::Command;
+use tonic::transport::Channel;
 use tonic::Request;
 
 use crate::camera_api::moody_api_service_client::MoodyApiServiceClient;
 use crate::camera_api::{Auth, SubscribeCameraStateChangeRequest};
-use crate::common::GlobalState;
 
-pub async fn listen_for_state_change(state: &Box<GlobalState>) {
-    let mut client = MoodyApiServiceClient::new(state.channel.clone());
+pub async fn listen_for_state_change(
+    api_host: &String,
+    client_id: &String,
+) -> Result<(), Box<dyn Error>> {
+    let channel = Channel::from_shared(api_host.clone())?.connect().await?;
+    let mut client = MoodyApiServiceClient::new(channel.clone());
 
     let request = Request::new(SubscribeCameraStateChangeRequest {
         auth: Some(Auth {
-            secret: state.api_secret.clone(),
+            client_id: client_id.clone(),
         }),
     });
 
@@ -22,8 +26,7 @@ pub async fn listen_for_state_change(state: &Box<GlobalState>) {
                 match resp.message().await {
                     Ok(None) => println!("Received an empty message."),
                     Ok(Some(s)) => {
-                        update_camera_status(s.new_state());
-                        state.camera_state.store(s.new_state(), Ordering::Relaxed);
+                        update_camera_status(s.state());
                     }
                     Err(e) => {
                         println!("What? {:?}", e.message());
@@ -33,7 +36,9 @@ pub async fn listen_for_state_change(state: &Box<GlobalState>) {
             }
         }
         Err(e) => println!("something went wrong: {:?}", e.message()),
-    }
+    };
+
+    Ok(())
 }
 
 fn update_camera_status(new_status: bool) {
