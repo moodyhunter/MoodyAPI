@@ -18,14 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: Swatinem/rust-cache@v1
-        with:
-          working-directory: "CameraAgent/"
-          cache-on-failure: true
+      - name: Copy to Working Directory
+        run: |
+          rsync -aP --exclude='.git' --exclude='target' . /opt/actions/
 
       - name: Build
         run: |
-          cd CameraAgent
+          cd /opt/actions/CameraAgent
           cargo build --release
           sudo systemctl stop moodyapi-agent.service
           cp ./target/release/cam_agent /opt/moodyapi/cam_agent
