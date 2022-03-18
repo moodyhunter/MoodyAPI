@@ -13,8 +13,8 @@ message Auth
 
 service MoodyAPIService
 {
+    rpc UpdateCameraState(SetCameraStateRequest) returns (google.protobuf.Empty);
     rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
-    rpc SetCameraState(SetCameraStateRequest) returns (google.protobuf.Empty);
 
     rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
     rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
