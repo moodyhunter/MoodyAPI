@@ -1,0 +1,29 @@
+name: Build Notifier Client on RPi
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-notifier-pi.yml"
+      - "Notifier/**"
+      - "MoodyAPI.proto"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: raspberrypi
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: "Notifier/"
+          cache-on-failure: true
+
+      - name: Build
+        run: |
+          cd Notifier
+          cargo build --release

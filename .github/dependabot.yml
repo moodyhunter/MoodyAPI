@@ -6,6 +6,11 @@ updates:
     schedule:
       interval: "daily"
 
+  - package-ecosystem: "cargo"
+    directory: "/Notifier"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "gomod"
     directory: "/Server"
     schedule:
