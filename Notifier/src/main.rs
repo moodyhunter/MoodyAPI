@@ -7,9 +7,9 @@ use prost_types::Timestamp;
 use std::{
     env,
     process::exit,
-    thread::sleep,
     time::{Duration, SystemTime},
 };
+use tokio::time::sleep;
 use tonic::{transport::Channel, Request};
 
 use crate::notification_api::{
@@ -86,12 +86,12 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
                             break;
                         }
                     }
-                    sleep(Duration::from_secs(2));
+                    sleep(Duration::from_secs(2)).await;
                 }
             }
         }
 
-        sleep(Duration::from_secs(10));
+        sleep(Duration::from_secs(10)).await;
     }
 }
 
