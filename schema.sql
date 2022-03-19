@@ -5,13 +5,15 @@
 -- DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
 
 CREATE TABLE clients (
-    id          UUID        NOT NULL    UNIQUE  PRIMARY KEY,
-    client_name VARCHAR     NOT NULL    UNIQUE
+    id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
+    client_name VARCHAR     NOT NULL    UNIQUE,
+    client_uuid UUID        NOT NULL    UNIQUE,
+    last_seen   TIMESTAMP
 );
 
 CREATE TABLE notifications (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
-    client_id   UUID        NOT NULL            REFERENCES clients(id),
+    client_id   SERIAL      NOT NULL            REFERENCES clients(id),
     title       VARCHAR     NOT NULL,
     content     VARCHAR     NOT NULL,
     time        TIMESTAMP   NOT NULL
@@ -32,7 +34,7 @@ CREATE TABLE wg_allowed_ips (
 );
 
 CREATE TABLE clients_wireguard (
-    client_id   UUID    NOT NULL    REFERENCES clients(id),
+    client_id   SERIAL  NOT NULL    REFERENCES clients(id),
     wg_id       SERIAL  NOT NULL    REFERENCES wg_clients(id),
     CONSTRAINT clients_wireguard_pkey PRIMARY KEY (client_id, wg_id)
 );
