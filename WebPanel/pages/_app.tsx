@@ -57,7 +57,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <DrawerHeader />
                 <List>
                     <AppListButton name='Home' open={open} icon={(<HomeIcon />)} />
-                    <AppListButton name='Clients' open={open} icon={(<LaptopIcon />)} />
+                    <AppListButton name='API Clients' open={open} icon={(<LaptopIcon />)} />
                     <AppListButton name='Wireguard Clients' open={open} icon={(<NetworkIcon />)} />
                     <AppListButton name='Notifications' open={open} icon={(<NotificationIcon />)} />
                 </List>
