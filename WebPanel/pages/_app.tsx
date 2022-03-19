@@ -1,75 +1,68 @@
-import {
-    Home as HomeIcon,
-    Laptop as LaptopIcon,
-    Menu as MenuIcon,
-    Settings as SettingsIcon,
-    NotificationsNone as NotificationIcon,
-    NetworkCheck as NetworkIcon
-} from '@mui/icons-material';
-import { Box, Container, CssBaseline, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
+import { Home as HomeIcon, Laptop as LaptopIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { AppBar, Box, Container, CssBaseline, Divider, Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { AppProps } from 'next/app';
-import { ReactElement, useEffect, useState } from 'react';
-import { AppDrawer, AppTopBar, DrawerHeader } from '../components';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { ReactElement } from 'react';
+
+const DrawerWidth = 220;
 
 type AppListButtonProps = {
-    open: boolean,
     name: string,
+    link: string,
     icon: ReactElement
 };
 
-function AppListButton(props: AppListButtonProps) {
-    return (
-        <ListItemButton
-            key={props.name} sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
-            <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
-                {props.icon}
-            </ListItemIcon>
-            <ListItemText primary={props.name} sx={{ opacity: props.open ? 1 : 0 }} />
-        </ListItemButton>
-    );
-}
-
 export default function MyApp({ Component, pageProps }: AppProps) {
-    const [open, setOpen] = useState(false);
+    const router = useRouter()
 
-    useEffect(() => { setOpen(JSON.parse(window.localStorage.getItem('open') ?? "false")); }, []);
-    useEffect(() => { window.localStorage.setItem('open', String(open)); }, [open]);
+    function AppListButton(props: AppListButtonProps) {
+        return (
+            <Link href={props.link} underline='none'>
+                <ListItemButton selected={router.route === props.link} key={props.name} sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
+                        {props.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={props.name} sx={{ opacity: 1 }} />
+                </ListItemButton>
+            </Link>
+        );
+    }
 
-    const toggleDrawer = () => { setOpen(!open); };
     return (
-        <Box sx={{ display: 'flex' }}>
+        <>
+            <Head>
+                {/* https://stackoverflow.com/a/19903063/16018952 */}
+                <title>{[pageProps.title, "MoodyAPI Dashboard"].filter(Boolean).join(" — ")}</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
             <CssBaseline />
-            <AppTopBar position="fixed" open={open} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        onClick={toggleDrawer}
-                        edge="start"
-                        sx={{ marginRight: 5 }}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        MoodyAPI Dashboard
-                    </Typography>
-                </Toolbar>
-            </AppTopBar>
-            <AppDrawer variant="permanent" open={open}>
-                <DrawerHeader />
-                <List>
-                    <AppListButton name='Home' open={open} icon={(<HomeIcon />)} />
-                    <AppListButton name='API Clients' open={open} icon={(<LaptopIcon />)} />
-                    <AppListButton name='Wireguard Clients' open={open} icon={(<NetworkIcon />)} />
-                    <AppListButton name='Notifications' open={open} icon={(<NotificationIcon />)} />
-                </List>
-                <Divider />
-                <List>
-                    <AppListButton name='Settings' open={open} icon={(<SettingsIcon />)} />
-                </List>
-            </AppDrawer>
+            <Box sx={{ display: 'flex' }}>
+                <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                    <Toolbar>
+                        <Typography variant="h6" noWrap>{pageProps.title} - MoodyAPI Dashboard</Typography>
+                    </Toolbar>
+                </AppBar>
 
-            <Container>
-                <Component {...pageProps}></Component>
-            </Container>
-        </Box >
+                <Drawer variant="permanent" sx={{ width: DrawerWidth }}>
+                    <Toolbar />
+                    <List>
+                        <AppListButton link='/' name='Home' icon={(<HomeIcon />)} />
+                        <AppListButton link='/clients' name='API Clients' icon={(<LaptopIcon />)} />
+                        <AppListButton link='/wg' name='Wireguard Clients' icon={(<NetworkIcon />)} />
+                        <AppListButton link='/notifications' name='Notifications' icon={(<NotificationIcon />)} />
+                    </List>
+                    <Divider />
+                    <List>
+                        <AppListButton link='/settings' name='Settings' icon={(<SettingsIcon />)} />
+                    </List>
+                </Drawer>
+
+                <Container>
+                    <Toolbar />
+                    <Component {...pageProps}></Component>
+                </Container>
+            </Box>
+        </>
     );
 }
