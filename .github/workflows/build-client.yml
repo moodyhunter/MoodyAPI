@@ -41,13 +41,15 @@ jobs:
             -GNinja
           cmake --build . --parallel
 
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
       - name: Send APK to telegram
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.GROUP_CHAT_ID }}
           token: ${{ secrets.BOT_TOKEN }}
           message: |
-            ${{ github.event.head_commit.message }}
-
-            ${{ github.sha }} on ${{ github.ref }}
+            ${{ steps.vars.outputs.sha_short }}: Successfully built the client app.
           document: Client/build/android-build/MoodyAppMain.apk

@@ -29,11 +29,14 @@ jobs:
         run: |
           sudo /usr/bin/systemctl restart moodyapi-webpanel.service
 
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
       - name: Send Message to Telegram
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.GROUP_CHAT_ID }}
           token: ${{ secrets.BOT_TOKEN }}
           message: |
-            Successfully built and started the Web Panel.
-            Server Revision: '${{ github.sha }}'
+            ${{ steps.vars.outputs.sha_short }}: Successfully deployed the admin web panel.
