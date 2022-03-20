@@ -40,7 +40,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Box sx={{ display: 'flex' }}>
                 <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                     <Toolbar>
-                        <Typography variant="h6" noWrap>{pageProps.title} - MoodyAPI Dashboard</Typography>
+                        <Typography variant="h6" noWrap>MoodyAPI Dashboard</Typography>
                     </Toolbar>
                 </AppBar>
 
