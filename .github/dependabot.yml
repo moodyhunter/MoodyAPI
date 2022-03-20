@@ -25,3 +25,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/WebPanel"
+    schedule:
+      interval: "daily"
