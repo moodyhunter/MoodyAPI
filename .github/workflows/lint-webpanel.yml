@@ -2,7 +2,13 @@ name: Lint WebPanel
 
 on:
   push:
+    paths:
+      - ".github/workflows/lint-webpanel.yml"
+      - "WebPanel/**"
   pull_request:
+    paths:
+      - ".github/workflows/lint-webpanel.yml"
+      - "WebPanel/**"
 
 jobs:
   build:
@@ -13,12 +19,12 @@ jobs:
         node-version: [16]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - run: cd WebPanel/ && yarn install
-    - run: cd WebPanel/ && yarn lint
-    - run: cd WebPanel/ && yarn build
+      - run: cd WebPanel/ && yarn install
+      - run: cd WebPanel/ && yarn lint
+      - run: cd WebPanel/ && yarn build
