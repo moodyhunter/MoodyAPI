@@ -1,0 +1,12 @@
+[Unit]
+Description=MoodyAPI Web Panel Service
+
+[Service]
+Type=simple
+User=moodyapi
+WorkingDirectory=/mnt/disk/moodyapi/WebPanel
+ExecStart=yarn start -p 9008
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

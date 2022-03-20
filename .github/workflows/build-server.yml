@@ -24,9 +24,8 @@ jobs:
 
       - name: Deploy
         run: |
-          cd Server
           sudo /usr/bin/systemctl stop moodyapi-server.service
-          cp -v ./apiserver /opt/moodyapi
+          cp -v ./Server/apiserver /mnt/disk/moodyapi/apiserver
           sudo /usr/bin/systemctl start moodyapi-server.service
 
       - name: Send Message to Telegram
@@ -35,4 +34,5 @@ jobs:
           to: ${{ secrets.GROUP_CHAT_ID }}
           token: ${{ secrets.BOT_TOKEN }}
           message: |
-            Successfully built the API Server, revision '${{ github.sha }}'
+            Successfully built and started the API Server.
+            Server Revision: '${{ github.sha }}'

@@ -4,7 +4,7 @@ Description=Moody's Camera API Service
 [Service]
 Type=simple
 User=moodyapi
-ExecStart=/opt/moodyapi/apiserver
+ExecStart=/mnt/disk/moodyapi/apiserver
 Restart=on-abort
 
 [Install]
