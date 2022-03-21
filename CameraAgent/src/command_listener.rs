@@ -26,7 +26,7 @@ pub async fn listen_for_state_change(
                 match resp.message().await {
                     Ok(None) => println!("Received an empty message."),
                     Ok(Some(s)) => {
-                        update_camera_status(s.state());
+                        update_camera_status(s.state);
                     }
                     Err(e) => {
                         println!("What? {:?}", e.message());
