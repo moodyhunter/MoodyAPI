@@ -5,13 +5,41 @@ import "google/protobuf/timestamp.proto";
 
 package MoodyAPI;
 
-option go_package = "api.mooody.me/api/pb";
-option optimize_for = LITE_RUNTIME;
+option go_package = "api.mooody.me/models";
 
-message Auth
+/************************************ protoc-gen-bun ************************************/
+
+import "google/protobuf/descriptor.proto";
+
+message BUNMessageOptions
 {
-    string clientId = 1;
+    bool ormable = 1;
+    string table = 2;
+};
+
+message BUNFieldOptions
+{
+    string column = 1;
+    string dbtype = 2;
+    bool primary_key = 3;
+    bool unique = 4;
+    string default = 5;
+    bool not_null = 6;
+    bool auto_increment = 7;
+    string embed_prefix = 8;
+};
+
+extend google.protobuf.MessageOptions
+{
+    BUNMessageOptions opts = 52120;
 }
+
+extend google.protobuf.FieldOptions
+{
+    BUNFieldOptions field = 52120;
+}
+
+/************************************ protoc-gen-bun ************************************/
 
 service MoodyAPIService
 {
@@ -26,14 +54,23 @@ service MoodyAPIService
     rpc UpdateClientInfo(UpdateClientInfoRequest) returns (UpdateClientInfoResponse);
 }
 
+message Auth
+{
+    string clientId = 1;
+}
+
 message APIClient
 {
-    int64 id = 1;
-    string name = 2;
-    string uuid = 3;
-    bool privileged = 4;
-    google.protobuf.Timestamp lastSeen = 5;
-    bool enabled = 6;
+    option (opts) = {
+        ormable : true,
+        table : "clients"
+    };
+    int64 id = 1 [ (field) = { column : "id", primary_key : true, unique : true, not_null : true } ];
+    string name = 2 [ (field) = { column : "client_name" } ];
+    string uuid = 3 [ (field) = { column : "client_uuid" } ];
+    bool privileged = 4 [ (field) = { column : "privileged" } ];
+    google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
+    bool enabled = 6 [ (field) = { column : "enabled" } ];
 }
 
 message ListClientsRequest

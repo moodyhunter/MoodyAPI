@@ -8,8 +8,7 @@ export default function Home() {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (_context) => {
-    console.log(_context);
+export const getServerSideProps: GetServerSideProps = async () => {
     return {
         props: {
             title: "Home"

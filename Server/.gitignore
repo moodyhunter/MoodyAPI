@@ -1,3 +1,4 @@
+__debug_bin
 api.mooody.me
 vendor/
-api/pb/*
+models/*

@@ -6,16 +6,16 @@ import (
 	"log"
 	"time"
 
-	"api.mooody.me/api/pb"
 	"api.mooody.me/common"
+	"api.mooody.me/models"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *MoodyAPIServer) BroadcastNotification(event *pb.Notification) {
+func (s *MoodyAPIServer) BroadcastNotification(event *models.Notification) {
 	s.notificationBroadcaster.Broadcast(event)
 }
 
-func (s *MoodyAPIServer) SendNotification(_ context.Context, request *pb.SendNotificationRequest) (*emptypb.Empty, error) {
+func (s *MoodyAPIServer) SendNotification(_ context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
 	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return &emptypb.Empty{}, errors.New("error: Invalid Secret")
@@ -26,7 +26,7 @@ func (s *MoodyAPIServer) SendNotification(_ context.Context, request *pb.SendNot
 	return &emptypb.Empty{}, nil
 }
 
-func (s *MoodyAPIServer) SubscribeNotifications(request *pb.SubscribeNotificationsRequest, server pb.MoodyAPIService_SubscribeNotificationsServer) error {
+func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotificationsRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
 	log.Printf("New notification client connected")
 	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
@@ -44,7 +44,7 @@ done:
 		select {
 		case signal := <-eventChannel:
 			{
-				resp := signal.(*pb.Notification)
+				resp := signal.(*models.Notification)
 				server.Send(resp)
 			}
 		case <-server.Context().Done():

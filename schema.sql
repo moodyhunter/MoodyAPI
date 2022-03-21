@@ -1,14 +1,16 @@
--- DROP TABLE IF EXISTS clients CASCADE;
--- DROP TABLE IF EXISTS notifications CASCADE;
--- DROP TABLE IF EXISTS wg_clients CASCADE;
--- DROP TABLE IF EXISTS clients_wireguard CASCADE;
--- DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
+DROP TABLE IF EXISTS clients CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS wg_clients CASCADE;
+DROP TABLE IF EXISTS clients_wireguard CASCADE;
+DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
 
 CREATE TABLE clients (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
     client_name VARCHAR     NOT NULL    UNIQUE,
-    client_uuid UUID        NOT NULL    UNIQUE,
-    last_seen   TIMESTAMP
+    client_uuid VARCHAR     NOT NULL    UNIQUE,
+    privileged  BOOLEAN     NOT NULL,
+    last_seen   TIMESTAMP,
+    enabled     BOOLEAN     NOT NULL
 );
 
 CREATE TABLE notifications (
@@ -24,7 +26,8 @@ CREATE TABLE wg_clients (
     public_key      VARCHAR     NOT NULL    UNIQUE,
     last_seen       TIMESTAMP               UNIQUE,
     endpoint        INET,
-    endpoint_port   INTEGER
+    endpoint_port   INTEGER,
+    enabled         BOOLEAN     NOT NULL
 );
 
 CREATE TABLE wg_allowed_ips (

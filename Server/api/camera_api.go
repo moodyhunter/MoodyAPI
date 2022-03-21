@@ -6,17 +6,17 @@ import (
 	"log"
 	"time"
 
-	"api.mooody.me/api/pb"
 	"api.mooody.me/common"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	"api.mooody.me/models"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *MoodyAPIServer) BroadcastCameraEvent(event *pb.CameraState) {
+func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 	s.lastCameraState = event
 	s.cameraEventBroadcaster.Broadcast(event)
 }
 
-func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *pb.UpdateCameraStateRequest) (*emptypb.Empty, error) {
+func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
 	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
 		return nil, errors.New("error: Invalid Secret")
@@ -28,7 +28,7 @@ func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *pb.Upda
 	return new(emptypb.Empty), nil
 }
 
-func (s *MoodyAPIServer) SubscribeCameraStateChange(request *pb.SubscribeCameraStateChangeRequest, server pb.MoodyAPIService_SubscribeCameraStateChangeServer) error {
+func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCameraStateChangeRequest, server models.MoodyAPIService_SubscribeCameraStateChangeServer) error {
 	log.Printf("New gRPC camera API client connected")
 	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
@@ -48,7 +48,7 @@ done:
 		select {
 		case signal := <-eventChannel:
 			{
-				resp := signal.(*pb.CameraState)
+				resp := signal.(*models.CameraState)
 				server.Send(resp)
 			}
 		case <-server.Context().Done():

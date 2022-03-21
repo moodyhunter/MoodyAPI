@@ -2,14 +2,13 @@ package api
 
 import (
 	context "context"
-	"fmt"
+	"errors"
 	"log"
 	"math/rand"
 	"time"
 
-	"api.mooody.me/api/pb"
-	"github.com/google/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"api.mooody.me/db"
+	"api.mooody.me/models"
 )
 
 func randate() time.Time {
@@ -21,26 +20,23 @@ func randate() time.Time {
 	return time.Unix(sec, 0)
 }
 
-func (s *MoodyAPIServer) ListClients(context.Context, *pb.ListClientsRequest) (*pb.ListClientsResponse, error) {
+func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListClientsRequest) (*models.ListClientsResponse, error) {
 	log.Printf("Received ListClients request.")
+	_, err := db.CheckClientValidity(ctx, request.Auth.ClientId, true)
 
-	clients := [20]*pb.APIClient{}
-
-	for i := 0; i < 20; i++ {
-		clients[i] = &pb.APIClient{
-			Id:         int64(i),
-			Name:       "Test Client: " + fmt.Sprint(i),
-			Uuid:       uuid.New().String(),
-			Privileged: false,
-			LastSeen:   timestamppb.New(randate()),
-			Enabled:    i%3 == 0,
-		}
+	if err != nil {
+		return &models.ListClientsResponse{Success: false}, errors.New("unauthenticated")
 	}
 
-	return &pb.ListClientsResponse{Success: true, Clients: clients[:]}, nil
+	clients, err := db.ListClients(ctx)
+	if err != nil {
+		return nil, errors.New("server error")
+	}
+
+	return &models.ListClientsResponse{Success: true, Clients: clients}, nil
 }
 
-func (s *MoodyAPIServer) UpdateClientInfo(context.Context, *pb.UpdateClientInfoRequest) (*pb.UpdateClientInfoResponse, error) {
+func (s *MoodyAPIServer) UpdateClientInfo(context.Context, *models.UpdateClientInfoRequest) (*models.UpdateClientInfoResponse, error) {
 	log.Printf("Received UpdateClientInfo request.")
-	return &pb.UpdateClientInfoResponse{Success: true}, nil
+	return &models.UpdateClientInfoResponse{Success: true}, nil
 }

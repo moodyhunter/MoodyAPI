@@ -9,9 +9,9 @@ import { APIClient } from '../../common';
 
 const columns: GridColDef[] = [
     { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID' },
-    { hideable: false, editable: true, width: 150, align: 'center', headerAlign: 'center', field: 'name', headerName: 'Name' },
+    { hideable: false, editable: true, width: 150, align: 'center', headerAlign: 'center', field: 'name', headerName: 'Client Name' },
     {
-        hideable: true, editable: false, width: 350, align: 'center', headerAlign: 'center', field: 'uuid', headerName: 'UUID',
+        hideable: true, editable: false, width: 350, align: 'center', headerAlign: 'center', field: 'uuid', headerName: 'Client ID',
         renderCell: (params) => (<code>{(params.row as APIClient).uuid}</code>)
     },
     {
@@ -137,7 +137,7 @@ export default function Clients() {
                 setSnackbarState({ children: 'Client updated', severity: 'success' });
             } catch (error) {
                 console.log(error);
-                setSnackbarState({ children: 'ERROR: Failed to update client id: ' + params.id, severity: 'error' });
+                setSnackbarState({ children: 'ERROR: failed to update client id: ' + params.id, severity: 'error' });
                 setRows((prev) => [...prev]);
             }
         }, []
@@ -150,7 +150,7 @@ export default function Clients() {
                 setLoading(false);
             } else {
                 setRows([]);
-                setSnackbarState({ children: 'ERROR: Failed to get clients.', severity: 'error' });
+                setSnackbarState({ children: 'ERROR: failed to get clients.', severity: 'error' });
                 setLoading(false);
             }
         });

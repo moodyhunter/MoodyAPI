@@ -1,3 +1,3 @@
 package common
 
-var APISecret string = ""
+var APISecret = ""

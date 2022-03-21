@@ -1,5 +1,8 @@
 //go:generate go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 //go:generate go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-//go:generate protoc --go_out=api/pb --go_opt=paths=source_relative --go-grpc_out=api/pb --go-grpc_opt=paths=source_relative -I=.. MoodyAPI.proto
+//go:generate go install github.com/moodyhunter/protoc-gen-bun@v1.2.0
+//go:generate protoc --go_out=models      --go_opt=paths=source_relative      -I=.. MoodyAPI.proto
+//go:generate protoc --go-grpc_out=models --go-grpc_opt=paths=source_relative -I=.. MoodyAPI.proto
+//go:generate protoc --bun_out=models     --bun_opt=paths=source_relative     -I=.. MoodyAPI.proto
 
 package main
