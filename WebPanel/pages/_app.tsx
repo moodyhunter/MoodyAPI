@@ -14,7 +14,7 @@ type AppListButtonProps = {
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-    const router = useRouter()
+    const router = useRouter();
 
     function AppListButton(props: AppListButtonProps) {
         return (

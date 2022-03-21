@@ -4,7 +4,9 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package MoodyAPI;
-option go_package = "api.mooody.me/api";
+
+option go_package = "api.mooody.me/api/pb";
+option optimize_for = LITE_RUNTIME;
 
 message Auth
 {
@@ -18,11 +20,47 @@ service MoodyAPIService
 
     rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
     rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
+
+    // Privileged RPCs
+    rpc ListClients(ListClientsRequest) returns (ListClientsResponse);
+    rpc UpdateClientInfo(UpdateClientInfoRequest) returns (UpdateClientInfoResponse);
+}
+
+message APIClient
+{
+    int64 id = 1;
+    string name = 2;
+    string uuid = 3;
+    bool privileged = 4;
+    google.protobuf.Timestamp lastSeen = 5;
+    bool enabled = 6;
+}
+
+message ListClientsRequest
+{
+    Auth auth = 1;
+}
+
+message ListClientsResponse
+{
+    bool success = 1;
+    repeated APIClient clients = 2;
+}
+
+message UpdateClientInfoRequest
+{
+    Auth auth = 1;
+    APIClient clientInfo = 2;
+}
+
+message UpdateClientInfoResponse
+{
+    bool success = 1;
 }
 
 message CameraState
 {
-    optional bool state = 1;
+    bool state = 1;
 }
 
 message SubscribeCameraStateChangeRequest

@@ -1,1 +1,3 @@
-export * from './ClientsTable';
+// export * from './ClientsTable';
+
+export { };

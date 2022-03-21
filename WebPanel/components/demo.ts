@@ -599,4 +599,4 @@ export const TestData = [
         "clientUuid": "7a7029a5-d358-4093-aefa-2c7a174a819e",
         "lastSeen": "7/26/2021"
     }
-]
+];
