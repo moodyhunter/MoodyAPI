@@ -60,8 +60,7 @@ void ServerConnection::run()
             while (reader->Read(&resp) && true)
             {
                 emit onConnectionStatusChanged(true);
-                if (resp.has_state())
-                    emit onCameraStateChanged(resp.state());
+                emit onCameraStateChanged(resp.state());
             }
 
             qDebug() << QDateTime::currentDateTime() << "Cannot read more responses, retry.";
