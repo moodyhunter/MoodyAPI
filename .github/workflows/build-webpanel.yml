@@ -16,7 +16,14 @@ jobs:
 
       - name: Copy to Working Directory
         run: |
-          rsync -aP --exclude='.git' --exclude='target' ./WebPanel/ /mnt/disk/moodyapi/WebPanel
+          cp -v ./MoodyAPI.proto /mnt/disk/moodyapi/
+          rsync -aP \
+            --exclude='.git' \
+            --exclude='.env' \
+            --exclude='.next' \
+            --exclude='node_modules' \
+            --delete \
+            ./WebPanel/ /mnt/disk/moodyapi/WebPanel
 
       - name: Build
         run: |
