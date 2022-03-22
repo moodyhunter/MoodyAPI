@@ -157,29 +157,26 @@ export default function Clients() {
     }, []);
 
     return (
-        <>
-            <br />
+        <Container style={{ height: '60vh', width: '100%' }}>
             <Toolbar>
                 <Typography variant='h4'>API Clients</Typography>
             </Toolbar>
 
-            <Container style={{ height: '60vh', width: '100%' }}>
-                <DataGrid
-                    components={{
-                        LoadingOverlay: LinearProgress,
-                        NoRowsOverlay: CustomNoRowsOverlay,
-                        Toolbar: CustomToolbar,
-                    }}
-                    rows={rows}
-                    columns={columns}
-                    loading={loading}
-                    onCellEditCommit={updateData} />
-                {!!snackbarState && (
-                    <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
-                        <Alert {...snackbarState} onClose={handleCloseSnackbar} />
-                    </Snackbar>
-                )}
-            </Container>
-        </>
+            <DataGrid
+                components={{
+                    LoadingOverlay: LinearProgress,
+                    NoRowsOverlay: CustomNoRowsOverlay,
+                    Toolbar: CustomToolbar,
+                }}
+                rows={rows}
+                columns={columns}
+                loading={loading}
+                onCellEditCommit={updateData} />
+            {!!snackbarState && (
+                <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
+                    <Alert {...snackbarState} onClose={handleCloseSnackbar} />
+                </Snackbar>
+            )}
+        </Container>
     );
 }
