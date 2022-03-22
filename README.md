@@ -2,14 +2,28 @@
 
 API Clients/Agents/Server for Moody's Infrasturcture, ~~and a place where I learn various programming languages.~~
 
+Language Ingredients: `C++`, `CMake`, `Golang`, `PostgreSQL`, `QML`, `Rust`, `TypeScript`
+
+| Component      | Build Status                                                                                                                |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| API Server     | ![Build](../../actions/workflows/build-server.yml/badge.svg)                                                                |
+| Web Panel      | ![Build](../../actions/workflows/build-webpanel.yml/badge.svg) ![Lint](../../actions/workflows/lint-webpanel.yml/badge.svg) |
+| Qt Client      | ![Build](../../actions/workflows/build-client.yml/badge.svg)                                                                |
+| Camera Agent   | ![Build](../../actions/workflows/build-agent.yml/badge.svg)                                                                 |
+| Notifier Agent | ![Build](../../actions/workflows/build-notifier-pi.yml/badge.svg)                                                           |
+
 ## Functionalities
 
 - Camera Controlling: Whether to turn on. or turn off a remote camera.
-- Notification Handling: Pushing notifications to all clients.
+- (WIP) Notification Handling: Pushing notifications to all clients.
+- (WIP) A central management panel for all functionalities.
+- (TODO) Wireguard Clients Managing: Managing Wireguard clients and setting IPs.
+- (TODO) Dynamic DNS for Wireguard Clients.
 
 ## Components
 
 - A common [Server](Server/), implemented in Golang
+- A [Web Panel](WebPanel/) managing API clients and Wireguard clients, using Next.js (React)
 - Some common [assets](assets/), including `systemd` services and some `sudoers` configurations
 
 ### Camera Controllers
@@ -20,8 +34,7 @@ API Clients/Agents/Server for Moody's Infrasturcture, ~~and a place where I lear
 
 ### Notification Handlers
 
-- [NotifyClient](NotifyClient/): The notification daemon and sender (WIP), written in Rust.
-
+- [Notifier](Notifier/): The notification daemon and sender (WIP), written in Rust.
 
 ## LICENSE
 
