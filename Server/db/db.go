@@ -37,7 +37,7 @@ func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass st
 	database = bun.NewDB(sql.OpenDB(pgconn), pgdialect.New())
 }
 
-func CheckClientValidity(context context.Context, clientUuid string, requirePrivileged bool) (*models.APIClient, error) {
+func GetClientByUUID(context context.Context, clientUuid string) (*models.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
@@ -49,10 +49,6 @@ func CheckClientValidity(context context.Context, clientUuid string, requirePriv
 		Model(&client).
 		Where("client_uuid = ?", clientUuid)
 
-	if requirePrivileged {
-		q = q.Where("privileged = true")
-	}
-
 	err = q.Limit(1).Scan(context)
 
 	if err != nil {
@@ -62,6 +58,56 @@ func CheckClientValidity(context context.Context, clientUuid string, requirePriv
 	return client.ToPB(context)
 }
 
+func GetClientByID(context context.Context, id int64) (*models.APIClient, error) {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return nil, err
+	}
+
+	clientORM := models.APIClientORM{}
+	err = database.NewSelect().
+		Model(&clientORM).
+		Where("id = ?", id).
+		Scan(context)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return clientORM.ToPB(context)
+}
+
+func UpdateClient(ctx context.Context, client *models.APIClient) error {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return err
+	}
+
+	clientORM, err := client.ToORM(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	result, err := database.NewUpdate().
+		Model(&clientORM).
+		WherePK().
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	r, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if r == 0 {
+		return errors.New("unexpected affected rows")
+	}
+
+	return nil
+}
+
 func ListClients(context context.Context) ([]*models.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
@@ -69,7 +115,9 @@ func ListClients(context context.Context) ([]*models.APIClient, error) {
 	}
 
 	clientORM := []models.APIClientORM{}
-	err = database.NewSelect().Model(&clientORM).Scan(context)
+	err = database.NewSelect().
+		Model(&clientORM).
+		Scan(context)
 
 	clients := []*models.APIClient{}
 	if err != nil {
@@ -85,5 +133,4 @@ func ListClients(context context.Context) ([]*models.APIClient, error) {
 	}
 
 	return clients, nil
-
 }

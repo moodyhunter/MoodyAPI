@@ -66,11 +66,11 @@ message APIClient
         table : "clients"
     };
     int64 id = 1 [ (field) = { column : "id", primary_key : true, unique : true, not_null : true } ];
-    string name = 2 [ (field) = { column : "client_name" } ];
-    string uuid = 3 [ (field) = { column : "client_uuid" } ];
-    bool privileged = 4 [ (field) = { column : "privileged" } ];
-    google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
-    bool enabled = 6 [ (field) = { column : "enabled" } ];
+    optional string name = 2 [ (field) = { column : "client_name" } ];
+    optional string uuid = 3 [ (field) = { column : "client_uuid" } ];
+    optional bool privileged = 4 [ (field) = { column : "privileged" } ];
+    optional google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
+    optional bool enabled = 6 [ (field) = { column : "enabled" } ];
 }
 
 message ListClientsRequest
