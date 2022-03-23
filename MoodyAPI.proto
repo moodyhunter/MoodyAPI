@@ -52,12 +52,12 @@ service MoodyAPIService
     // Privileged RPCs
     rpc ListClients(ListClientsRequest) returns (ListClientsResponse);
     rpc DeleteClient(DeleteClientRequest) returns (DeleteClientResponse);
-    rpc UpdateClientInfo(UpdateClientInfoRequest) returns (UpdateClientInfoResponse);
+    rpc UpdateClient(UpdateClientRequest) returns (UpdateClientResponse);
 }
 
 message Auth
 {
-    string clientId = 1;
+    string clientUuid = 1;
 }
 
 message APIClient
@@ -85,13 +85,13 @@ message ListClientsResponse
     repeated APIClient clients = 2;
 }
 
-message UpdateClientInfoRequest
+message UpdateClientRequest
 {
     Auth auth = 1;
-    APIClient clientInfo = 2;
+    APIClient client = 2;
 }
 
-message UpdateClientInfoResponse
+message UpdateClientResponse
 {
     bool success = 1;
 }

@@ -16,8 +16,8 @@ func (s *MoodyAPIServer) BroadcastNotification(event *models.Notification) {
 }
 
 func (s *MoodyAPIServer) SendNotification(_ context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
+	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
 		return &emptypb.Empty{}, errors.New("error: Invalid Secret")
 	}
 
@@ -28,8 +28,8 @@ func (s *MoodyAPIServer) SendNotification(_ context.Context, request *models.Sen
 
 func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotificationsRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
 	log.Printf("New notification client connected")
-	if request == nil || request.Auth == nil || request.Auth.ClientId != common.APISecret {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientId)
+	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
 		return errors.New("error: Invalid Secret")
 	}
 

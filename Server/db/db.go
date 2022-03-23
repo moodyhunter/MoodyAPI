@@ -37,7 +37,7 @@ func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass st
 	database = bun.NewDB(sql.OpenDB(pgconn), pgdialect.New())
 }
 
-func GetClientByUUID(context context.Context, clientUuid string) (*models.APIClient, error) {
+func GetClientByUUID(ctx context.Context, clientUuid string) (*models.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
@@ -49,16 +49,16 @@ func GetClientByUUID(context context.Context, clientUuid string) (*models.APICli
 		Model(&client).
 		Where("client_uuid = ?", clientUuid)
 
-	err = q.Limit(1).Scan(context)
+	err = q.Limit(1).Scan(ctx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return client.ToPB(context)
+	return client.ToPB(ctx)
 }
 
-func GetClientByID(context context.Context, id int64) (*models.APIClient, error) {
+func GetClientByID(ctx context.Context, id int64) (*models.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
@@ -68,13 +68,13 @@ func GetClientByID(context context.Context, id int64) (*models.APIClient, error)
 	err = database.NewSelect().
 		Model(&clientORM).
 		Where("id = ?", id).
-		Scan(context)
+		Scan(ctx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return clientORM.ToPB(context)
+	return clientORM.ToPB(ctx)
 }
 
 func UpdateClient(ctx context.Context, client *models.APIClient) error {
@@ -108,7 +108,33 @@ func UpdateClient(ctx context.Context, client *models.APIClient) error {
 	return nil
 }
 
-func ListClients(context context.Context) ([]*models.APIClient, error) {
+func DeleteClient(ctx context.Context, client *models.APIClient) error {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return err
+	}
+
+	clientORM, err := client.ToORM(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	result, err := database.NewDelete().
+		Model(&clientORM).
+		WherePK().
+		Exec(ctx)
+
+	r, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if r == 0 {
+		return errors.New("unexpected affected rows")
+	}
+	return nil
+}
+
+func ListClients(ctx context.Context) ([]*models.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
@@ -117,7 +143,7 @@ func ListClients(context context.Context) ([]*models.APIClient, error) {
 	clientORM := []models.APIClientORM{}
 	err = database.NewSelect().
 		Model(&clientORM).
-		Scan(context)
+		Scan(ctx)
 
 	clients := []*models.APIClient{}
 	if err != nil {
@@ -125,7 +151,7 @@ func ListClients(context context.Context) ([]*models.APIClient, error) {
 	}
 
 	for _, v := range clientORM {
-		pbObject, pbErr := v.ToPB(context)
+		pbObject, pbErr := v.ToPB(ctx)
 		if pbErr != nil {
 			return nil, err
 		}

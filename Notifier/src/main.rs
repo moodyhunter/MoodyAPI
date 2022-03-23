@@ -65,7 +65,7 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
 
         let request = Request::new(SubscribeNotificationsRequest {
             auth: Some(Auth {
-                client_id: api_secret.clone(),
+                client_uuid: api_secret.clone(),
             }),
             channel_id: 1,
         });
@@ -124,7 +124,7 @@ async fn send_notification(
     client
         .send_notification(Request::new(SendNotificationRequest {
             auth: Some(Auth {
-                client_id: api_secret.clone(),
+                client_uuid: api_secret.clone(),
             }),
             notification: Some(n),
         }))

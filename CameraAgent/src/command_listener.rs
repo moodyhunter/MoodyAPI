@@ -15,7 +15,7 @@ pub async fn listen_for_state_change(
 
     let request = Request::new(SubscribeCameraStateChangeRequest {
         auth: Some(Auth {
-            client_id: client_id.clone(),
+            client_uuid: client_id.clone(),
         }),
     });
 

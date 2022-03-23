@@ -16,14 +16,14 @@ export default async function clients(req: NextApiRequest, resp: NextApiResponse
         return;
     }
 
-    const AuthObject: Auth = { clientId: API_CLIENTID };
+    const AuthObject: Auth = { clientUuid: API_CLIENTID };
     try {
         if (req.method == "GET") {
             const result = await client.listClients({ auth: AuthObject });
             resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { clients: result.clients } as ListClientsAPIResponse });
             return;
         } else if (req.method == "PATCH") {
-            const result = await client.updateClientInfo({ auth: AuthObject, clientInfo: requestedClient });
+            const result = await client.updateClient({ auth: AuthObject, client: requestedClient });
             resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { client: requestedClient } as UpdateClientAPIResponse });
             return;
         } else if (req.method == "DELETE") {

@@ -52,7 +52,7 @@ void ServerConnection::run()
             m_pollingContext.reset(new grpc::ClientContext);
 
             MoodyAPI::SubscribeCameraStateChangeRequest request;
-            request.mutable_auth()->set_clientid(m_secret.toStdString());
+            request.mutable_auth()->set_clientuuid(m_secret.toStdString());
 
             auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
 
@@ -82,7 +82,7 @@ void ServerConnection::SetCameraState(bool newState)
     auto serverStub = MoodyAPI::MoodyAPIService::NewStub(m_channel);
 
     MoodyAPI::UpdateCameraStateRequest request;
-    request.mutable_auth()->set_clientid(m_secret.toStdString());
+    request.mutable_auth()->set_clientuuid(m_secret.toStdString());
     request.mutable_state()->set_state(newState);
 
     ::google::protobuf::Empty empty;

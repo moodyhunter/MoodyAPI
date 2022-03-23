@@ -7,8 +7,6 @@ import (
 
 	"api.mooody.me/db"
 	"api.mooody.me/models"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func checkPrivilegedClient(ctx context.Context, clientUuid string, requirePrivileged bool) (*models.APIClient, error) {
@@ -36,7 +34,7 @@ func checkPrivilegedClient(ctx context.Context, clientUuid string, requirePrivil
 
 func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListClientsRequest) (*models.ListClientsResponse, error) {
 	log.Printf("Received ListClients request.")
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientId, true)
+	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
 
 	if err != nil {
 		log.Printf("checkPrivilegedClient failed: %s", err.Error())
@@ -52,17 +50,15 @@ func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListCl
 	return &models.ListClientsResponse{Success: true, Clients: clients}, nil
 }
 
-func (s *MoodyAPIServer) UpdateClientInfo(ctx context.Context, request *models.UpdateClientInfoRequest) (*models.UpdateClientInfoResponse, error) {
-	log.Printf("Received UpdateClientInfo request.")
-
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientId, true)
+func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.UpdateClientRequest) (*models.UpdateClientResponse, error) {
+	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
 
 	if err != nil {
 		log.Printf("checkPrivilegedClient failed: %s", err.Error())
-		return &models.UpdateClientInfoResponse{Success: false}, errors.New("unauthenticated")
+		return &models.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
-	client, err := db.GetClientByID(ctx, request.ClientInfo.Id)
+	client, err := db.GetClientByID(ctx, request.Client.Id)
 	if err != nil {
 		log.Printf("GetClientByID failed: %s", err.Error())
 		return nil, errors.New("server error")
@@ -70,44 +66,67 @@ func (s *MoodyAPIServer) UpdateClientInfo(ctx context.Context, request *models.U
 
 	shouldReject := false
 
-	if request.ClientInfo.Enabled != nil {
-		shouldReject = shouldReject || request.Auth.ClientId == client.GetUuid()
-		client.Enabled = request.ClientInfo.Enabled
+	if request.Client.Enabled != nil {
+		shouldReject = shouldReject || request.Auth.ClientUuid == client.GetUuid()
+		client.Enabled = request.Client.Enabled
 	}
 
-	if request.ClientInfo.LastSeen != nil {
-		client.LastSeen = request.ClientInfo.LastSeen
+	if request.Client.LastSeen != nil {
+		client.LastSeen = request.Client.LastSeen
 	}
 
-	if request.ClientInfo.Name != nil {
-		client.Name = request.ClientInfo.Name
+	if request.Client.Name != nil {
+		client.Name = request.Client.Name
 	}
 
-	if request.ClientInfo.Privileged != nil {
-		shouldReject = shouldReject || request.Auth.ClientId == client.GetUuid()
-		client.Privileged = request.ClientInfo.Privileged
+	if request.Client.Privileged != nil {
+		shouldReject = shouldReject || request.Auth.ClientUuid == client.GetUuid()
+		client.Privileged = request.Client.Privileged
 	}
 
-	if request.ClientInfo.Uuid != nil {
-		shouldReject = shouldReject || request.Auth.ClientId == client.GetUuid()
-		client.Uuid = request.ClientInfo.Uuid
+	if request.Client.Uuid != nil {
+		shouldReject = shouldReject || request.Auth.ClientUuid == client.GetUuid()
+		client.Uuid = request.Client.Uuid
 	}
 
 	if shouldReject {
-		log.Printf("client %s is performing suicide, reject", request.Auth.ClientId)
-		return &models.UpdateClientInfoResponse{Success: false}, errors.New("don't suicide")
+		log.Printf("client %s is performing suicide, reject", request.Auth.ClientUuid)
+		return &models.UpdateClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
 	err = db.UpdateClient(ctx, client)
 
 	if err != nil {
 		log.Printf("UpdateClient failed: %s", err.Error())
-		return &models.UpdateClientInfoResponse{Success: false}, errors.New("unexpected database result")
+		return &models.UpdateClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
-	return &models.UpdateClientInfoResponse{Success: true}, nil
+	return &models.UpdateClientResponse{Success: true}, nil
 }
 
-func (s *MoodyAPIServer) DeleteClient(context.Context, *models.DeleteClientRequest) (*models.DeleteClientResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteClient not implemented")
+func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.DeleteClientRequest) (*models.DeleteClientResponse, error) {
+	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
+
+	if err != nil {
+		log.Printf("checkPrivilegedClient failed: %s", err.Error())
+		return &models.DeleteClientResponse{Success: false}, errors.New("unauthenticated")
+	}
+
+	client, err := db.GetClientByID(ctx, request.Client.Id)
+	if err != nil {
+		log.Printf("GetClientByID failed: %s", err.Error())
+		return nil, errors.New("server error")
+	}
+
+	if request.Auth.ClientUuid == *client.Uuid {
+		log.Printf("client %s is performing suicide, reject", request.Auth.ClientUuid)
+		return &models.DeleteClientResponse{Success: false}, errors.New("don't suicide")
+	}
+
+	err = db.DeleteClient(ctx, client)
+
+	if err != nil {
+		return &models.DeleteClientResponse{Success: false}, errors.New("unexpected database result")
+	}
+	return &models.DeleteClientResponse{Success: true}, nil
 }
