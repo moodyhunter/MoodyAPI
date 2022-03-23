@@ -10,7 +10,7 @@ import (
 )
 
 type MoodyAPIServer struct {
-	models.UnsafeMoodyAPIServiceServer
+	models.UnimplementedMoodyAPIServiceServer
 	cameraEventBroadcaster  *broadcaster.Broadcaster
 	notificationBroadcaster *broadcaster.Broadcaster
 	lastCameraState         *models.CameraState

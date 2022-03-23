@@ -1,40 +1,11 @@
 import { Add as AddIcon, Delete as DeleteIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import { Alert, AlertProps, Box, Button, Container, Divider, IconButton, LinearProgress, Snackbar, styled, Switch, Toolbar, Typography } from '@mui/material';
-import { DataGrid, GridCellEditCommitParams, GridColDef, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridCellEditCommitParams, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, useGridApiContext } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { GetServerSideProps } from 'next';
 import { useCallback, useEffect, useState } from 'react';
-import { APIClient } from '../../common';
+import { APIClient, ClientAPIResponse, DeleteClientAPIResponse, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 
-
-const columns: GridColDef[] = [
-    { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID' },
-    { hideable: false, editable: true, width: 150, align: 'center', headerAlign: 'center', field: 'name', headerName: 'Client Name' },
-    {
-        hideable: true, editable: false, width: 350, align: 'center', headerAlign: 'center', field: 'uuid', headerName: 'Client ID',
-        renderCell: (params) => (<code>{(params.row as APIClient).uuid}</code>)
-    },
-    {
-        hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center',
-        field: 'lastSeen', headerName: 'Last Seen', sortingOrder: ['asc', 'desc'],
-        renderCell: (params) => (<div>{(params.row as APIClient).lastSeen ? (dayjs(params.row.lastSeen).format('YYYY/MM/DD HH:mm:ss')) : "N/A"}</div>)
-    },
-    {
-        hideable: false, editable: false, width: 100, align: 'center', headerAlign: 'center',
-        field: 'enabled', headerName: "Enabled",
-        renderCell: (params) => (<Switch color="success" checked={!!(params.row as APIClient).enabled} />)
-    },
-    {
-        hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center',
-        field: '_actions', headerName: 'Actions',
-        renderCell: () => (
-            <>
-                <IconButton color="success"><RefreshIcon /></IconButton>
-                <IconButton color="error"><DeleteIcon /></IconButton>
-            </>
-        )
-    }
-];
 
 export const getServerSideProps: GetServerSideProps = async () => {
     return {
@@ -91,16 +62,12 @@ function CustomNoRowsOverlay() {
     );
 }
 
-async function getClientsAsync(): Promise<{ success: boolean; clients: APIClient[]; }> {
+async function getClientsAsync(): Promise<ClientAPIResponse<ListClientsAPIResponse>> {
     const res = await fetch('/api/clients');
-    if (res.status == 200) {
-        const clients = await res.json();
-        return { success: true, clients: clients };
-    }
-    return { success: false, clients: [] };
+    return await res.json();
 }
 
-async function updateClientsAsync(params: GridCellEditCommitParams) {
+async function updateClientsAsync(params: GridCellEditCommitParams): Promise<ClientAPIResponse<UpdateClientAPIResponse>> {
     const resp = await fetch('/api/clients', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -108,6 +75,15 @@ async function updateClientsAsync(params: GridCellEditCommitParams) {
             id: params.id as number,
             [params.field]: params.value,
         })
+    });
+    return await resp.json();
+}
+
+async function deleteClientsAsync(clientId: number): Promise<ClientAPIResponse<DeleteClientAPIResponse>> {
+    const resp = await fetch('/api/clients', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: clientId })
     });
     return await resp.json();
 }
@@ -122,39 +98,102 @@ function CustomToolbar() {
     );
 }
 
-
 export default function Clients() {
     const [snackbarState, setSnackbarState] = useState<AlertProps | null>(null);
     const [rows, setRows] = useState<APIClient[]>([]);
     const [loading, setLoading] = useState(true);
+
     const handleCloseSnackbar = () => setSnackbarState(null);
+    const handleSuccessMessage = (msg: string) => setSnackbarState({ children: msg, severity: 'success' });
+    const handleErrorMessage = (msg: string) => setSnackbarState({ children: msg, severity: 'error' });
 
     const updateData = useCallback(
         async (params: GridCellEditCommitParams) => {
-            try {
-                const data = await updateClientsAsync(params);
-                setRows((prev) => prev.map((row) => (row.id == params.id ? { ...row, ...data } : row)));
-                setSnackbarState({ children: 'Client updated', severity: 'success' });
-            } catch (error) {
-                console.log(error);
-                setSnackbarState({ children: 'ERROR: failed to update client id: ' + params.id, severity: 'error' });
+            const { success, message, data } = await updateClientsAsync(params);
+            if (success && data) {
+                const client = data.client;
+                setRows((prev) => prev.map((row) => (row.id == params.id ? { ...row, ...client } : row)));
+                handleSuccessMessage(`Successfully updated client ${params.id}`);
+            } else {
                 setRows((prev) => [...prev]);
+                handleErrorMessage(`Failed to update client ${params.id}: ${message}`);
             }
         }, []
     );
 
     useEffect(() => {
-        getClientsAsync().then(({ success, clients }) => {
-            if (success) {
-                setRows(clients);
+        getClientsAsync().then(({ success, message, data }) => {
+            if (success && data) {
+                setRows(data.clients);
+                handleSuccessMessage(`Successfully loaded ${data.clients.length} client(s)`);
                 setLoading(false);
             } else {
                 setRows([]);
-                setSnackbarState({ children: 'ERROR: failed to get clients.', severity: 'error' });
+                handleErrorMessage(`Failed to list clients: ${message}`);
                 setLoading(false);
             }
         });
     }, []);
+
+    const columns: GridColDef[] = [
+        { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID' },
+        { hideable: false, editable: true, width: 250, align: 'center', headerAlign: 'center', field: 'name', headerName: 'Client Name' },
+        {
+            hideable: true, editable: false, width: 350, align: 'center', headerAlign: 'center', field: 'uuid', headerName: 'Client ID',
+            renderCell: (params) => (<code>{(params.row as APIClient).uuid}</code>)
+        },
+        {
+            hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center',
+            field: 'lastSeen', headerName: 'Last Seen', sortingOrder: ['asc', 'desc'],
+            renderCell: (params) => (<div>{(params.row as APIClient).lastSeen ? (dayjs(params.row.lastSeen).format('YYYY/MM/DD HH:mm:ss')) : "N/A"}</div>)
+        },
+        {
+            hideable: false, editable: false, width: 100, align: 'center', headerAlign: 'center',
+            field: 'enabled', headerName: "Enabled",
+            renderCell: function (params: GridRenderCellParams<boolean>) {
+                const { id, field } = params;
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const apiContext = useGridApiContext();
+
+                const handleChange = async (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+                    apiContext.current.setEditCellValue({ id, field, value: checked }, event);
+                    const isValid = await apiContext.current.commitCellChange({ id, field });
+                    if (isValid) {
+                        apiContext.current.setCellMode(id, field, 'view');
+                    }
+                };
+
+                return (<Switch color="success" checked={!!(params.row as APIClient).enabled} onChange={handleChange} />);
+            }
+        },
+        {
+            hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center',
+            field: '_actions', headerName: 'Actions',
+            renderCell: (params) => {
+                const onDeleteClicked = async () => {
+                    console.log("Delete clicked");
+                    console.log(params.id);
+                    console.log(params.id as number);
+
+                    const { success, message, data } = await deleteClientsAsync(params.id as number);
+                    console.log(success, data);
+                    if (success && data && data.deleted) {
+                        handleSuccessMessage(`Successfully deleted client ${params.id}`);
+                        setRows((r) => r.filter((a) => a.id !== params.id));
+                    }
+                    else {
+                        handleErrorMessage(`Failed to delete client ${params.id}: ${message}`);
+                    }
+                };
+                return (
+                    <>
+                        <IconButton color="success"><RefreshIcon /></IconButton>
+                        <IconButton color="error" onClick={onDeleteClicked}><DeleteIcon /></IconButton>
+                    </>
+                );
+            }
+        }
+    ];
 
     return (
         <Container style={{ height: '60vh', width: '100%' }}>

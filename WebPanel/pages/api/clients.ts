@@ -1,32 +1,40 @@
+import { ServiceError } from '@grpc/grpc-js';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerConnection } from '../../common';
-import { APIClient, Auth, UpdateClientInfoRequest } from '../../common/protos/MoodyAPI';
+import { ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
+import { APIClient, Auth } from '../../common/protos/MoodyAPI';
 
+type ClientAPIServerResponse = ClientAPIResponse<ListClientsAPIResponse | CreateClientAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
 
-export default async function clients(req: NextApiRequest, resp: NextApiResponse<APIClient | APIClient[]>) {
+export default async function clients(req: NextApiRequest, resp: NextApiResponse<ClientAPIServerResponse>) {
     const client = getServerConnection();
     const requestedClient: APIClient = req.body;
 
     const API_CLIENTID = process.env["API_CLIENTID"];
     if (!API_CLIENTID) {
         console.error("API_CLIENTID is not set.");
-        resp.status(503).send(requestedClient);
+        resp.status(503).send({ message: "invalid server configuration", success: false, data: undefined });
         return;
     }
 
     const AuthObject: Auth = { clientId: API_CLIENTID };
-
-    if (req.method == "PATCH") {
-        const request: UpdateClientInfoRequest = {
-            auth: AuthObject,
-            clientInfo: requestedClient
-        };
-        const response = await client.updateClientInfo(request);
-        resp.status(response.success ? 200 : 403).json(requestedClient);
-    } else if (req.method == "GET") {
-        const result = await client.listClients({ auth: AuthObject });
-        resp.status(result.success ? 200 : 403).json(result.clients);
+    try {
+        if (req.method == "GET") {
+            const result = await client.listClients({ auth: AuthObject });
+            resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { clients: result.clients } as ListClientsAPIResponse });
+            return;
+        } else if (req.method == "PATCH") {
+            const result = await client.updateClientInfo({ auth: AuthObject, clientInfo: requestedClient });
+            resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { client: requestedClient } as UpdateClientAPIResponse });
+            return;
+        } else if (req.method == "DELETE") {
+            const result = await client.deleteClient({ auth: AuthObject, client: requestedClient });
+            resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { deleted: result.success } as DeleteClientAPIResponse });
+            return;
+        }
+    } catch (error) {
+        resp.status(400).json({ success: false, message: (error as ServiceError).details, data: undefined });
+        return;
     }
 
-    return;
+    resp.status(405).json({ success: false, message: "Method not allowed", data: undefined });
 }
