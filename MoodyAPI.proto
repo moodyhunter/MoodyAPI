@@ -50,6 +50,7 @@ service MoodyAPIService
     rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
 
     // Privileged RPCs
+    rpc CreateClient(CreateClientRequest) returns (CreateClientResponse);
     rpc ListClients(ListClientsRequest) returns (ListClientsResponse);
     rpc DeleteClient(DeleteClientRequest) returns (DeleteClientResponse);
     rpc UpdateClient(UpdateClientRequest) returns (UpdateClientResponse);
@@ -66,7 +67,7 @@ message APIClient
         ormable : true,
         table : "clients"
     };
-    int64 id = 1 [ (field) = { column : "id", primary_key : true, unique : true, not_null : true } ];
+    int64 id = 1 [ (field) = { column : "id", primary_key : true, unique : true, not_null : true, auto_increment : true } ];
     optional string name = 2 [ (field) = { column : "client_name" } ];
     optional string uuid = 3 [ (field) = { column : "client_uuid" } ];
     optional bool privileged = 4 [ (field) = { column : "privileged" } ];
@@ -83,6 +84,18 @@ message ListClientsResponse
 {
     bool success = 1;
     repeated APIClient clients = 2;
+}
+
+message CreateClientRequest
+{
+    Auth auth = 1;
+    APIClient client = 2;
+}
+
+message CreateClientResponse
+{
+    bool success = 1;
+    optional APIClient client = 2;
 }
 
 message UpdateClientRequest

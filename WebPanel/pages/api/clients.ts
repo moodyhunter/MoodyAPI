@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 import { APIClient, Auth } from '../../common/protos/MoodyAPI';
 
-type ClientAPIServerResponse = ClientAPIResponse<ListClientsAPIResponse | CreateClientAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
+type ClientAPIServerResponse = ClientAPIResponse<CreateClientAPIResponse | ListClientsAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
 
 export default async function clients(req: NextApiRequest, resp: NextApiResponse<ClientAPIServerResponse>) {
     const client = getServerConnection();
@@ -16,11 +16,17 @@ export default async function clients(req: NextApiRequest, resp: NextApiResponse
         return;
     }
 
+    await new Promise(f => setTimeout(f, 2000));
+
     const AuthObject: Auth = { clientUuid: API_CLIENTID };
     try {
         if (req.method == "GET") {
             const result = await client.listClients({ auth: AuthObject });
             resp.status(result.success ? 200 : 400).json({ success: result.success, message: "ok", data: { clients: result.clients } as ListClientsAPIResponse });
+            return;
+        } else if (req.method == "POST") {
+            const result = await client.createClient({ auth: AuthObject, client: requestedClient });
+            resp.status(result.success ? 201 : 400).json({ success: result.success, message: "ok", data: { client: result.client } as CreateClientAPIResponse });
             return;
         } else if (req.method == "PATCH") {
             const result = await client.updateClient({ auth: AuthObject, client: requestedClient });

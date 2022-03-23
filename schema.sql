@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
 
 CREATE TABLE clients (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
-    client_name VARCHAR     NOT NULL    UNIQUE,
+    client_name VARCHAR     NOT NULL,
     client_uuid VARCHAR     NOT NULL    UNIQUE,
     privileged  BOOLEAN     NOT NULL,
     last_seen   TIMESTAMP,

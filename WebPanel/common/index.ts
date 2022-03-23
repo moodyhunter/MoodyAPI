@@ -12,11 +12,11 @@ export function getServerConnection() {
 }
 
 export type CreateClientAPIResponse = { client: APIClient }
+export type ListClientsAPIResponse = { clients: APIClient[] }
 export type UpdateClientAPIResponse = { client: APIClient }
 export type DeleteClientAPIResponse = { deleted: boolean };
-export type ListClientsAPIResponse = { clients: APIClient[] }
 
-export declare type ClientAPIResponse<T> = {
+export type ClientAPIResponse<T> = {
     success: boolean,
     message: string,
     data: T | undefined

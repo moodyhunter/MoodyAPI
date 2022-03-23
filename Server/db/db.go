@@ -77,6 +77,36 @@ func GetClientByID(ctx context.Context, id int64) (*models.APIClient, error) {
 	return clientORM.ToPB(ctx)
 }
 
+func CreateClient(ctx context.Context, client *models.APIClient) (*models.APIClient, error) {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return nil, err
+	}
+
+	clientORM, err := client.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	database.ExecContext(ctx, "")
+
+	result, err := database.NewInsert().
+		Model(&clientORM).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := result.RowsAffected()
+	if err != nil {
+		return nil, err
+	} else if r == 0 {
+		return nil, errors.New("unexpected affected rows")
+	}
+
+	return clientORM.ToPB(ctx)
+}
+
 func UpdateClient(ctx context.Context, client *models.APIClient) error {
 	err := checkDatabaseConnectivity()
 	if err != nil {
