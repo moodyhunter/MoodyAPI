@@ -1,5 +1,5 @@
 {
-    "name": "my-app",
+    "name": "moodyapi-dashboard",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -15,11 +15,14 @@
         "@mui/icons-material": "^5.5.1",
         "@mui/material": "^5.5.1",
         "@mui/x-data-grid": "^5.6.1",
+        "@types/bcrypt": "^5.0.0",
         "@typescript-eslint/eslint-plugin": "^5.15.0",
+        "bcrypt": "^5.0.1",
         "dayjs": "^1.11.0",
         "long": "^5.2.0",
         "minimist": "^1.2.6",
         "next": "12.1.0",
+        "next-auth": "^4.3.1",
         "nice-grpc": "^1.0.8",
         "protobufjs": "^6.11.2",
         "react": "17.0.2",

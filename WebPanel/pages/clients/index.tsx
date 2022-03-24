@@ -97,7 +97,7 @@ async function createClientsAsync(client: APIClient): Promise<ClientAPIResponse<
     return await resp.json();
 }
 
-export default function Clients() {
+export default function Content() {
     const [snackbarState, setSnackbarState] = useState<AlertProps | null>(null);
     const [rows, setRows] = useState<APIClient[]>([]);
     const [loading, setLoading] = useState(true);
@@ -223,8 +223,6 @@ export default function Clients() {
             setNewClientButtonDisabled(false);
 
             if (success && data) {
-                data.client;
-                console.log(data.client);
                 setRows((r) => r.concat([data.client]));
             } else {
                 handleErrorMessage("Failed to create new client: " + message);

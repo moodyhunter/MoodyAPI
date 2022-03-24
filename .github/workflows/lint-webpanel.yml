@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: yarn config set ignore-engines true
       - run: cd WebPanel/ && yarn install
       - run: cd WebPanel/ && yarn lint
       - run: cd WebPanel/ && yarn build

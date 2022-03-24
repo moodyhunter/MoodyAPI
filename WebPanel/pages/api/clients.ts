@@ -16,8 +16,6 @@ export default async function clients(req: NextApiRequest, resp: NextApiResponse
         return;
     }
 
-    await new Promise(f => setTimeout(f, 2000));
-
     const AuthObject: Auth = { clientUuid: API_CLIENTID };
     try {
         if (req.method == "GET") {

@@ -1,3 +1,2 @@
-// export * from './ClientsTable';
+export { LoadingScreen } from './LoadingScreen';
 
-export { };

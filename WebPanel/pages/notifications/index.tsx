@@ -2,7 +2,15 @@ import { Container } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import styles from '/styles/Home.module.css';
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps = async () => {
+    return {
+        props: {
+            title: "Notifications"
+        }
+    };
+};
+
+export default function Content() {
     return (
         <Container>
 
@@ -41,13 +49,3 @@ export default function Home() {
         </Container>
     );
 }
-
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    return {
-        props: {
-            title: "Notifications"
-        }
-    };
-};
