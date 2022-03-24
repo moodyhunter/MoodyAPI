@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"api.mooody.me/common"
+	"api.mooody.me/db"
 	"api.mooody.me/models"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
@@ -15,23 +15,35 @@ func (s *MoodyAPIServer) BroadcastNotification(event *models.Notification) {
 	s.notificationBroadcaster.Broadcast(event)
 }
 
-func (s *MoodyAPIServer) SendNotification(_ context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
+	if request == nil || request.Auth == nil {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
-		return &emptypb.Empty{}, errors.New("error: Invalid Secret")
+		return &emptypb.Empty{}, errors.New("invalid client id")
 	}
 
-	println("Send Notification: ", request.Notification.Title, request.Notification.Message)
+	client, err := db.GetClientByUUID(ctx, request.Auth.ClientUuid)
+	if err != nil {
+		return &emptypb.Empty{}, errors.New("invalid client id")
+	}
+
+	log.Printf("client %s (%s) sends notification: [%s]: %s", *client.Name, *client.Uuid, request.Notification.Title, request.Notification.Message)
+
 	s.BroadcastNotification(request.Notification)
 	return &emptypb.Empty{}, nil
 }
 
 func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotificationsRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
-	log.Printf("New notification client connected")
-	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+	if request == nil || request.Auth == nil {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
-		return errors.New("error: Invalid Secret")
+		return errors.New("invalid client id")
 	}
+
+	client, err := db.GetClientByUUID(context.Background(), request.Auth.ClientUuid)
+	if err != nil {
+		return errors.New("invalid client id")
+	}
+
+	log.Printf("client %s (%s) subscribes to camera change info", *client.Name, *client.Uuid)
 
 	subscribeId := time.Now().UnixNano()
 	eventChannel, err := s.notificationBroadcaster.Subscribe(subscribeId)
@@ -49,7 +61,7 @@ done:
 			}
 		case <-server.Context().Done():
 			{
-				log.Printf("Client disconnected")
+				log.Printf("client %s disconnected", *client.Name)
 				break done
 			}
 		}

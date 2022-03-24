@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"api.mooody.me/common"
+	"api.mooody.me/db"
 	"api.mooody.me/models"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -17,23 +17,34 @@ func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 }
 
 func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+	if request == nil || request.Auth == nil {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
-		return nil, errors.New("error: Invalid Secret")
+		return nil, errors.New("invalid client id")
 	}
 
-	log.Printf("Changing camera state to: %t", request.State.GetState())
+	client, err := db.GetClientByUUID(ctx, request.Auth.ClientUuid)
+	if err != nil {
+		return &emptypb.Empty{}, errors.New("invalid client id")
+	}
+
+	log.Printf("client %s (%s) sets camera state to %s", *client.Name, *client.Uuid, request.State.State)
 
 	s.BroadcastCameraEvent(request.State)
-	return new(emptypb.Empty), nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCameraStateChangeRequest, server models.MoodyAPIService_SubscribeCameraStateChangeServer) error {
-	log.Printf("New gRPC camera API client connected")
-	if request == nil || request.Auth == nil || request.Auth.ClientUuid != common.APISecret {
+	if request == nil || request.Auth == nil {
 		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
-		return errors.New("error: Invalid Secret")
+		return errors.New("invalid client id")
 	}
+
+	client, err := db.GetClientByUUID(context.Background(), request.Auth.ClientUuid)
+	if err != nil {
+		return errors.New("invalid client id")
+	}
+
+	log.Printf("client %s (%s) subscribes to camera change info", *client.Name, *client.Uuid)
 
 	server.Send(s.lastCameraState)
 
@@ -53,7 +64,7 @@ done:
 			}
 		case <-server.Context().Done():
 			{
-				log.Printf("Client disconnected")
+				log.Printf("client %s disconnected", *client.Name)
 				break done
 			}
 		}

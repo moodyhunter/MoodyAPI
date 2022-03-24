@@ -8,7 +8,6 @@ import (
 	"gopkg.in/ini.v1"
 
 	"api.mooody.me/api"
-	"api.mooody.me/common"
 	"api.mooody.me/db"
 )
 
@@ -25,11 +24,6 @@ func main() {
 
 	if err != nil {
 		log.Fatalf("Fail to read file: %v", err)
-	}
-
-	common.APISecret = config.Section("").Key("APISecret").String()
-	if len(common.APISecret) == 0 {
-		log.Fatalln("Must set APISecret in Global section.")
 	}
 
 	dbConfigSection := config.Section("Database")
