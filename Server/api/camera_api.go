@@ -18,16 +18,18 @@ func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 
 func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
 	if request == nil || request.Auth == nil {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
+		log.Printf("bad request")
 		return nil, errors.New("invalid client id")
 	}
 
 	client, err := db.GetClientByUUID(ctx, request.Auth.ClientUuid)
 	if err != nil {
+		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
 		return &emptypb.Empty{}, errors.New("invalid client id")
 	}
 
 	if !client.GetEnabled() {
+		log.Printf("[%s] client is not enabled", *client.Name)
 		return &emptypb.Empty{}, errors.New("client is not enabled")
 	}
 
@@ -39,16 +41,18 @@ func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.
 
 func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCameraStateChangeRequest, server models.MoodyAPIService_SubscribeCameraStateChangeServer) error {
 	if request == nil || request.Auth == nil {
-		log.Printf("WARNING: Invalid secret from client: %s", request.Auth.ClientUuid)
+		log.Printf("bad request")
 		return errors.New("invalid client id")
 	}
 
 	client, err := db.GetClientByUUID(context.Background(), request.Auth.ClientUuid)
 	if err != nil {
+		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
 		return errors.New("invalid client id")
 	}
 
 	if !client.GetEnabled() {
+		log.Printf("[%s] client is not enabled", *client.Name)
 		return errors.New("client is not enabled")
 	}
 
