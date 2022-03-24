@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 import { GetServerSideProps } from 'next';
 import { useCallback, useEffect, useState } from 'react';
 import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
+import { EmptyFunction } from '../../components';
+import AlertDialog, { AlertDialogProps } from '../../components/AlertDialog';
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -143,9 +145,11 @@ export default function Content() {
 
     useEffect(refreshClients, []);
 
+    const { OpenDialog, AlertDialogComponent } = AlertDialog();
+
     const columns: GridColDef[] = [
-        { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID' },
-        { hideable: false, editable: true, width: 250, align: 'center', headerAlign: 'center', field: 'name', headerName: 'Client Name' },
+        { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID', sortable: true },
+        { hideable: false, editable: true, width: 200, align: 'left', headerAlign: 'left', field: 'name', headerName: 'Client Name' },
         {
             hideable: true, editable: false, width: 350, align: 'center', headerAlign: 'center', field: 'uuid', headerName: 'Client ID',
             renderCell: (params) => (<code>{(params.row as APIClient).uuid}</code>)
@@ -156,7 +160,7 @@ export default function Content() {
             renderCell: (params) => (<div>{(params.row as APIClient).lastSeen ? (dayjs(params.row.lastSeen).format('YYYY/MM/DD HH:mm:ss')) : "N/A"}</div>)
         },
         {
-            hideable: false, editable: false, width: 100, align: 'center', headerAlign: 'center',
+            hideable: false, editable: false, width: 100, align: 'center', headerAlign: 'center', sortable: false, filterable: false,
             field: 'enabled', headerName: "Enabled",
             renderCell: function (params: GridRenderCellParams<boolean>) {
                 const { id, field } = params;
@@ -175,7 +179,7 @@ export default function Content() {
             }
         },
         {
-            hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center',
+            hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center', sortable: false, filterable: false,
             field: '_actions', headerName: 'Actions',
             renderCell: (params) => {
                 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -183,34 +187,51 @@ export default function Content() {
                 const { id } = params;
                 const field = 'uuid';
 
-                const onRefreshUuidClicked = async () => {
-                    const newuuid = crypto.randomUUID ? crypto.randomUUID() : "invalid";
-                    apiContext.current.setEditCellValue({ id, field, value: newuuid });
-                    const isValid = await apiContext.current.commitCellChange({ id, field });
-                    if (isValid) {
-                        apiContext.current.setCellMode(id, field, 'view');
-                    }
+                const resetUuidDialogProps: AlertDialogProps = {
+                    title: `Reset UUID for '${(params.row as APIClient).name ?? "<unknown>"}'?`,
+                    message: "This action will go into effect immediately! The action cannot be reverted!",
+                    action1: "Cancel",
+                    action2: `Reset UUID`,
+                    action1Color: "inherit",
+                    action2Color: "error",
+                    onAction1: (EmptyFunction),
+                    onAction2: (async () => {
+                        const newuuid = crypto.randomUUID ? crypto.randomUUID() : "invalid";
+                        apiContext.current.setEditCellValue({ id, field, value: newuuid });
+                        const isValid = await apiContext.current.commitCellChange({ id, field });
+                        if (isValid) {
+                            apiContext.current.setCellMode(id, field, 'view');
+                        }
+                    }),
                 };
 
-                const onDeleteClicked = async () => {
-                    setRowDisabled((prev) => { prev[params.id] = true; return prev; });
-                    const { success, message, data } = await deleteClientsAsync(params.id as number);
-                    setRowDisabled((prev) => { prev[params.id] = false; return prev; });
+                const deleteClientDialogProps: AlertDialogProps = {
+                    title: `Delete Client '${(params.row as APIClient).name ?? "<unknown>"}'?`,
+                    message: "This action will go into effect immediately! The action cannot be reverted!",
+                    action1: "Cancel",
+                    action2: `Delete Client`,
+                    action1Color: "inherit",
+                    action2Color: "error",
+                    onAction1: (EmptyFunction),
+                    onAction2: (async () => {
+                        setRowDisabled((prev) => { prev[params.id] = true; return prev; });
+                        const { success, message, data } = await deleteClientsAsync(params.id as number);
+                        setRowDisabled((prev) => { prev[params.id] = false; return prev; });
 
-                    if (success && data && data.deleted) {
-                        handleSuccessMessage(`Successfully deleted client ${params.id}`);
-                        setRows((r) => r.filter((a) => a.id !== params.id));
-                    }
-                    else {
-                        handleErrorMessage(`Failed to delete client ${params.id}: ${message}`);
-                    }
+                        if (success && data && data.deleted) {
+                            handleSuccessMessage(`Successfully deleted client ${params.id}`);
+                            setRows((r) => r.filter((a) => a.id !== params.id));
+                        }
+                        else {
+                            handleErrorMessage(`Failed to delete client ${params.id}: ${message}`);
+                        }
+                    }),
                 };
-                return (
-                    <>
-                        <IconButton disabled={rowDisabled[params.id]} color="success" onClick={onRefreshUuidClicked}><RefreshIcon /></IconButton>
-                        <IconButton disabled={rowDisabled[params.id]} color="error" onClick={onDeleteClicked}><DeleteIcon /></IconButton>
-                    </>
-                );
+
+                return (<>
+                    <IconButton disabled={rowDisabled[params.id]} color="success" onClick={() => { OpenDialog(resetUuidDialogProps); }}><RefreshIcon /></IconButton>
+                    <IconButton disabled={rowDisabled[params.id]} color="error" onClick={() => { OpenDialog(deleteClientDialogProps); }}><DeleteIcon /></IconButton>
+                </>);
             }
         }
     ];
@@ -261,6 +282,7 @@ export default function Content() {
                     <Alert {...snackbarState} onClose={handleCloseSnackbar} />
                 </Snackbar>
             )}
+            {AlertDialogComponent}
         </Container>
     );
 }
