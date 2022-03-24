@@ -21,13 +21,13 @@ func checkPrivilegedClient(ctx context.Context, clientUuid string, requirePrivil
 	}
 
 	if !client.GetEnabled() {
-		log.Printf("client '%s' is not enabled.", clientUuid)
+		log.Printf("client '%s' is not enabled.", *client.Name)
 		return nil, errors.New("client not enabled")
 	}
 
 	if requirePrivileged {
 		if !client.GetPrivileged() {
-			log.Printf("'requirePrivileged' was set, but client '%s' isn't privileged.", clientUuid)
+			log.Printf("'requirePrivileged' was set, but client '%s' isn't privileged.", *client.Name)
 			return nil, errors.New("unauthenticated")
 		}
 	}
@@ -92,7 +92,7 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.Updat
 	}
 
 	if shouldReject {
-		log.Printf("client %s is performing suicide, reject", request.Auth.ClientUuid)
+		log.Printf("client %s is performing suicide, reject", *client.Name)
 		return &models.UpdateClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
@@ -121,7 +121,7 @@ func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.Delet
 	}
 
 	if request.Auth.ClientUuid == *client.Uuid {
-		log.Printf("client %s is performing suicide, reject", request.Auth.ClientUuid)
+		log.Printf("client %s is performing suicide, reject", *client.Name)
 		return &models.DeleteClientResponse{Success: false}, errors.New("don't suicide")
 	}
 

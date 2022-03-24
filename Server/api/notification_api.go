@@ -26,7 +26,11 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.S
 		return &emptypb.Empty{}, errors.New("invalid client id")
 	}
 
-	log.Printf("client %s (%s) sends notification: [%s]: %s", *client.Name, *client.Uuid, request.Notification.Title, request.Notification.Message)
+	if !client.GetEnabled() {
+		return &emptypb.Empty{}, errors.New("client is not enabled")
+	}
+
+	log.Printf("[%s] sends notification: [%s]: %s", *client.Name, request.Notification.Title, request.Notification.Message)
 
 	s.BroadcastNotification(request.Notification)
 	return &emptypb.Empty{}, nil
@@ -43,7 +47,11 @@ func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotific
 		return errors.New("invalid client id")
 	}
 
-	log.Printf("client %s (%s) subscribes to camera change info", *client.Name, *client.Uuid)
+	if !client.GetEnabled() {
+		return errors.New("client is not enabled")
+	}
+
+	log.Printf("[%s] subscribes to camera change info", *client.Name)
 
 	subscribeId := time.Now().UnixNano()
 	eventChannel, err := s.notificationBroadcaster.Subscribe(subscribeId)

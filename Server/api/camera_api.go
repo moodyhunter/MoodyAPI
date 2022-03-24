@@ -27,7 +27,11 @@ func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.
 		return &emptypb.Empty{}, errors.New("invalid client id")
 	}
 
-	log.Printf("client %s (%s) sets camera state to %s", *client.Name, *client.Uuid, request.State.State)
+	if !client.GetEnabled() {
+		return &emptypb.Empty{}, errors.New("client is not enabled")
+	}
+
+	log.Printf("[%s] sets camera state to %t", *client.Name, request.State.State)
 
 	s.BroadcastCameraEvent(request.State)
 	return &emptypb.Empty{}, nil
@@ -44,7 +48,11 @@ func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCam
 		return errors.New("invalid client id")
 	}
 
-	log.Printf("client %s (%s) subscribes to camera change info", *client.Name, *client.Uuid)
+	if !client.GetEnabled() {
+		return errors.New("client is not enabled")
+	}
+
+	log.Printf("[%s] subscribes to camera change info", *client.Name)
 
 	server.Send(s.lastCameraState)
 
