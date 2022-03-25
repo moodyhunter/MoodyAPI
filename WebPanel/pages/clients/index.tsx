@@ -1,5 +1,5 @@
 import { Add as AddIcon, Delete as DeleteIcon, Refresh as RefreshIcon } from '@mui/icons-material';
-import { Alert, AlertProps, Box, Button, Container, Divider, IconButton, LinearProgress, Snackbar, styled, Switch, Toolbar, Typography } from '@mui/material';
+import { Alert, AlertProps, Box, Button, Container, Divider, IconButton, LinearProgress, Snackbar, styled, Switch, Typography } from '@mui/material';
 import { DataGrid, GridCellEditCommitParams, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, useGridApiContext } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { GetServerSideProps } from 'next';
@@ -262,11 +262,9 @@ export default function Content() {
     };
 
     return (
-        <Container style={{ height: '60vh', width: '100%' }}>
-            <Toolbar>
-                <Typography variant='h4'>API Clients</Typography>
-            </Toolbar>
-
+        <Container>
+            <Typography variant='h4'>API Clients</Typography>
+            <br />
             <DataGrid
                 components={{
                     LoadingOverlay: LinearProgress,

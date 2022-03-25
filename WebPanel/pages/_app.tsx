@@ -1,4 +1,4 @@
-import { Home as HomeIcon, Laptop as LaptopIcon, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { Dashboard as DashboardIcon, Home as HomeIcon, Laptop as LaptopIcon, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
 import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, Link, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { AppProps } from 'next/app';
@@ -38,6 +38,7 @@ const DrawerContent = () => {
                 <AppListButton link='/clients' name='API Clients' icon={(<LaptopIcon />)} />
                 <AppListButton link='/wg' name='Wireguard Clients' icon={(<NetworkIcon />)} />
                 <AppListButton link='/notifications' name='Notifications' icon={(<NotificationIcon />)} />
+                <AppListButton link='/status' name='Status' icon={(<DashboardIcon />)} />
             </List>
             <Divider />
             <List>
