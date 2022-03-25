@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"api.mooody.me/common"
 	"api.mooody.me/db"
 	"api.mooody.me/models"
 	"github.com/google/uuid"
@@ -12,34 +13,10 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func checkPrivilegedClient(ctx context.Context, clientUuid string, requirePrivileged bool) (*models.APIClient, error) {
-	client, err := db.GetClientByUUID(ctx, clientUuid)
-
-	if err != nil {
-		log.Printf("database returns error '%s'.", err.Error())
-		return nil, errors.New("internal error")
-	}
-
-	if !client.GetEnabled() {
-		log.Printf("client '%s' is not enabled.", *client.Name)
-		return nil, errors.New("client not enabled")
-	}
-
-	if requirePrivileged {
-		if !client.GetPrivileged() {
-			log.Printf("'requirePrivileged' was set, but client '%s' isn't privileged.", *client.Name)
-			return nil, errors.New("unauthenticated")
-		}
-	}
-
-	return client, nil
-}
-
 func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListClientsRequest) (*models.ListClientsResponse, error) {
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
-
+	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		log.Printf("checkPrivilegedClient failed: %s", err.Error())
+		common.LogClientWithError(client, err)
 		return &models.ListClientsResponse{Success: false}, errors.New("unauthenticated")
 	}
 
@@ -53,14 +30,17 @@ func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListCl
 }
 
 func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.UpdateClientRequest) (*models.UpdateClientResponse, error) {
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
-
+	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		log.Printf("checkPrivilegedClient failed: %s", err.Error())
+		common.LogClientWithError(client, err)
 		return &models.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
-	client, err := db.GetClientByID(ctx, request.Client.Id)
+	if request.Client == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	client, err = db.GetClientByID(ctx, request.Client.Id)
 	if err != nil {
 		log.Printf("GetClientByID failed: %s", err.Error())
 		return nil, errors.New("server error")
@@ -107,14 +87,18 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.Updat
 }
 
 func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.DeleteClientRequest) (*models.DeleteClientResponse, error) {
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
-
+	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		log.Printf("checkPrivilegedClient failed: %s", err.Error())
+
+		common.LogClientWithError(client, err)
 		return &models.DeleteClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
-	client, err := db.GetClientByID(ctx, request.Client.Id)
+	if request.Client == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	client, err = db.GetClientByID(ctx, request.Client.Id)
 	if err != nil {
 		log.Printf("GetClientByID failed: %s", err.Error())
 		return nil, errors.New("server error")
@@ -135,11 +119,14 @@ func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.Delet
 }
 
 func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *models.CreateClientRequest) (*models.CreateClientResponse, error) {
-	_, err := checkPrivilegedClient(ctx, request.Auth.ClientUuid, true)
-
+	_, err := common.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 		log.Printf("checkPrivilegedClient failed: %s", err.Error())
 		return &models.CreateClientResponse{Success: false}, errors.New("unauthenticated")
+	}
+
+	if request.Client == nil {
+		return nil, errors.New("invalid request")
 	}
 
 	request.Client.Privileged = proto.Bool(false)

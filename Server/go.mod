@@ -1,6 +1,6 @@
 module api.mooody.me
 
-go 1.17
+go 1.18
 
 require (
 	github.com/uptrace/bun v1.1.1

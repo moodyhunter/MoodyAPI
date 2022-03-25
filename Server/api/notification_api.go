@@ -3,10 +3,9 @@ package api
 import (
 	context "context"
 	"errors"
-	"log"
 	"time"
 
-	"api.mooody.me/db"
+	"api.mooody.me/common"
 	"api.mooody.me/models"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
@@ -16,46 +15,30 @@ func (s *MoodyAPIServer) BroadcastNotification(event *models.Notification) {
 }
 
 func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil {
-		log.Printf("bad request")
-		return nil, errors.New("invalid client id")
-	}
-
-	client, err := db.GetClientByUUID(ctx, request.Auth.ClientUuid)
+	client, err := common.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
-		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
-		return &emptypb.Empty{}, errors.New("invalid client id")
+		common.LogClientWithError(client, err)
+		return &emptypb.Empty{}, err
 	}
 
-	if !client.GetEnabled() {
-		log.Printf("[%s] client is not enabled", *client.Name)
-		return &emptypb.Empty{}, errors.New("client is not enabled")
+	if request.Notification == nil {
+		return nil, errors.New("invalid request")
 	}
 
-	log.Printf("[%s] sends notification: [%s]: %s", *client.Name, request.Notification.Title, request.Notification.Message)
+	common.LogClient(client, `sends "[%s]: %s"`, request.Notification.Title, request.Notification.Message)
 
 	s.BroadcastNotification(request.Notification)
 	return &emptypb.Empty{}, nil
 }
 
 func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotificationsRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
-	if request == nil || request.Auth == nil {
-		log.Printf("bad request")
-		return errors.New("invalid client id")
-	}
-
-	client, err := db.GetClientByUUID(context.Background(), request.Auth.ClientUuid)
+	client, err := common.GetClientFromAuth(context.Background(), request.Auth, false)
 	if err != nil {
-		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
-		return errors.New("invalid client id")
+		common.LogClientWithError(client, err)
+		return err
 	}
 
-	if !client.GetEnabled() {
-		log.Printf("[%s] client is not enabled", *client.Name)
-		return errors.New("client is not enabled")
-	}
-
-	log.Printf("[%s] subscribes to camera change info", *client.Name)
+	common.LogClient(client, `subscribed notifications`)
 
 	subscribeId := time.Now().UnixNano()
 	eventChannel, err := s.notificationBroadcaster.Subscribe(subscribeId)
@@ -73,7 +56,7 @@ done:
 			}
 		case <-server.Context().Done():
 			{
-				log.Printf("client %s disconnected", *client.Name)
+				common.LogClient(client, `disconnected`)
 				break done
 			}
 		}

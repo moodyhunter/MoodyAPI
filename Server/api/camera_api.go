@@ -3,10 +3,9 @@ package api
 import (
 	context "context"
 	"errors"
-	"log"
 	"time"
 
-	"api.mooody.me/db"
+	"api.mooody.me/common"
 	"api.mooody.me/models"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -17,46 +16,30 @@ func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 }
 
 func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
-	if request == nil || request.Auth == nil {
-		log.Printf("bad request")
-		return nil, errors.New("invalid client id")
-	}
-
-	client, err := db.GetClientByUUID(ctx, request.Auth.ClientUuid)
+	client, err := common.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
-		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
-		return &emptypb.Empty{}, errors.New("invalid client id")
+		common.LogClientWithError(client, err)
+		return nil, err
 	}
 
-	if !client.GetEnabled() {
-		log.Printf("[%s] client is not enabled", *client.Name)
-		return &emptypb.Empty{}, errors.New("client is not enabled")
+	if request.State == nil {
+		return nil, errors.New("invalid request")
 	}
 
-	log.Printf("[%s] sets camera state to %t", *client.Name, request.State.State)
+	common.LogClient(client, "set camera state to %t", request.State.State)
 
 	s.BroadcastCameraEvent(request.State)
 	return &emptypb.Empty{}, nil
 }
 
 func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCameraStateChangeRequest, server models.MoodyAPIService_SubscribeCameraStateChangeServer) error {
-	if request == nil || request.Auth == nil {
-		log.Printf("bad request")
-		return errors.New("invalid client id")
-	}
-
-	client, err := db.GetClientByUUID(context.Background(), request.Auth.ClientUuid)
+	client, err := common.GetClientFromAuth(context.Background(), request.Auth, false)
 	if err != nil {
-		log.Printf("invalid client id: %s", request.Auth.ClientUuid)
-		return errors.New("invalid client id")
+		common.LogClientWithError(client, err)
+		return err
 	}
 
-	if !client.GetEnabled() {
-		log.Printf("[%s] client is not enabled", *client.Name)
-		return errors.New("client is not enabled")
-	}
-
-	log.Printf("[%s] subscribes to camera change info", *client.Name)
+	common.LogClient(client, "subscribed to camera change event")
 
 	server.Send(s.lastCameraState)
 
@@ -76,7 +59,7 @@ done:
 			}
 		case <-server.Context().Done():
 			{
-				log.Printf("client %s disconnected", *client.Name)
+				common.LogClient(client, "disconnected", *client.Name)
 				break done
 			}
 		}
