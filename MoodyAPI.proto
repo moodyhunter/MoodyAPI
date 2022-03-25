@@ -31,12 +31,12 @@ message BUNFieldOptions
 
 extend google.protobuf.MessageOptions
 {
-    BUNMessageOptions opts = 52120;
+    BUNMessageOptions bun_opts = 52120;
 }
 
 extend google.protobuf.FieldOptions
 {
-    BUNFieldOptions field = 52120;
+    BUNFieldOptions bun_field = 52120;
 }
 
 /************************************ Messages ************************************/
@@ -48,44 +48,44 @@ message Auth
 
 message APIClient
 {
-    option (opts) = {
+    option (bun_opts) = {
         ormable : true,
         table : "clients"
     };
-    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
-    optional string name = 2 [ (field) = { column : "client_name" } ];
-    optional string uuid = 3 [ (field) = { column : "client_uuid" } ];
-    optional bool privileged = 4 [ (field) = { column : "privileged" } ];
-    optional google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
-    optional bool enabled = 6 [ (field) = { column : "enabled" } ];
+    int64 id = 1 [ (bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    optional string name = 2 [ (bun_field) = { column : "client_name" } ];
+    optional string uuid = 3 [ (bun_field) = { column : "client_uuid" } ];
+    optional bool privileged = 4 [ (bun_field) = { column : "privileged" } ];
+    optional google.protobuf.Timestamp lastSeen = 5 [ (bun_field) = { column : "last_seen" } ];
+    optional bool enabled = 6 [ (bun_field) = { column : "enabled" } ];
 }
 
 message Notification
 {
-    option (opts) = {
+    option (bun_opts) = {
         ormable : true,
         table : "notifications"
     };
-    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
-    int64 senderId = 2 [ (field) = { column : "sender_id" } ];
+    int64 id = 1 [ (bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 senderId = 2 [ (bun_field) = { column : "sender_id" } ];
     reserved 3; // ChannelId?
-    string title = 4 [ (field) = { column : "title" } ];
-    string content = 5 [ (field) = { column : "content" } ];
-    google.protobuf.Timestamp time = 6 [ (field) = { column : "time" } ];
-    string icon = 7 [ (field) = { column : "icon" } ];
+    string title = 4 [ (bun_field) = { column : "title" } ];
+    string content = 5 [ (bun_field) = { column : "content" } ];
+    google.protobuf.Timestamp time = 6 [ (bun_field) = { column : "time" } ];
+    string icon = 7 [ (bun_field) = { column : "icon" } ];
 }
 
 message OperationLog
 {
-    option (opts) = {
+    option (bun_opts) = {
         ormable : true,
         table : "operation_logs"
     };
-    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
-    int64 clientId = 2 [ (field) = { column : "client_id" } ];
-    google.protobuf.Timestamp time = 3 [ (field) = { column : "time" } ];
-    string operation = 4 [ (field) = { column : "operation" } ];
-    string result = 5 [ (field) = { column : "result" } ];
+    int64 id = 1 [ (bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 clientId = 2 [ (bun_field) = { column : "client_id" } ];
+    google.protobuf.Timestamp time = 3 [ (bun_field) = { column : "time" } ];
+    string operation = 4 [ (bun_field) = { column : "operation" } ];
+    string result = 5 [ (bun_field) = { column : "result" } ];
 }
 
 /************************************ Service Definitions ************************************/
