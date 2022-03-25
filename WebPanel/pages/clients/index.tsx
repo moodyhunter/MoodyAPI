@@ -262,7 +262,7 @@ export default function Content() {
     };
 
     return (
-        <Container>
+        <Container style={{ height: '62vh', width: '100%' }}>
             <Typography variant='h4'>API Clients</Typography>
             <br />
             <DataGrid
