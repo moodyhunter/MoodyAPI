@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { EmptyFunction } from ".";
 
 type _Color = 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
 
@@ -14,41 +15,45 @@ export type AlertDialogProps = {
     action2Color: _Color
 };
 
-export default function AlertDialog() {
+const DefaultAlertDialogProps: AlertDialogProps = {
+    action1: "action 1",
+    action2: "action 2",
+    action1Color: "success",
+    action2Color: "error",
+    message: "Message",
+    onAction1: EmptyFunction,
+    onAction2: EmptyFunction,
+    title: "Title"
+};
+
+export default function useAlertDialog() {
     const [open, setOpen] = useState(false);
-    const [dprops, setDProps] = useState<AlertDialogProps | null>(null);
+    const [dprops, setDProps] = useState<AlertDialogProps>(DefaultAlertDialogProps);
 
-    const handleClose1 = () => { setOpen(false); if (dprops) dprops.onAction1(); };
-    const handleClose2 = () => { setOpen(false); if (dprops) dprops.onAction2(); };
+    const OpenDialog = useCallback((props: AlertDialogProps) => { setDProps(props); setOpen(true); }, []);
+    const CloseDialog = useCallback(() => { setOpen(false); }, []);
 
-    const OpenDialog = (props: AlertDialogProps) => {
-        setDProps(props);
-        setOpen(true);
-    };
+    const handleClose1 = useCallback(() => { setOpen(false); dprops.onAction1(); }, [dprops]);
+    const handleClose2 = useCallback(() => { setOpen(false); dprops.onAction2(); }, [dprops]);
 
-    const CloseDialog = () => {
-        setOpen(false);
-        setDProps(null);
-    };
-
-    const AlertDialogComponent = (
+    const AlertDialog = (
         <Dialog
             open={open}
             onClose={() => { setOpen(false); }}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description">
-            <DialogTitle id="alert-dialog-title">{dprops?.title ?? "Dialog Title"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{dprops.title}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {dprops?.message ?? "Content"}
+                    {dprops.message}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button color={dprops?.action1Color ?? "inherit"} onClick={handleClose1}>{dprops?.action1 ?? "Action 1"}</Button>
-                <Button color={dprops?.action2Color ?? "inherit"} onClick={handleClose2}>{dprops?.action2 ?? "Action 2"}</Button>
+                <Button color={dprops.action1Color} onClick={handleClose1}>{dprops.action1}</Button>
+                <Button color={dprops.action2Color} onClick={handleClose2}>{dprops.action2}</Button>
             </DialogActions>
         </Dialog>
     );
 
-    return { OpenDialog, CloseDialog, AlertDialogComponent };
+    return { OpenDialog, CloseDialog, AlertDialog };
 }

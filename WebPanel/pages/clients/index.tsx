@@ -6,7 +6,7 @@ import { GetServerSideProps } from 'next';
 import { useCallback, useEffect, useState } from 'react';
 import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 import { EmptyFunction } from '../../components';
-import AlertDialog, { AlertDialogProps } from '../../components/AlertDialog';
+import useAlertDialog, { AlertDialogProps } from '../../components/AlertDialog';
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -145,7 +145,7 @@ export default function Content() {
 
     useEffect(refreshClients, []);
 
-    const { OpenDialog, AlertDialogComponent } = AlertDialog();
+    const { OpenDialog, AlertDialog } = useAlertDialog();
 
     const columns: GridColDef[] = [
         { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID', sortable: true },
@@ -280,7 +280,7 @@ export default function Content() {
                     <Alert {...snackbarState} onClose={handleCloseSnackbar} />
                 </Snackbar>
             )}
-            {AlertDialogComponent}
+            {AlertDialog}
         </Container>
     );
 }
