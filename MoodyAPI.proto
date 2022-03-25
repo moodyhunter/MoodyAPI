@@ -39,7 +39,56 @@ extend google.protobuf.FieldOptions
     BUNFieldOptions field = 52120;
 }
 
-/************************************ protoc-gen-bun ************************************/
+/************************************ Messages ************************************/
+
+message Auth
+{
+    string clientUuid = 1;
+}
+
+message APIClient
+{
+    option (opts) = {
+        ormable : true,
+        table : "clients"
+    };
+    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
+    optional string name = 2 [ (field) = { column : "client_name" } ];
+    optional string uuid = 3 [ (field) = { column : "client_uuid" } ];
+    optional bool privileged = 4 [ (field) = { column : "privileged" } ];
+    optional google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
+    optional bool enabled = 6 [ (field) = { column : "enabled" } ];
+}
+
+message Notification
+{
+    option (opts) = {
+        ormable : true,
+        table : "notifications"
+    };
+    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 senderId = 2 [ (field) = { column : "sender_id" } ];
+    reserved 3; // ChannelId?
+    string title = 4 [ (field) = { column : "title" } ];
+    string content = 5 [ (field) = { column : "content" } ];
+    google.protobuf.Timestamp time = 6 [ (field) = { column : "time" } ];
+    string icon = 7 [ (field) = { column : "icon" } ];
+}
+
+message OperationLog
+{
+    option (opts) = {
+        ormable : true,
+        table : "operation_logs"
+    };
+    int64 id = 1 [ (field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 clientId = 2 [ (field) = { column : "client_id" } ];
+    google.protobuf.Timestamp time = 3 [ (field) = { column : "time" } ];
+    string operation = 4 [ (field) = { column : "operation" } ];
+    string result = 5 [ (field) = { column : "result" } ];
+}
+
+/************************************ Service Definitions ************************************/
 
 service MoodyAPIService
 {
@@ -54,25 +103,6 @@ service MoodyAPIService
     rpc ListClients(ListClientsRequest) returns (ListClientsResponse);
     rpc DeleteClient(DeleteClientRequest) returns (DeleteClientResponse);
     rpc UpdateClient(UpdateClientRequest) returns (UpdateClientResponse);
-}
-
-message Auth
-{
-    string clientUuid = 1;
-}
-
-message APIClient
-{
-    option (opts) = {
-        ormable : true,
-        table : "clients"
-    };
-    int64 id = 1 [ (field) = { column : "id", primary_key : true, unique : true, not_null : true, auto_increment : true } ];
-    optional string name = 2 [ (field) = { column : "client_name" } ];
-    optional string uuid = 3 [ (field) = { column : "client_uuid" } ];
-    optional bool privileged = 4 [ (field) = { column : "privileged" } ];
-    optional google.protobuf.Timestamp lastSeen = 5 [ (field) = { column : "last_seen" } ];
-    optional bool enabled = 6 [ (field) = { column : "enabled" } ];
 }
 
 message ListClientsRequest
@@ -146,13 +176,4 @@ message SendNotificationRequest
 {
     Auth auth = 1;
     Notification notification = 2;
-}
-
-message Notification
-{
-    google.protobuf.Timestamp time = 1;
-    int32 channelId = 2;
-    string title = 3;
-    string message = 4;
-    string icon = 5;
 }

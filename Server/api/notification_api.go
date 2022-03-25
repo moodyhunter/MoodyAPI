@@ -25,7 +25,7 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.S
 		return nil, errors.New("invalid request")
 	}
 
-	common.LogClient(client, `sends "[%s]: %s"`, request.Notification.Title, request.Notification.Message)
+	common.LogClient(client, `sends "[%s]: %s"`, request.Notification.Title, request.Notification.Content)
 
 	s.BroadcastNotification(request.Notification)
 	return &emptypb.Empty{}, nil

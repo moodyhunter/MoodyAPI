@@ -5,7 +5,7 @@ import (
 
 	"api.mooody.me/broadcaster"
 	"api.mooody.me/models"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 

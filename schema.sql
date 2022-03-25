@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS clients CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS wg_clients CASCADE;
-DROP TABLE IF EXISTS clients_wireguard CASCADE;
 DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
+DROP TABLE IF EXISTS operation_logs CASCADE;
 
 CREATE TABLE clients (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
@@ -15,10 +15,12 @@ CREATE TABLE clients (
 
 CREATE TABLE notifications (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
-    client_id   SERIAL      NOT NULL            REFERENCES clients(id),
+    sender_id   INTEGER     NOT NULL            REFERENCES clients(id),
+    channel_id  INTEGER     NOT NULL,
     title       VARCHAR     NOT NULL,
     content     VARCHAR     NOT NULL,
-    time        TIMESTAMP   NOT NULL
+    time        TIMESTAMP   NOT NULL,
+    icon        VARCHAR
 );
 
 CREATE TABLE wg_clients (
@@ -36,8 +38,10 @@ CREATE TABLE wg_allowed_ips (
     allowed_ip  INET    NOT NULL    UNIQUE
 );
 
-CREATE TABLE clients_wireguard (
-    client_id   SERIAL  NOT NULL    REFERENCES clients(id),
-    wg_id       SERIAL  NOT NULL    REFERENCES wg_clients(id),
-    CONSTRAINT clients_wireguard_pkey PRIMARY KEY (client_id, wg_id)
-);
+CREATE TABLE operation_logs (
+    id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
+    client_id   NUMERIC     NOT NULL,
+    time        TIMESTAMP   NOT NULL,
+    operation   VARCHAR     NOT NULL,
+    result      VARCHAR     NOT NULL
+)

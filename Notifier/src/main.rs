@@ -47,10 +47,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         println!("Sending notifications...");
         let title = env::args().nth(1).unwrap().to_string();
-        let message = env::args().nth(2).unwrap().to_string();
-        let notification_channel = 1;
+        let content = env::args().nth(2).unwrap().to_string();
 
-        send_notification(notification_channel, title, message, &channel, &client_id).await;
+        send_notification(title, content, &channel, &client_id).await;
     } else {
         println!("Starting in notification client mode, listening for new notifications...");
         listen_notification(channel, client_id).await
@@ -98,7 +97,7 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
 fn display_notification(n: Notification) {
     Notify::new()
         .summary(&n.title)
-        .body(&n.message)
+        .body(&n.content)
         .icon(&n.icon)
         .appname("Notify Client")
         .hint(Hint::Resident(true))
@@ -106,18 +105,13 @@ fn display_notification(n: Notification) {
         .unwrap();
 }
 
-async fn send_notification(
-    notification_channel: i32,
-    title: String,
-    message: String,
-    channel: &Channel,
-    api_secret: &String,
-) {
+async fn send_notification(title: String, content: String, channel: &Channel, api_secret: &String) {
     let n = Notification {
+        id: 0,
+        sender_id: 0,
         time: Some(Timestamp::from(SystemTime::now())),
-        channel_id: notification_channel,
         title,
-        message,
+        content,
         icon: "invalid".to_string(),
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());
