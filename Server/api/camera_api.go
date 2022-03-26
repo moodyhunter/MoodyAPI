@@ -61,7 +61,7 @@ done:
 			}
 		case <-server.Context().Done():
 			{
-				common.LogClientOperation(context.Background(), client, "disconnected", *client.Name)
+				common.LogClientOperation(context.Background(), client, "disconnected")
 				break done
 			}
 		}
