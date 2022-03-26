@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"errors"
-	"log"
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
@@ -14,15 +13,15 @@ import (
 )
 
 func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListClientsRequest) (*models.ListClientsResponse, error) {
-	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		common.LogClientWithError(client, err)
+		common.LogClientError(ctx, client, err)
 		return &models.ListClientsResponse{Success: false}, errors.New("unauthenticated")
 	}
 
 	clients, err := db.ListClients(ctx)
 	if err != nil {
-		log.Printf("ListClients failed: %s", err.Error())
+		common.LogClientError(ctx, client, err)
 		return nil, errors.New("server error")
 	}
 
@@ -30,9 +29,9 @@ func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListCl
 }
 
 func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.UpdateClientRequest) (*models.UpdateClientResponse, error) {
-	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		common.LogClientWithError(client, err)
+		common.LogClientError(ctx, client, err)
 		return &models.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
@@ -42,7 +41,7 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.Updat
 
 	client, err = db.GetClientByID(ctx, request.Client.Id)
 	if err != nil {
-		log.Printf("GetClientByID failed: %s", err.Error())
+		common.LogClientError(ctx, client, err)
 		return nil, errors.New("server error")
 	}
 
@@ -72,25 +71,26 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.Updat
 	}
 
 	if shouldReject {
-		log.Printf("client %s is performing suicide, reject", *client.Name)
+		common.LogClientOperation(ctx, client, "client is performing suicide, rejecting.")
 		return &models.UpdateClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
 	err = db.UpdateClient(ctx, client)
 
 	if err != nil {
-		log.Printf("UpdateClient failed: %s", err.Error())
+		common.LogClientError(ctx, client, err)
 		return &models.UpdateClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
+	common.LogClientOperation(ctx, client, "updated client with id '%d'.", request.Client.Id)
 	return &models.UpdateClientResponse{Success: true}, nil
 }
 
 func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.DeleteClientRequest) (*models.DeleteClientResponse, error) {
-	client, err := common.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 
-		common.LogClientWithError(client, err)
+		common.LogClientError(ctx, client, err)
 		return &models.DeleteClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
@@ -100,28 +100,30 @@ func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.Delet
 
 	client, err = db.GetClientByID(ctx, request.Client.Id)
 	if err != nil {
-		log.Printf("GetClientByID failed: %s", err.Error())
+		common.LogClientError(ctx, client, err)
 		return nil, errors.New("server error")
 	}
 
 	if request.Auth.ClientUuid == *client.Uuid {
-		log.Printf("client %s is performing suicide, reject", *client.Name)
+		common.LogClientOperation(ctx, client, "client is performing suicide, rejecting.")
 		return &models.DeleteClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
 	err = db.DeleteClient(ctx, client)
 
 	if err != nil {
-		log.Printf("deleteClient failed: %s", err)
+		common.LogClientError(ctx, client, err)
 		return &models.DeleteClientResponse{Success: false}, errors.New("unexpected database result")
 	}
+
+	common.LogClientOperation(ctx, client, "deleted client with id '%d'.", request.Client.Id)
 	return &models.DeleteClientResponse{Success: true}, nil
 }
 
 func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *models.CreateClientRequest) (*models.CreateClientResponse, error) {
-	_, err := common.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
-		log.Printf("checkPrivilegedClient failed: %s", err.Error())
+		common.LogClientError(ctx, client, err)
 		return &models.CreateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
@@ -135,11 +137,12 @@ func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *models.Creat
 	request.Client.Id = 0
 	request.Client.LastSeen = timestamppb.Now()
 
-	client, err := db.CreateClient(ctx, request.Client)
+	newClient, err := db.CreateClient(ctx, request.Client)
 	if err != nil {
-		log.Printf("createClient failed: %s", err)
+		common.LogClientError(ctx, newClient, err)
 		return &models.CreateClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
-	return &models.CreateClientResponse{Success: true, Client: client}, nil
+	common.LogClientOperation(ctx, client, "created another client with id '%d', named '%s'.", newClient.Id, newClient.GetName())
+	return &models.CreateClientResponse{Success: true, Client: newClient}, nil
 }

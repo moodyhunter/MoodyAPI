@@ -1,16 +1,11 @@
 package common
 
 import (
-	"context"
-	"errors"
-	"log"
 	"runtime"
-
-	"api.mooody.me/db"
-	"api.mooody.me/models"
+	"strings"
 )
 
-func getCallerFrame() runtime.Frame {
+func GetCallerFunctionName() string {
 	// We need the frame at index skipFrames+2, since we never want runtime.Callers and getFrame
 	targetFrameIndex := 1 + 2
 
@@ -30,46 +25,6 @@ func getCallerFrame() runtime.Frame {
 		}
 	}
 
-	return frame
-}
-
-func LogClient(client *models.APIClient, format string, msgs ...interface{}) {
-	caller := getCallerFrame().Function
-	if client == nil {
-		log.Printf("INFO:  [%s][%s]: "+format, caller, "UNKNOWN CLIENT", msgs)
-	} else {
-		log.Printf("INFO:  [%s][%s]: "+format, caller, client.GetName(), msgs)
-	}
-}
-
-func LogClientWithError(client *models.APIClient, err error) {
-	caller := getCallerFrame().Function
-	if client == nil {
-		log.Printf("ERROR: [%s][%s]: (%s)", caller, "UNKNOWN CLIENT", err.Error())
-	} else {
-		log.Printf("ERROR: [%s][%s]: (%s)", caller, client.GetName(), err.Error())
-	}
-}
-
-func GetClientFromAuth(ctx context.Context, auth *models.Auth, requirePrivileged bool) (*models.APIClient, error) {
-	if auth == nil {
-		return nil, errors.New("invalid Auth")
-	}
-
-	client, err := db.GetClientByUUID(ctx, auth.ClientUuid)
-	if err != nil {
-		return nil, errors.New("invalid client id")
-	}
-
-	if !client.GetEnabled() {
-		return nil, errors.New("client is not enabled")
-	}
-
-	if requirePrivileged {
-		if !client.GetPrivileged() {
-			return client, errors.New("client isn't privileged as required")
-		}
-	}
-
-	return client, nil
+	funcNameComponents := strings.Split(frame.Function, "/")
+	return funcNameComponents[len(funcNameComponents)-1]
 }

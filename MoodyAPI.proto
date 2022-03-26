@@ -83,9 +83,9 @@ message OperationLog
     };
     int64 id = 1 [ (bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
     int64 clientId = 2 [ (bun_field) = { column : "client_id" } ];
-    google.protobuf.Timestamp time = 3 [ (bun_field) = { column : "time" } ];
-    string operation = 4 [ (bun_field) = { column : "operation" } ];
-    string result = 5 [ (bun_field) = { column : "result" } ];
+    string clientName = 3 [ (bun_field) = { column : "client_name" } ];
+    google.protobuf.Timestamp time = 4 [ (bun_field) = { column : "time" } ];
+    string operation = 5 [ (bun_field) = { column : "operation" } ];
 }
 
 /************************************ Service Definitions ************************************/

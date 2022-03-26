@@ -41,7 +41,7 @@ CREATE TABLE wg_allowed_ips (
 CREATE TABLE operation_logs (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
     client_id   NUMERIC     NOT NULL,
+    client_name VARCHAR     NOT NULL,
     time        TIMESTAMP   NOT NULL,
-    operation   VARCHAR     NOT NULL,
-    result      VARCHAR     NOT NULL
-)
+    operation   VARCHAR     NOT NULL
+);

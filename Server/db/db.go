@@ -24,6 +24,29 @@ func checkDatabaseConnectivity() error {
 	return nil
 }
 
+func GetClientFromAuth(ctx context.Context, auth *models.Auth, requirePrivileged bool) (*models.APIClient, error) {
+	if auth == nil {
+		return nil, errors.New("invalid Auth")
+	}
+
+	client, err := GetClientByUUID(ctx, auth.ClientUuid)
+	if err != nil {
+		return nil, errors.New("invalid client id")
+	}
+
+	if !client.GetEnabled() {
+		return nil, errors.New("client is not enabled")
+	}
+
+	if requirePrivileged {
+		if !client.GetPrivileged() {
+			return client, errors.New("client isn't privileged as required")
+		}
+	}
+
+	return client, nil
+}
+
 func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass string) {
 	pgconn := pgdriver.NewConnector(
 		pgdriver.WithNetwork("tcp"),
@@ -189,4 +212,24 @@ func ListClients(ctx context.Context) ([]*models.APIClient, error) {
 	}
 
 	return clients, nil
+}
+
+func LogOperation(ctx context.Context, logInfo *models.OperationLog) error {
+	logORM, _ := logInfo.ToORM(ctx)
+	res, err := database.NewInsert().
+		Model(&logORM).
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	r, err := res.RowsAffected()
+	if err != nil {
+		return err
+	} else if r == 0 {
+		return errors.New("unexpected affected rows")
+	}
+
+	return nil
 }
