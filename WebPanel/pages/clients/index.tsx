@@ -2,11 +2,11 @@ import { Add as AddIcon, Delete as DeleteIcon, Refresh as RefreshIcon } from '@m
 import { Alert, AlertProps, Box, Button, Container, Divider, IconButton, LinearProgress, Snackbar, styled, Switch, Typography } from '@mui/material';
 import { DataGrid, GridCellEditCommitParams, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, useGridApiContext } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
+import { useAtom } from 'jotai';
 import { GetServerSideProps } from 'next';
 import { useCallback, useEffect, useState } from 'react';
 import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
-import { EmptyFunction } from '../../components';
-import useAlertDialog, { AlertDialogProps } from '../../components/AlertDialog';
+import { AlertDialog, AlertDialogProps, EmptyFunction, openDialogAtom } from '../../components';
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -25,18 +25,10 @@ function CustomNoRowsOverlay() {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100%',
-        '& .ant-empty-img-1': {
-            fill: theme.palette.mode === 'light' ? '#aeb8c2' : '#262626',
-        },
-        '& .ant-empty-img-2': {
-            fill: theme.palette.mode === 'light' ? '#f5f5f7' : '#595959',
-        },
-        '& .ant-empty-img-3': {
-            fill: theme.palette.mode === 'light' ? '#dce0e6' : '#434343',
-        },
-        '& .ant-empty-img-4': {
-            fill: theme.palette.mode === 'light' ? '#fff' : '#1c1c1c',
-        },
+        '& .ant-empty-img-1': { fill: theme.palette.mode === 'light' ? '#aeb8c2' : '#262626' },
+        '& .ant-empty-img-2': { fill: theme.palette.mode === 'light' ? '#f5f5f7' : '#595959' },
+        '& .ant-empty-img-3': { fill: theme.palette.mode === 'light' ? '#dce0e6' : '#434343' },
+        '& .ant-empty-img-4': { fill: theme.palette.mode === 'light' ? '#ffffff' : '#1c1c1c' },
         '& .ant-empty-img-5': {
             fillOpacity: theme.palette.mode === 'light' ? '0.8' : '0.08',
             fill: theme.palette.mode === 'light' ? '#f5f5f5' : '#fff',
@@ -144,8 +136,7 @@ export default function Content() {
     };
 
     useEffect(refreshClients, []);
-
-    const { OpenDialog, AlertDialog } = useAlertDialog();
+    const [, openDialog] = useAtom(openDialogAtom);
 
     const columns: GridColDef[] = [
         { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID', sortable: true },
@@ -175,7 +166,7 @@ export default function Content() {
                     }
                 };
 
-                return (<Switch disabled={rowDisabled[params.id]} color="success" checked={!!(params.row as APIClient).enabled} onChange={handleChange} />);
+                return (<Switch disabled={rowDisabled[params.id]} color="success" checked={(params.row as APIClient).enabled} onChange={handleChange} />);
             }
         },
         {
@@ -229,8 +220,8 @@ export default function Content() {
                 };
 
                 return (<>
-                    <IconButton disabled={rowDisabled[params.id]} color="success" onClick={() => { OpenDialog(resetUuidDialogProps); }}><RefreshIcon /></IconButton>
-                    <IconButton disabled={rowDisabled[params.id]} color="error" onClick={() => { OpenDialog(deleteClientDialogProps); }}><DeleteIcon /></IconButton>
+                    <IconButton disabled={rowDisabled[params.id]} color="success" onClick={() => { openDialog(resetUuidDialogProps); }}><RefreshIcon /></IconButton>
+                    <IconButton disabled={rowDisabled[params.id]} color="error" onClick={() => { openDialog(deleteClientDialogProps); }}><DeleteIcon /></IconButton>
                 </>);
             }
         }
@@ -263,6 +254,7 @@ export default function Content() {
 
     return (
         <Container style={{ height: '62vh', width: '100%' }}>
+            <AlertDialog />
             <Typography variant='h4'>API Clients</Typography>
             <br />
             <DataGrid
@@ -280,7 +272,6 @@ export default function Content() {
                     <Alert {...snackbarState} onClose={handleCloseSnackbar} />
                 </Snackbar>
             )}
-            {AlertDialog}
         </Container>
     );
 }
