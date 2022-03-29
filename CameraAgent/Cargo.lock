@@ -101,7 +101,7 @@ name = "cam_agent"
 version = "0.1.0"
 dependencies = [
  "prost 0.10.0",
- "prost-types",
+ "prost-types 0.10.0",
  "protoc-rust-grpc",
  "rust-ini",
  "tokio",
@@ -602,7 +602,7 @@ dependencies = [
  "multimap",
  "petgraph",
  "prost 0.9.0",
- "prost-types",
+ "prost-types 0.9.0",
  "regex",
  "tempfile",
  "which",
@@ -642,6 +642,16 @@ checksum = "534b7a0e836e3c482d2693070f982e39e7611da9695d4d1f5a4b186b51faef0a"
 dependencies = [
  "bytes",
  "prost 0.9.0",
+]
+
+[[package]]
+name = "prost-types"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "926681c118ae6e512a3ccefd4abbe5521a14f4cc1e207356d4d00c0b7f2006fd"
+dependencies = [
+ "bytes",
+ "prost 0.10.0",
 ]
 
 [[package]]
