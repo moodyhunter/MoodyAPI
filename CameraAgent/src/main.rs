@@ -15,7 +15,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tokio::select! {
         _ = tokio::spawn(process_command(api_host.clone(), client_id.clone())) => unreachable!(),
         _ = tokio::spawn(report_status(api_host.clone(), client_id.clone())) => unreachable!()
-    };
+    }
 }
 
 async fn process_command(api_host: String, client_id: String) {
