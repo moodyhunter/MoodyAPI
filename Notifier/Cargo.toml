@@ -13,7 +13,7 @@ tokio = {version = "1.17.0", features = ["rt-multi-thread"]}
 tonic = {version = "0.6.2", features = ["transport", "tls", "tls-roots", "compression"]}
 
 # Do not change to 0.10 yet
-prost = "0.9.0"
+prost = "0.10.0"
 prost-types = "0.9.0"
 
 [build-dependencies]
