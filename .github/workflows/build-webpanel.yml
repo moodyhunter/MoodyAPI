@@ -28,6 +28,7 @@ jobs:
       - name: Build
         run: |
           cd /mnt/disk/moodyapi/WebPanel/
+          export NODE_OPTIONS=--max_old_space_size=10240
           yarn config set ignore-engines true
           yarn install
           yarn lint
