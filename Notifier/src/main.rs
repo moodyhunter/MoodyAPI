@@ -109,6 +109,7 @@ async fn send_notification(title: String, content: String, channel: &Channel, ap
     let n = Notification {
         id: 0,
         sender_id: 0,
+        channel_id: 0,
         time: Some(Timestamp::from(SystemTime::now())),
         title,
         content,

@@ -67,7 +67,7 @@ message Notification
     };
     int64 id = 1 [ (bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
     int64 senderId = 2 [ (bun_field) = { column : "sender_id" } ];
-    reserved 3; // ChannelId?
+    int64 channelId = 3 [ (bun_field) = { column : "channel_id" } ];
     string title = 4 [ (bun_field) = { column : "title" } ];
     string content = 5 [ (bun_field) = { column : "content" } ];
     google.protobuf.Timestamp time = 6 [ (bun_field) = { column : "time" } ];

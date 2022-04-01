@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS clients CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS notification_channels CASCADE;
 DROP TABLE IF EXISTS wg_clients CASCADE;
 DROP TABLE IF EXISTS wg_allowed_ips CASCADE;
 DROP TABLE IF EXISTS operation_logs CASCADE;
@@ -13,10 +14,15 @@ CREATE TABLE clients (
     enabled     BOOLEAN     NOT NULL
 );
 
+CREATE TABLE notification_channels (
+    id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
+    name        VARCHAR     NOT NULL    UNIQUE
+);
+
 CREATE TABLE notifications (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
     sender_id   INTEGER     NOT NULL            REFERENCES clients(id),
-    channel_id  INTEGER     NOT NULL,
+    channel_id  INTEGER     NOT NULL            REFERENCES notification_channels(id),
     title       VARCHAR     NOT NULL,
     content     VARCHAR     NOT NULL,
     time        TIMESTAMP   NOT NULL,
