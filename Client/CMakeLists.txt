@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 6.2 COMPONENTS Core Gui Quick RemoteObjects REQUIRED)
+find_package(Qt6 6.2 COMPONENTS Core Gui Quick Svg RemoteObjects REQUIRED)
 
 add_subdirectory(QtGraphicalEffects)
 
@@ -97,6 +97,7 @@ target_link_libraries(MoodyAppMain
         Qt::Core
         Qt::Quick
         Qt::RemoteObjects
+        Qt::Svg
         gRPC::grpc++
 )
 
