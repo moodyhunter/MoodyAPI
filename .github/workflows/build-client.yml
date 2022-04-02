@@ -18,7 +18,7 @@ jobs:
           submodules: "recursive"
 
       - run: |
-          export QT_VERSION="6.3.0"
+          export QT_VERSION="6.2.4"
           export APK_ARCH="android_arm64_v8a"
           export VCPKG_TRIPLET="arm64-android"
           export CI_RESOURCES="/mnt/disk/ci"
