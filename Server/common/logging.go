@@ -24,9 +24,10 @@ func getClientIdName(client *models.APIClient) (int64, string) {
 	return cid, cname
 }
 
-func writeLog(ctx context.Context, client *models.APIClient, operation string) {
+func writeLog(ctx context.Context, client *models.APIClient, errorPrefix string, frame string, operation string) {
 	cid, cname := getClientIdName(client)
-	log.Printf(operation)
+
+	log.Printf("%s: [%s] %s", errorPrefix, frame, operation)
 
 	logInfo := models.OperationLog{
 		ClientId:   cid,
@@ -40,10 +41,10 @@ func writeLog(ctx context.Context, client *models.APIClient, operation string) {
 
 func LogClientOperation(ctx context.Context, client *models.APIClient, message string, args ...interface{}) {
 	frame := GetCallerFunctionName()
-	writeLog(ctx, client, "I: "+frame+": "+fmt.Sprintf(message, args...))
+	writeLog(ctx, client, "I", frame, fmt.Sprintf(message, args...))
 }
 
 func LogClientError(ctx context.Context, client *models.APIClient, err error) {
 	frame := GetCallerFunctionName()
-	writeLog(ctx, client, "E: "+frame+": "+err.Error())
+	writeLog(ctx, client, "E", frame, err.Error())
 }
