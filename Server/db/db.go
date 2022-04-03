@@ -10,6 +10,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var (
@@ -34,8 +35,13 @@ func GetClientFromAuth(ctx context.Context, auth *models.Auth, requirePrivileged
 		return nil, errors.New("invalid client id")
 	}
 
+	client, err = UpdateClientLastSeen(ctx, client)
+	if err != nil {
+		return client, errors.New("failed to update client last seen")
+	}
+
 	if !client.GetEnabled() {
-		return nil, errors.New("client is not enabled")
+		return client, errors.New("client is not enabled")
 	}
 
 	if requirePrivileged {
@@ -98,6 +104,22 @@ func GetClientByID(ctx context.Context, id int64) (*models.APIClient, error) {
 	}
 
 	return clientORM.ToPB(ctx)
+}
+
+func UpdateClientLastSeen(ctx context.Context, client *models.APIClient) (*models.APIClient, error) {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return client, err
+	}
+
+	newClient, err := GetClientByID(ctx, client.Id)
+	newClient.LastSeen = timestamppb.Now()
+
+	err = UpdateClient(ctx, newClient)
+	if err != nil {
+		return client, err
+	}
+	return newClient, nil
 }
 
 func CreateClient(ctx context.Context, client *models.APIClient) (*models.APIClient, error) {
