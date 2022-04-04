@@ -1,4 +1,11 @@
-mod notification_api;
+mod models;
+use models::{
+    common::Auth,
+    moody_api::{
+        moody_api_service_client::MoodyApiServiceClient, Notification, SendNotificationRequest,
+        SubscribeNotificationsRequest,
+    },
+};
 
 use ini::Ini;
 use notify_rust::{Hint, Notification as Notify};
@@ -11,11 +18,6 @@ use std::{
 };
 use tokio::time::sleep;
 use tonic::{transport::Channel, Request};
-
-use crate::notification_api::{
-    moody_api_service_client::MoodyApiServiceClient, Auth, Notification, SendNotificationRequest,
-    SubscribeNotificationsRequest,
-};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

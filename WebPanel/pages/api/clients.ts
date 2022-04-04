@@ -1,7 +1,8 @@
 import { ServiceError } from '@grpc/grpc-js';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
-import { APIClient, Auth } from '../../common/protos/MoodyAPI';
+import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
+import { Auth } from '../../common/protos/common/common';
+
 
 type ClientAPIServerResponse = ClientAPIResponse<CreateClientAPIResponse | ListClientsAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
 

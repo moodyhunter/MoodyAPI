@@ -6,7 +6,7 @@
         "dev": "next dev",
         "build": "yarn generate && next build",
         "generate": "yarn generate:proto",
-        "generate:proto": "grpc_tools_node_protoc --ts_proto_out=./common/protos/ --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true --proto_path=../ ./../MoodyAPI.proto",
+        "generate:proto": "grpc_tools_node_protoc --ts_proto_out=./common/protos/ --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true --proto_path=../proto ./../proto/MoodyAPI.proto",
         "start": "next start",
         "lint": "next lint"
     },

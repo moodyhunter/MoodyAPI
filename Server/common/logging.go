@@ -7,10 +7,11 @@ import (
 
 	"api.mooody.me/db"
 	"api.mooody.me/models"
+	"api.mooody.me/models/common"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func getClientIdName(client *models.APIClient) (int64, string) {
+func getClientIdName(client *common.APIClient) (int64, string) {
 	var cid int64
 	var cname string
 
@@ -24,7 +25,7 @@ func getClientIdName(client *models.APIClient) (int64, string) {
 	return cid, cname
 }
 
-func writeLog(ctx context.Context, client *models.APIClient, errorPrefix string, frame string, operation string) {
+func writeLog(ctx context.Context, client *common.APIClient, errorPrefix string, frame string, operation string) {
 	cid, cname := getClientIdName(client)
 
 	log.Printf("%s: [%s] %s", errorPrefix, frame, operation)
@@ -39,12 +40,12 @@ func writeLog(ctx context.Context, client *models.APIClient, errorPrefix string,
 	db.LogOperation(ctx, &logInfo)
 }
 
-func LogClientOperation(ctx context.Context, client *models.APIClient, message string, args ...interface{}) {
+func LogClientOperation(ctx context.Context, client *common.APIClient, message string, args ...interface{}) {
 	frame := GetCallerFunctionName()
 	writeLog(ctx, client, "I", frame, fmt.Sprintf(message, args...))
 }
 
-func LogClientError(ctx context.Context, client *models.APIClient, err error) {
+func LogClientError(ctx context.Context, client *common.APIClient, err error) {
 	frame := GetCallerFunctionName()
 	writeLog(ctx, client, "E", frame, err.Error())
 }

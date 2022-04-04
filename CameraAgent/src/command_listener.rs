@@ -1,10 +1,13 @@
 use std::error::Error;
 use std::process::Command;
-use tonic::transport::Channel;
-use tonic::Request;
+use tonic::{transport::Channel, Request};
 
-use crate::camera_api::moody_api_service_client::MoodyApiServiceClient;
-use crate::camera_api::{Auth, SubscribeCameraStateChangeRequest};
+use crate::models::{
+    common::Auth,
+    moody_api::{
+        moody_api_service_client::MoodyApiServiceClient, SubscribeCameraStateChangeRequest,
+    },
+};
 
 pub async fn listen_for_state_change(
     api_host: &String,

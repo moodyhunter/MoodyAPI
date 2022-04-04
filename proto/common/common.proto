@@ -1,0 +1,54 @@
+syntax = "proto3";
+package common;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/descriptor.proto";
+
+option go_package = "api.mooody.me/models/common";
+
+message BUNMessageOptions
+{
+    bool ormable = 1;
+    string table = 2;
+};
+
+message BUNFieldOptions
+{
+    string column = 1;
+    string dbtype = 2;
+    bool primary_key = 3;
+    bool unique = 4;
+    string default = 5;
+    bool not_null = 6;
+    bool auto_increment = 7;
+    string embed_prefix = 8;
+};
+
+extend google.protobuf.MessageOptions
+{
+    BUNMessageOptions bun_opts = 52120;
+}
+
+extend google.protobuf.FieldOptions
+{
+    BUNFieldOptions bun_field = 52120;
+}
+
+message Auth
+{
+    string clientUuid = 1;
+}
+
+message APIClient
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "clients"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    optional string name = 2 [ (common.bun_field) = { column : "client_name" } ];
+    optional string uuid = 3 [ (common.bun_field) = { column : "client_uuid" } ];
+    optional bool privileged = 4 [ (common.bun_field) = { column : "privileged" } ];
+    optional google.protobuf.Timestamp lastSeen = 5 [ (common.bun_field) = { column : "last_seen" } ];
+    optional bool enabled = 6 [ (common.bun_field) = { column : "enabled" } ];
+}

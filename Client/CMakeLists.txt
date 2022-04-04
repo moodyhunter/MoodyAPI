@@ -22,25 +22,63 @@ find_package(Protobuf REQUIRED)
 find_package(gRPC REQUIRED)
 find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
 
-# Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
-# Generate gRPC and protobuf Sources
-set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.cc")
-set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.h")
-set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.cc")
-set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.h")
-set(PROTO_DIR "${CMAKE_SOURCE_DIR}/../")
-set(PROTO_FILE "${PROTO_DIR}/MoodyAPI.proto")
 
-add_custom_command(
-    OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"
-    COMMAND protobuf::protoc
-    ARGS
-        --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
-        --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
-        -I="${PROTO_DIR}"
-        --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
-        "${PROTO_FILE}"
-    DEPENDS "${PROTO_FILE}")
+
+macro(generate_v2ray_grpc_source proto)
+    get_filename_component(PROTO_ABS_DIR_PATH ${proto} DIRECTORY)
+    file(RELATIVE_PATH _r ${PROTO_SOURCE_DIR} ${proto})
+    get_filename_component(PROTO_FILE_DIR ${_r} DIRECTORY)
+    get_filename_component(PROTO_FILE_NAME ${_r} NAME_WE)
+
+    set(PROTO_HEADER_FILE "${PROTO_GENERATED_DIR}/${PROTO_FILE_DIR}/${PROTO_FILE_NAME}.pb.h")
+    set(PROTO_SOURCE_FILE "${PROTO_GENERATED_DIR}/${PROTO_FILE_DIR}/${PROTO_FILE_NAME}.pb.cc")
+
+    set(PROTO_GRPC_HEADER_FILE "${PROTO_GENERATED_DIR}/${PROTO_FILE_DIR}/${PROTO_FILE_NAME}.grpc.pb.h")
+    set(PROTO_GRPC_SOURCE_FILE "${PROTO_GENERATED_DIR}/${PROTO_FILE_DIR}/${PROTO_FILE_NAME}.grpc.pb.cc")
+
+    add_custom_command(
+        OUTPUT "${PROTO_HEADER_FILE}" "${PROTO_SOURCE_FILE}" "${PROTO_GRPC_HEADER_FILE}" "${PROTO_GRPC_SOURCE_FILE}"
+        COMMAND protobuf::protoc
+        ARGS
+            --grpc_out "${PROTO_GENERATED_DIR}"
+            --cpp_out "${PROTO_GENERATED_DIR}"
+            -I "${PROTO_SOURCE_DIR}"
+            --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
+            "${proto}"
+        DEPENDS "${proto}"
+        )
+
+    list(APPEND PROTO_HEADERS ${PROTO_HEADER_FILE} ${PROTO_GRPC_HEADER_FILE})
+    list(APPEND PROTO_SOURCES ${PROTO_SOURCE_FILE} ${PROTO_GRPC_SOURCE_FILE})
+endmacro()
+
+set(PROTO_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../proto")
+set(PROTO_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+
+generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/MoodyAPI.proto")
+generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/common/common.proto")
+generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/privileged/privileged.proto")
+generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/wg/wg.proto")
+
+# # Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
+# # Generate gRPC and protobuf Sources
+# set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.cc")
+# set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.h")
+# set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.cc")
+# set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.h")
+# set(PROTO_DIR "${CMAKE_SOURCE_DIR}/../")
+# set(PROTO_FILE "${PROTO_DIR}/MoodyAPI.proto")
+
+# add_custom_command(
+#     OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"
+#     COMMAND protobuf::protoc
+#     ARGS
+#         --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
+#         --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
+#         -I="${PROTO_DIR}"
+#         --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
+#         "${PROTO_FILE}"
+#     DEPENDS "${PROTO_FILE}")
 
 qt_add_executable(MoodyAppMain
     src/main.cpp
@@ -53,8 +91,7 @@ qt_add_executable(MoodyAppMain
     src/JNICall.hpp
     src/JNICall.cpp
 
-    "${GRPC_HEADER}" "${PB_HEADER}"
-    "${GRPC_SOURCE}" "${PB_SOURCE}"
+    "${PROTO_HEADERS}" "${PROTO_SOURCES}"
 )
 
 qt_add_qml_module(MoodyAppMain

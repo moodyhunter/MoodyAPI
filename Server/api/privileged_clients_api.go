@@ -6,17 +6,17 @@ import (
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
-	"api.mooody.me/models"
+	"api.mooody.me/models/privileged"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListClientsRequest) (*models.ListClientsResponse, error) {
+func (s *MoodyAPIServer) ListClients(ctx context.Context, request *privileged.ListClientsRequest) (*privileged.ListClientsResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
-		return &models.ListClientsResponse{Success: false}, errors.New("unauthenticated")
+		return &privileged.ListClientsResponse{Success: false}, errors.New("unauthenticated")
 	}
 
 	clients, err := db.ListClients(ctx)
@@ -25,14 +25,14 @@ func (s *MoodyAPIServer) ListClients(ctx context.Context, request *models.ListCl
 		return nil, errors.New("server error")
 	}
 
-	return &models.ListClientsResponse{Success: true, Clients: clients}, nil
+	return &privileged.ListClientsResponse{Success: true, Clients: clients}, nil
 }
 
-func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.UpdateClientRequest) (*models.UpdateClientResponse, error) {
+func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *privileged.UpdateClientRequest) (*privileged.UpdateClientResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
-		return &models.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
+		return &privileged.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
 	if request.Client == nil {
@@ -72,26 +72,26 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *models.Updat
 
 	if shouldReject {
 		common.LogClientOperation(ctx, client, "client is performing suicide, rejecting.")
-		return &models.UpdateClientResponse{Success: false}, errors.New("don't suicide")
+		return &privileged.UpdateClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
 	err = db.UpdateClient(ctx, client)
 
 	if err != nil {
 		common.LogClientError(ctx, client, err)
-		return &models.UpdateClientResponse{Success: false}, errors.New("unexpected database result")
+		return &privileged.UpdateClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
 	common.LogClientOperation(ctx, client, "updated client with id '%d'.", request.Client.Id)
-	return &models.UpdateClientResponse{Success: true}, nil
+	return &privileged.UpdateClientResponse{Success: true}, nil
 }
 
-func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.DeleteClientRequest) (*models.DeleteClientResponse, error) {
+func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *privileged.DeleteClientRequest) (*privileged.DeleteClientResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 
 		common.LogClientError(ctx, client, err)
-		return &models.DeleteClientResponse{Success: false}, errors.New("unauthenticated")
+		return &privileged.DeleteClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
 	if request.Client == nil {
@@ -106,25 +106,25 @@ func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *models.Delet
 
 	if request.Auth.ClientUuid == *client.Uuid {
 		common.LogClientOperation(ctx, client, "client is performing suicide, rejecting.")
-		return &models.DeleteClientResponse{Success: false}, errors.New("don't suicide")
+		return &privileged.DeleteClientResponse{Success: false}, errors.New("don't suicide")
 	}
 
 	err = db.DeleteClient(ctx, client)
 
 	if err != nil {
 		common.LogClientError(ctx, client, err)
-		return &models.DeleteClientResponse{Success: false}, errors.New("unexpected database result")
+		return &privileged.DeleteClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
 	common.LogClientOperation(ctx, client, "deleted client with id '%d'.", request.Client.Id)
-	return &models.DeleteClientResponse{Success: true}, nil
+	return &privileged.DeleteClientResponse{Success: true}, nil
 }
 
-func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *models.CreateClientRequest) (*models.CreateClientResponse, error) {
+func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *privileged.CreateClientRequest) (*privileged.CreateClientResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
-		return &models.CreateClientResponse{Success: false}, errors.New("unauthenticated")
+		return &privileged.CreateClientResponse{Success: false}, errors.New("unauthenticated")
 	}
 
 	if request.Client == nil {
@@ -140,9 +140,9 @@ func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *models.Creat
 	newClient, err := db.CreateClient(ctx, request.Client)
 	if err != nil {
 		common.LogClientError(ctx, newClient, err)
-		return &models.CreateClientResponse{Success: false}, errors.New("unexpected database result")
+		return &privileged.CreateClientResponse{Success: false}, errors.New("unexpected database result")
 	}
 
 	common.LogClientOperation(ctx, client, "created another client with id '%d', named '%s'.", newClient.Id, newClient.GetName())
-	return &models.CreateClientResponse{Success: true, Client: newClient}, nil
+	return &privileged.CreateClientResponse{Success: true, Client: newClient}, nil
 }

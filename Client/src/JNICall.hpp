@@ -39,8 +39,6 @@ class StateSender : public JNIIPCBridgeSimpleSource
     {
         m_worker->SetServerInfo(host, secret, noTls);
     }
-
-  private:
 };
 
 inline StateSender *source = nullptr;

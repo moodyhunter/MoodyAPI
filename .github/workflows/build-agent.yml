@@ -7,7 +7,7 @@ on:
     paths:
       - ".github/workflows/build-agent.yml"
       - "CameraAgent/**"
-      - "MoodyAPI.proto"
+      - "proto/**"
 
 env:
   CARGO_TERM_COLOR: always

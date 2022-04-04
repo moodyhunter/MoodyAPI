@@ -1,9 +1,9 @@
+mod command_listener;
+mod models;
+
 use ini::Ini;
 use std::{error::Error, time::Duration};
 use tokio::time::sleep;
-
-mod camera_api;
-mod command_listener;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {

@@ -7,7 +7,7 @@ on:
     paths:
       - ".github/workflows/build-webpanel.yml"
       - "WebPanel/**"
-      - "MoodyAPI.proto"
+      - "proto/**"
 
 jobs:
   build:

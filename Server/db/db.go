@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"api.mooody.me/models"
+	"api.mooody.me/models/common"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
@@ -25,7 +26,7 @@ func checkDatabaseConnectivity() error {
 	return nil
 }
 
-func GetClientFromAuth(ctx context.Context, auth *models.Auth, requirePrivileged bool) (*models.APIClient, error) {
+func GetClientFromAuth(ctx context.Context, auth *common.Auth, requirePrivileged bool) (*common.APIClient, error) {
 	if auth == nil {
 		return nil, errors.New("invalid Auth")
 	}
@@ -66,13 +67,13 @@ func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass st
 	database = bun.NewDB(sql.OpenDB(pgconn), pgdialect.New())
 }
 
-func GetClientByUUID(ctx context.Context, clientUuid string) (*models.APIClient, error) {
+func GetClientByUUID(ctx context.Context, clientUuid string) (*common.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
 	}
 
-	client := models.APIClientORM{}
+	client := common.APIClientORM{}
 
 	q := database.NewSelect().
 		Model(&client).
@@ -87,13 +88,13 @@ func GetClientByUUID(ctx context.Context, clientUuid string) (*models.APIClient,
 	return client.ToPB(ctx)
 }
 
-func GetClientByID(ctx context.Context, id int64) (*models.APIClient, error) {
+func GetClientByID(ctx context.Context, id int64) (*common.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
 	}
 
-	clientORM := models.APIClientORM{}
+	clientORM := common.APIClientORM{}
 	err = database.NewSelect().
 		Model(&clientORM).
 		Where("id = ?", id).
@@ -106,7 +107,7 @@ func GetClientByID(ctx context.Context, id int64) (*models.APIClient, error) {
 	return clientORM.ToPB(ctx)
 }
 
-func UpdateClientLastSeen(ctx context.Context, client *models.APIClient) (*models.APIClient, error) {
+func UpdateClientLastSeen(ctx context.Context, client *common.APIClient) (*common.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return client, err
@@ -122,7 +123,7 @@ func UpdateClientLastSeen(ctx context.Context, client *models.APIClient) (*model
 	return newClient, nil
 }
 
-func CreateClient(ctx context.Context, client *models.APIClient) (*models.APIClient, error) {
+func CreateClient(ctx context.Context, client *common.APIClient) (*common.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
@@ -152,7 +153,7 @@ func CreateClient(ctx context.Context, client *models.APIClient) (*models.APICli
 	return clientORM.ToPB(ctx)
 }
 
-func UpdateClient(ctx context.Context, client *models.APIClient) error {
+func UpdateClient(ctx context.Context, client *common.APIClient) error {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return err
@@ -183,7 +184,7 @@ func UpdateClient(ctx context.Context, client *models.APIClient) error {
 	return nil
 }
 
-func DeleteClient(ctx context.Context, client *models.APIClient) error {
+func DeleteClient(ctx context.Context, client *common.APIClient) error {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return err
@@ -209,18 +210,18 @@ func DeleteClient(ctx context.Context, client *models.APIClient) error {
 	return nil
 }
 
-func ListClients(ctx context.Context) ([]*models.APIClient, error) {
+func ListClients(ctx context.Context) ([]*common.APIClient, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {
 		return nil, err
 	}
 
-	clientORM := []models.APIClientORM{}
+	clientORM := []common.APIClientORM{}
 	err = database.NewSelect().
 		Model(&clientORM).
 		Scan(ctx)
 
-	clients := []*models.APIClient{}
+	clients := []*common.APIClient{}
 	if err != nil {
 		return nil, err
 	}

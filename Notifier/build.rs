@@ -1,4 +1,8 @@
-fn main() {
-    println!("cargo:rerun-if-changed=../MoodyAPI.proto");
-    tonic_build::compile_protos("../MoodyAPI.proto").unwrap();
+fn main() -> Result<(), std::io::Error> {
+    println!("cargo:rerun-if-changed=../proto/");
+
+    tonic_build::configure()
+        .build_server(false)
+        .out_dir("src/models/generated")
+        .compile(&["../proto/MoodyAPI.proto"], &["../proto"])
 }

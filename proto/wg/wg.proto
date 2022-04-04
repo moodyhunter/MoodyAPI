@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package wg;
+import "common/common.proto";
+
+option go_package = "api.mooody.me/models/wg";
+
+// WireguardClient with all client id, client name, and client key, and multiple client ips
+message WireguardClient
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "clients"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    string name = 2 [ (common.bun_field) = { column : "client_name" } ];
+    string key = 3 [ (common.bun_field) = { column : "client_key" } ];
+    repeated string ips = 4 [ (common.bun_field) = { column : "client_ips" } ];
+}
+
+message CreateWireguardClientRequest
+{
+    common.Auth auth = 1;
+    WireguardClient client = 2;
+}
+
+message CreateWireguardClientResponse
+{
+    bool success = 1;
+    optional WireguardClient client = 2;
+}
+
+message ListWireguardClientsRequest
+{
+    common.Auth auth = 1;
+}
+
+message ListWireguardClientsResponse
+{
+    repeated WireguardClient clients = 1;
+}
+
+message DeleteWireguardClientRequest
+{
+    common.Auth auth = 1;
+    int64 id = 2;
+}
+
+message DeleteWireguardClientResponse
+{
+    bool success = 1;
+}
+
+message UpdateWireguardClientRequest
+{
+    common.Auth auth = 1;
+    WireguardClient client = 2;
+}
+
+message UpdateWireguardClientResponse
+{
+    bool success = 1;
+    optional WireguardClient client = 2;
+}

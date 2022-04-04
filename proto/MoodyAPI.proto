@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common/common.proto";
+import "privileged/privileged.proto";
+import "wg/wg.proto";
+
+package MoodyAPI;
+
+option go_package = "api.mooody.me/models";
+
+message Notification
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "notifications"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 senderId = 2 [ (common.bun_field) = { column : "sender_id" } ];
+    int64 channelId = 3 [ (common.bun_field) = { column : "channel_id" } ];
+    string title = 4 [ (common.bun_field) = { column : "title" } ];
+    string content = 5 [ (common.bun_field) = { column : "content" } ];
+    google.protobuf.Timestamp time = 6 [ (common.bun_field) = { column : "time" } ];
+    string icon = 7 [ (common.bun_field) = { column : "icon" } ];
+}
+
+message OperationLog
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "operation_logs"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 clientId = 2 [ (common.bun_field) = { column : "client_id" } ];
+    string clientName = 3 [ (common.bun_field) = { column : "client_name" } ];
+    google.protobuf.Timestamp time = 4 [ (common.bun_field) = { column : "time" } ];
+    string operation = 5 [ (common.bun_field) = { column : "operation" } ];
+}
+
+message CameraState
+{
+    bool state = 1;
+}
+
+message SubscribeCameraStateChangeRequest
+{
+    common.Auth auth = 1;
+}
+
+message UpdateCameraStateRequest
+{
+    common.Auth auth = 1;
+    CameraState state = 2;
+}
+
+message SubscribeNotificationsRequest
+{
+    common.Auth auth = 1;
+    int32 channelID = 2;
+}
+
+message SendNotificationRequest
+{
+    common.Auth auth = 1;
+    Notification notification = 2;
+}
+
+service MoodyAPIService
+{
+    rpc UpdateCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
+    rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
+
+    rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
+    rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
+
+    // Privileged RPCs
+    rpc CreateClient(privileged.CreateClientRequest) returns (privileged.CreateClientResponse);
+    rpc ListClients(privileged.ListClientsRequest) returns (privileged.ListClientsResponse);
+    rpc DeleteClient(privileged.DeleteClientRequest) returns (privileged.DeleteClientResponse);
+    rpc UpdateClient(privileged.UpdateClientRequest) returns (privileged.UpdateClientResponse);
+
+    // Create List Delete Update wireguard clients
+    rpc CreateWireguardClient(wg.CreateWireguardClientRequest) returns (wg.CreateWireguardClientResponse);
+    rpc ListWireguardClients(wg.ListWireguardClientsRequest) returns (wg.ListWireguardClientsResponse);
+    rpc DeleteWireguardClient(wg.DeleteWireguardClientRequest) returns (wg.DeleteWireguardClientResponse);
+    rpc UpdateWireguardClient(wg.UpdateWireguardClientRequest) returns (wg.UpdateWireguardClientResponse);
+}

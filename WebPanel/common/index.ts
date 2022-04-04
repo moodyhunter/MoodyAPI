@@ -1,7 +1,8 @@
 import { ChannelCredentials, createChannel, createClient } from "nice-grpc";
-import { APIClient, MoodyAPIServiceDefinition } from "./protos/MoodyAPI";
+import { APIClient } from "./protos/common/common";
+import { MoodyAPIServiceDefinition } from "./protos/MoodyAPI";
 
-export { APIClient } from "./protos/MoodyAPI";
+export { APIClient } from "./protos/common/common";
 
 export function getServerConnection() {
     const API_Server = process.env['API_SERVER'] ?? "localhost:1920";

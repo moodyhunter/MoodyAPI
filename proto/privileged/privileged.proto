@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package privileged;
+import "common/common.proto";
+
+option go_package = "api.mooody.me/models/privileged";
+
+message CreateClientRequest
+{
+    common.Auth auth = 1;
+    common.APIClient client = 2;
+}
+
+message CreateClientResponse
+{
+    bool success = 1;
+    optional common.APIClient client = 2;
+}
+
+message ListClientsRequest
+{
+    common.Auth auth = 1;
+}
+
+message ListClientsResponse
+{
+    bool success = 1;
+    repeated common.APIClient clients = 2;
+}
+
+message UpdateClientRequest
+{
+    common.Auth auth = 1;
+    common.APIClient client = 2;
+}
+
+message UpdateClientResponse
+{
+    bool success = 1;
+}
+
+message DeleteClientRequest
+{
+    common.Auth auth = 1;
+    common.APIClient client = 2;
+}
+
+message DeleteClientResponse
+{
+    bool success = 1;
+}
