@@ -335,10 +335,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@grpc/grpc-js@^1.5.1":
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.5.10.tgz#12f0b33b338fad5a0e48ee1d5999b5b08da60bcc"
-  integrity sha512-++oAubX/7rJzlqH0ShyzDENNNDHYrlttdc3NM40KlaVQDcgGqQknuPoavmyTC+oNUDyxPCX5dHceKhfcgN3tiw==
+"@grpc/grpc-js@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.6.1.tgz#01f5705e2fb4faa0bae6bb70bd9d7f0054d9435d"
+  integrity sha512-ix3rQS64rKL1s6CfIaRgnts+RNYZZ2NaYyTK7iimai6an/0GGDbukzy990hJ5vtKHjhaqJxJMB6Qq7BMZ0zZSQ==
   dependencies:
     "@grpc/proto-loader" "^0.6.4"
     "@types/node" ">=12.12.47"
@@ -2220,12 +2220,12 @@ nice-grpc-common@^1.0.6:
     node-abort-controller "^2.0.0"
     ts-error "^1.0.6"
 
-nice-grpc@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.0.8.tgz#2f3090056ed6fee4bc4d9fb893c25c52f4d4011e"
-  integrity sha512-nXI2r1hebuwmLNsQOl633eleEsk9e7evt/fL9o71gsjB8POBlBDKoUw4BSBXThpCo6jGJbtnsQ8nmBRB1GK5xQ==
+nice-grpc@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.1.0.tgz#ce1ffc677cec89a21b7c30ed3689274eea12728e"
+  integrity sha512-hjMC6HdL51FIQxlIFVx33YOPQ7Mt+TpyM2Vtz1KWBsd5THCg9xQKUxwumG/kF08lPBtxOXyYe+SWsDzJJRDT9w==
   dependencies:
-    "@grpc/grpc-js" "^1.5.1"
+    "@grpc/grpc-js" "^1.6.1"
     abort-controller-x "^0.2.4"
     nice-grpc-common "^1.0.6"
     node-abort-controller "^1.2.1"
