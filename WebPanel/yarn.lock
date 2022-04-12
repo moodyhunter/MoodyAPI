@@ -1996,10 +1996,10 @@ jose@^4.1.4, jose@^4.3.7:
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.6.0.tgz#f3ff007ddcbce462c091d3d41b7af2e35dec348c"
   integrity sha512-0hNAkhMBNi4soKSAX4zYOFV+aqJlEz/4j4fregvasJzEVtjDChvWqRjPvHwLqr5hx28Ayr6bsOs1Kuj87V0O8w==
 
-jotai@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.6.2.tgz#101193b24701ce0621eb017f8dc3d35be3f14da0"
-  integrity sha512-WglyuXX67f8QPCOX5tDR0N9GhasOV1+IQ3piaF4owr2wBn2CV51T8zbw01ZCme/24JKJilFe6+aA29PJx+jsQw==
+jotai@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.6.3.tgz#225c278bf963400b2c29ff1e2fa4825dca488772"
+  integrity sha512-XwOZyHPwGdt7yQKM7EGHvXWF09LP/dGkEln+4tXgECNxKrmv9k7eFpzblNvO4G8xEusdj/qWhh2AlG+I0fC6mg==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
