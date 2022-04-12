@@ -14,7 +14,7 @@
         "@babel/core": "^7.17.9",
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
-        "@mui/icons-material": "^5.6.0",
+        "@mui/icons-material": "^5.6.1",
         "@mui/material": "^5.6.0",
         "@mui/system": "^5.6.1",
         "@mui/x-data-grid": "^5.7.0",
