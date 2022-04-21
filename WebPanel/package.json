@@ -25,8 +25,8 @@
         "long": "^5.2.0",
         "minimist": "^1.2.6",
         "next": "12.1.4",
-        "next-auth": "^4.3.1",
-        "nice-grpc": "^1.1.0",
+        "next-auth": "^4.3.3",
+        "nice-grpc": "^1.1.1",
         "protobufjs": "^6.11.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"

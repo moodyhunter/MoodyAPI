@@ -2182,10 +2182,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-next-auth@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.3.1.tgz#94520592d1d1851eb66ca3ad2758637e1df950e1"
-  integrity sha512-DBYEPBLq5naIqh/1i2zEHljcA1OXXecKW3NRU1W4s6R3UX3RdLZ2lWlqgBHUiZQ1zdNikFM/bYQxVGyG7bx8oA==
+next-auth@^4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.3.3.tgz#5ff892e73648a0f33c2af0e9d7cafda729f63ae7"
+  integrity sha512-bUs+oOOPT18Pq/+4v9q4PA/DGoVoAX6jwY7RTfE/akFXwlny+y/mNS6lPSUwpqcHjljqBaq34PQA3+01SdOOPw==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@panva/hkdf" "^1.0.1"
@@ -2220,22 +2220,22 @@ next@12.1.4:
     "@next/swc-win32-ia32-msvc" "12.1.4"
     "@next/swc-win32-x64-msvc" "12.1.4"
 
-nice-grpc-common@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/nice-grpc-common/-/nice-grpc-common-1.0.6.tgz#63c54696730dd73f79c761d0bba671a326d1a0ca"
-  integrity sha512-AQXa9fxyyizbDSBfcKhFi7N1fXD63NJ5JG+komVsmCBfu2TInWgi3x60447E59iQNPjYiRaWV8W9k7f/9Zo+Cg==
+nice-grpc-common@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nice-grpc-common/-/nice-grpc-common-1.1.0.tgz#cebfd36f840c08f253ddf6de6ed4389fa5cdb05b"
+  integrity sha512-klxJ/lxMyH1KkT02woMBWL3A7BQSTH5jGodJIpNbbv7WKeFBWJaEtT6p7kZJBhGYXtSsQ+TyMU1EJR9BH14YfQ==
   dependencies:
     node-abort-controller "^2.0.0"
     ts-error "^1.0.6"
 
-nice-grpc@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.1.0.tgz#ce1ffc677cec89a21b7c30ed3689274eea12728e"
-  integrity sha512-hjMC6HdL51FIQxlIFVx33YOPQ7Mt+TpyM2Vtz1KWBsd5THCg9xQKUxwumG/kF08lPBtxOXyYe+SWsDzJJRDT9w==
+nice-grpc@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.1.1.tgz#fa1453894c6f1ab7bd895dad332eac974574df9d"
+  integrity sha512-bsYDdnhrt+tytA2JEZAGonNxACfVlla79Q+EFD7ga1MGy9EgBwG+DyQMlaUtj6maIAAouaMOsDW2hbyunEWizg==
   dependencies:
     "@grpc/grpc-js" "^1.6.1"
     abort-controller-x "^0.2.4"
-    nice-grpc-common "^1.0.6"
+    nice-grpc-common "^1.1.0"
     node-abort-controller "^1.2.1"
 
 node-abort-controller@^1.2.1:
