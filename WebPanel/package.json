@@ -24,7 +24,7 @@
         "jotai": "^1.6.3",
         "long": "^5.2.0",
         "minimist": "^1.2.6",
-        "next": "12.1.4",
+        "next": "12.1.5",
         "next-auth": "^4.3.3",
         "nice-grpc": "^1.1.0",
         "protobufjs": "^6.11.2",
