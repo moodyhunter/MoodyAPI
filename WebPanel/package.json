@@ -28,7 +28,7 @@
         "next-auth": "^4.3.3",
         "nice-grpc": "^1.1.0",
         "protobufjs": "^6.11.2",
-        "react": "^18.0.0",
+        "react": "^18.1.0",
         "react-dom": "^18.0.0"
     },
     "devDependencies": {
