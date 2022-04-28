@@ -45,15 +45,18 @@ func main() {
 	log.Printf("gRPC server started on: %s", grpcServerAddress)
 
 	// Setup Telegram Bot
-	TgBotEnabled := config.Section("Telegram").Key("Enabled").MustBool(false)
-	TgBotToken := config.Section("Telegram").Key("BotToken").MustString("")
-	TgTargetChatId := config.Section("Telegram").Key("TargetGroup").MustInt64(0)
+	TgBotIsEnabled := config.Section("Telegram").Key("Enabled").MustBool(false)
+	TgBotApiToken := config.Section("Telegram").Key("BotToken").MustString("")
+	TgBotSafeChatId := config.Section("Telegram").Key("TargetGroup").MustInt64(0)
+	TgBotSafeUserId := config.Section("Telegram").Key("TargetUser").MustInt64(0)
 
-	messaging, err := messaging.NewTelegramMessaging(TgBotEnabled, TgBotToken, TgTargetChatId)
+	messaging, err := messaging.NewTelegramBot(TgBotIsEnabled, TgBotApiToken, TgBotSafeChatId, TgBotSafeUserId)
 	if err != nil {
 		log.Fatal(err)
 	}
-	messaging.SendMessage("Moody API is up and running.")
+
+	go messaging.SendMessage("Moody API is up and running.")
+	go messaging.HandleBotCommand()
 
 	grpcServer.Serve(listener)
 }

@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var ServerRevision = "dev"
+
 func GetCallerFunctionName() string {
 	// We need the frame at index skipFrames+2, since we never want runtime.Callers and getFrame
 	targetFrameIndex := 1 + 2

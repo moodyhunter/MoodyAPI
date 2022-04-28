@@ -18,9 +18,10 @@ jobs:
       - name: Build
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
+          export REVISION="$(git rev-parse --short HEAD)"
           cd Server
           go generate
-          go build -v -o apiserver
+          go build -v -o apiserver -ldflags="-X 'api.mooody.me/common.ServerRevision=$REVISION'"
 
       - name: Deploy
         run: |
