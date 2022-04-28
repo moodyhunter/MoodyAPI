@@ -27,34 +27,33 @@ func main() {
 		log.Fatalf("Fail to read file: %v", err)
 	}
 
+	// Setup database
 	dbConfigSection := config.Section("Database")
-	DBAddress := dbConfigSection.Key("Address").String()
-	DBDatabase := dbConfigSection.Key("Database").String()
-	DBUser := dbConfigSection.Key("Username").String()
+	DBAddress := dbConfigSection.Key("Address").MustString("localhost")
+	DBDatabase := dbConfigSection.Key("Database").MustString("moodyapi")
+	DBUser := dbConfigSection.Key("Username").MustString("moodyapi")
 	DBPassword := dbConfigSection.Key("Password").String()
 	db.SetupDBConnection(DBAddress, DBDatabase, DBUser, DBPassword)
 
-	grpc_addr := config.Section("gRPC").Key("ListenAddress").MustString("127.0.0.1:1920")
-
-	TgBotToken := config.Section("Telegram").Key("BotToken").String()
-	TgTargetChatId, err := config.Section("Telegram").Key("TargetGroup").Int64()
-
-	if err != nil {
-		log.Fatalf("Invalid telegram chat ID, %s", err)
-	}
-
-	messaging, err := messaging.NewTelegramMessaging(TgBotToken, TgTargetChatId)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	go messaging.SendMessage("Moody API is up and running.")
-
-	log.Printf("gRPC server started on: %s", grpc_addr)
-	listener, err := net.Listen("tcp", grpc_addr)
+	// Setup gRPC Server
+	grpcServerAddress := config.Section("gRPC").Key("ListenAddress").MustString("127.0.0.1:1920")
+	listener, err := net.Listen("tcp", grpcServerAddress)
 	if err != nil {
 		log.Fatalf("Failed to start API Server, %s", err)
 	}
 	_, grpcServer := api.CreateServer()
+	log.Printf("gRPC server started on: %s", grpcServerAddress)
+
+	// Setup Telegram Bot
+	TgBotEnabled := config.Section("Telegram").Key("Enabled").MustBool(false)
+	TgBotToken := config.Section("Telegram").Key("BotToken").MustString("")
+	TgTargetChatId := config.Section("Telegram").Key("TargetGroup").MustInt64(0)
+
+	messaging, err := messaging.NewTelegramMessaging(TgBotEnabled, TgBotToken, TgTargetChatId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	messaging.SendMessage("Moody API is up and running.")
+
 	grpcServer.Serve(listener)
 }
