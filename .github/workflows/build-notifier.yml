@@ -31,6 +31,7 @@ jobs:
             }
 
     runs-on: ${{ matrix.config.builder }}
+    name: "Build on ${{ matrix.config.builder_name }}"
     steps:
       - uses: actions/checkout@v3
 
