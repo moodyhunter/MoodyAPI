@@ -26,7 +26,9 @@ CREATE TABLE notifications (
     title       VARCHAR     NOT NULL,
     content     VARCHAR     NOT NULL,
     time        TIMESTAMP   NOT NULL,
-    icon        VARCHAR
+    icon        VARCHAR,
+    urgency     INTEGER,    NOT NULL,   DEFAULT 0,
+    private     BOOLEAN     NOT NULL,   DEFAULT FALSE
 );
 
 CREATE TABLE wg_clients (

@@ -10,12 +10,7 @@ use models::{
 use ini::Ini;
 use notify_rust::{Hint, Notification as Notify};
 use platform_dirs::AppDirs;
-use prost_types::Timestamp;
-use std::{
-    env,
-    process::exit,
-    time::{Duration, SystemTime},
-};
+use std::{env, process::exit, time::Duration};
 use tokio::time::sleep;
 use tonic::{transport::Channel, Request};
 
@@ -109,13 +104,9 @@ fn display_notification(n: Notification) {
 
 async fn send_notification(title: String, content: String, channel: &Channel, api_secret: &String) {
     let n = Notification {
-        id: 0,
-        sender_id: 0,
-        channel_id: 0,
-        time: Some(Timestamp::from(SystemTime::now())),
         title,
         content,
-        icon: "invalid".to_string(),
+        ..Default::default()
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());
     client

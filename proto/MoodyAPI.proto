@@ -11,11 +11,21 @@ package MoodyAPI;
 
 option go_package = "api.mooody.me/models";
 
-enum NotificationType
+enum NotificationUrgency
 {
-    GENERAL = 0;
-    CAMERA_EVENTS = 1;
-    CAMERA_EVENTS_URGENT = 2;
+    NORMAL = 0;
+    IMPORTANT = 1;
+    CRITICAL = 2;
+}
+
+message NotificationChannel
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "notification_channels"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    string name = 2 [ (common.bun_field) = { column : "name" } ];
 }
 
 message Notification
@@ -26,11 +36,13 @@ message Notification
     };
     int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
     int64 senderId = 2 [ (common.bun_field) = { column : "sender_id" } ];
-    NotificationType channelId = 3 [ (common.bun_field) = { column : "channel_id" } ];
+    int64 channelId = 3 [ (common.bun_field) = { column : "channel_id" } ];
     string title = 4 [ (common.bun_field) = { column : "title" } ];
     string content = 5 [ (common.bun_field) = { column : "content" } ];
     google.protobuf.Timestamp time = 6 [ (common.bun_field) = { column : "time" } ];
     string icon = 7 [ (common.bun_field) = { column : "icon" } ];
+    NotificationUrgency urgency = 8 [ (common.bun_field) = { column : "urgency" } ];
+    bool private = 9 [ (common.bun_field) = { column : "private" } ];
 }
 
 message OperationLog
