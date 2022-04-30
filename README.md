@@ -10,12 +10,12 @@ Language Ingredients: `C++`, `CMake`, `Golang`, `PostgreSQL`, `QML`, `Rust`, `Ty
 | Web Panel      | ![Build](../../actions/workflows/build-webpanel.yml/badge.svg) ![Lint](../../actions/workflows/lint-webpanel.yml/badge.svg) |
 | Qt Client      | ![Build](../../actions/workflows/build-client.yml/badge.svg)                                                                |
 | Camera Agent   | ![Build](../../actions/workflows/build-agent.yml/badge.svg)                                                                 |
-| Notifier Agent | ![Build](../../actions/workflows/build-notifier-pi.yml/badge.svg)                                                           |
+| Notifier Agent | ![Build](../../actions/workflows/build-notifier.yml/badge.svg)                                                              |
 
 ## Functionalities
 
 - Camera Controlling: Whether to turn on. or turn off a remote camera.
-- (WIP) Notification Handling: Pushing notifications to all clients.
+- Notification Handling: Pushing notifications to all clients.
 - (WIP) A central management panel for all functionalities.
 - (TODO) Wireguard Clients Managing: Managing Wireguard clients and setting IPs.
 - (TODO) Dynamic DNS for Wireguard Clients.
