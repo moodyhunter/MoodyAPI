@@ -1,0 +1,50 @@
+name: Build Notifier Client
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-notifier.yml"
+      - "Notifier/**"
+      - "proto/**"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+              builder_name: "Server",
+              builder: azure,
+              build_path: "/mnt/disk/moodyapi",
+              distribute: true,
+            }
+          - {
+              builder_name: "Raspberry Pi",
+              build_path: "/opt/actions",
+              builder: raspberrypi,
+            }
+
+    runs-on: ${{ matrix.config.builder }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy to Working Directory
+        run: |
+          rm -rvf "${{ matrix.config.build_path}}/proto/" || true
+          cp -rv ./proto/ "${{ matrix.config.build_path}}/"
+          rsync -aP \
+            --exclude='.git' \
+            --exclude='target' \
+            --delete \
+            ./Notifier/ "${{ matrix.config.build_path}}/Notifier"
+
+      - name: Build on ${{ matrix.config.builder_name }}
+        run: |
+          cd "${{ matrix.config.build_path}}/Notifier"
+          cargo build --release
