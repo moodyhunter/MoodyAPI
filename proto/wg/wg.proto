@@ -18,13 +18,13 @@ message WireguardClient
     repeated string ips = 4 [ (common.bun_field) = { column : "client_ips" } ];
 }
 
-message CreateWireguardClientRequest
+message CreateClientRequest
 {
     common.Auth auth = 1;
     WireguardClient client = 2;
 }
 
-message CreateWireguardClientResponse
+message CreateClientResponse
 {
     bool success = 1;
     optional WireguardClient client = 2;
@@ -40,24 +40,24 @@ message ListWireguardClientsResponse
     repeated WireguardClient clients = 1;
 }
 
-message DeleteWireguardClientRequest
+message DeleteClientRequest
 {
     common.Auth auth = 1;
     int64 id = 2;
 }
 
-message DeleteWireguardClientResponse
+message DeleteClientResponse
 {
     bool success = 1;
 }
 
-message UpdateWireguardClientRequest
+message UpdateClientRequest
 {
     common.Auth auth = 1;
     WireguardClient client = 2;
 }
 
-message UpdateWireguardClientResponse
+message UpdateClientResponse
 {
     bool success = 1;
     optional WireguardClient client = 2;

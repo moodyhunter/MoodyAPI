@@ -5,45 +5,12 @@ import "google/protobuf/timestamp.proto";
 
 import "common/common.proto";
 import "privileged/privileged.proto";
+import "notifications/notifications.proto";
 import "wg/wg.proto";
 
 package MoodyAPI;
 
 option go_package = "api.mooody.me/models";
-
-enum NotificationUrgency
-{
-    NORMAL = 0;
-    IMPORTANT = 1;
-    CRITICAL = 2;
-}
-
-message NotificationChannel
-{
-    option (common.bun_opts) = {
-        ormable : true,
-        table : "notification_channels"
-    };
-    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
-    string name = 2 [ (common.bun_field) = { column : "name" } ];
-}
-
-message Notification
-{
-    option (common.bun_opts) = {
-        ormable : true,
-        table : "notifications"
-    };
-    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
-    int64 senderId = 2 [ (common.bun_field) = { column : "sender_id" } ];
-    int64 channelId = 3 [ (common.bun_field) = { column : "channel_id" } ];
-    string title = 4 [ (common.bun_field) = { column : "title" } ];
-    string content = 5 [ (common.bun_field) = { column : "content" } ];
-    google.protobuf.Timestamp time = 6 [ (common.bun_field) = { column : "time" } ];
-    string icon = 7 [ (common.bun_field) = { column : "icon" } ];
-    NotificationUrgency urgency = 8 [ (common.bun_field) = { column : "urgency" } ];
-    bool private = 9 [ (common.bun_field) = { column : "private" } ];
-}
 
 message OperationLog
 {
@@ -74,25 +41,18 @@ message UpdateCameraStateRequest
     CameraState state = 2;
 }
 
-message SubscribeNotificationsRequest
-{
-    common.Auth auth = 1;
-    int32 channelID = 2;
-}
-
-message SendNotificationRequest
-{
-    common.Auth auth = 1;
-    Notification notification = 2;
-}
-
 service MoodyAPIService
 {
     rpc UpdateCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
     rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
 
-    rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
-    rpc SubscribeNotifications(SubscribeNotificationsRequest) returns (stream Notification);
+    rpc CreateNotificationChannel(notifications.CreateChannelRequest) returns (notifications.CreateChannelResponse);
+    rpc ListNotificationChannel(notifications.ListChannelRequest) returns (notifications.ListChannelResponse);
+    rpc UpdateNotificationChannel(notifications.UpdateChannelRequest) returns (notifications.UpdateChannelResponse);
+    rpc DeleteNotificationChannel(notifications.DeleteChannelRequest) returns (notifications.DeleteChannelResponse);
+
+    rpc SendNotification(notifications.SendRequest) returns (google.protobuf.Empty);
+    rpc SubscribeNotifications(notifications.SubscribeRequest) returns (stream notifications.SubscribeResponse);
 
     // Privileged RPCs
     rpc CreateClient(privileged.CreateClientRequest) returns (privileged.CreateClientResponse);
@@ -101,8 +61,8 @@ service MoodyAPIService
     rpc UpdateClient(privileged.UpdateClientRequest) returns (privileged.UpdateClientResponse);
 
     // Create List Delete Update wireguard clients
-    rpc CreateWireguardClient(wg.CreateWireguardClientRequest) returns (wg.CreateWireguardClientResponse);
+    rpc CreateWireguardClient(wg.CreateClientRequest) returns (wg.CreateClientResponse);
     rpc ListWireguardClients(wg.ListWireguardClientsRequest) returns (wg.ListWireguardClientsResponse);
-    rpc DeleteWireguardClient(wg.DeleteWireguardClientRequest) returns (wg.DeleteWireguardClientResponse);
-    rpc UpdateWireguardClient(wg.UpdateWireguardClientRequest) returns (wg.UpdateWireguardClientResponse);
+    rpc DeleteWireguardClient(wg.DeleteClientRequest) returns (wg.DeleteClientResponse);
+    rpc UpdateWireguardClient(wg.UpdateClientRequest) returns (wg.UpdateClientResponse);
 }

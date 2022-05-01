@@ -3,6 +3,7 @@ package messaging
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"api.mooody.me/common"
 	"api.mooody.me/models"
@@ -63,7 +64,7 @@ func (m *TelegramMessaging) SendNotification(event *models.Notification) {
 		return
 	}
 
-	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%s` [%s]: %s", event.ChannelId, event.Title, event.Content))
+	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%d` [%s]: %s", event.ChannelId, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
 
@@ -95,13 +96,13 @@ func (m *TelegramMessaging) HandleBotCommand() {
 		} else {
 			switch update.Message.Command() {
 			case "ping":
-				msg.Text = "pong"
+				msg.Text = "🏓"
 			case "version":
-				msg.Text = "Server revision: " + common.ServerRevision
+				msg.Text = "Server Version: " + common.ServerRevision
 			case "status":
-				msg.Text = "API server is running for %s"
+				msg.Text = fmt.Sprintf("API server has been running for %d minute(s)", int(time.Now().Sub(common.StartTime).Minutes()))
 			default:
-				continue
+				msg.Text = "What are you talking about?"
 			}
 		}
 

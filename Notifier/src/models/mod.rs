@@ -6,6 +6,10 @@ pub mod privileged {
     include!("generated/privileged.rs");
 }
 
+pub mod notifications {
+    include!("generated/notifications.rs");
+}
+
 pub mod wg {
     include!("generated/wg.rs");
 }

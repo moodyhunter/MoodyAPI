@@ -22,9 +22,7 @@ find_package(Protobuf REQUIRED)
 find_package(gRPC REQUIRED)
 find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
 
-
-
-macro(generate_v2ray_grpc_source proto)
+macro(generate_grpc_source proto)
     get_filename_component(PROTO_ABS_DIR_PATH ${proto} DIRECTORY)
     file(RELATIVE_PATH _r ${PROTO_SOURCE_DIR} ${proto})
     get_filename_component(PROTO_FILE_DIR ${_r} DIRECTORY)
@@ -55,30 +53,11 @@ endmacro()
 set(PROTO_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../proto")
 set(PROTO_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
-generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/MoodyAPI.proto")
-generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/common/common.proto")
-generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/privileged/privileged.proto")
-generate_v2ray_grpc_source("${PROTO_SOURCE_DIR}/wg/wg.proto")
-
-# # Adapted from https://github.com/ArkToria/ACross/blob/master/cmake/grpc.cmake
-# # Generate gRPC and protobuf Sources
-# set(GRPC_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.cc")
-# set(GRPC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.grpc.pb.h")
-# set(PB_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.cc")
-# set(PB_HEADER "${CMAKE_CURRENT_BINARY_DIR}/MoodyAPI.pb.h")
-# set(PROTO_DIR "${CMAKE_SOURCE_DIR}/../")
-# set(PROTO_FILE "${PROTO_DIR}/MoodyAPI.proto")
-
-# add_custom_command(
-#     OUTPUT "${GRPC_SOURCE}" "${GRPC_HEADER}" "${PB_SOURCE}" "${PB_HEADER}"
-#     COMMAND protobuf::protoc
-#     ARGS
-#         --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
-#         --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
-#         -I="${PROTO_DIR}"
-#         --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_EXECUTABLE}"
-#         "${PROTO_FILE}"
-#     DEPENDS "${PROTO_FILE}")
+generate_grpc_source("${PROTO_SOURCE_DIR}/MoodyAPI.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/common/common.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/privileged/privileged.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/wg/wg.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/notifications/notifications.proto")
 
 qt_add_executable(MoodyAppMain
     src/main.cpp

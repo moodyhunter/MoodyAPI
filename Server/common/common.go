@@ -3,9 +3,11 @@ package common
 import (
 	"runtime"
 	"strings"
+	"time"
 )
 
 var ServerRevision = "dev"
+var StartTime = time.Now()
 
 func GetCallerFunctionName() string {
 	// We need the frame at index skipFrames+2, since we never want runtime.Callers and getFrame

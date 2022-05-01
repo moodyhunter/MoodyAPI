@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package notifications;
+import "common/common.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "api.mooody.me/models/notifications";
+
+enum NotificationUrgency
+{
+    NORMAL = 0;
+    IMPORTANT = 1;
+    CRITICAL = 2;
+}
+
+message NotificationChannel
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "notification_channels"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    string name = 2 [ (common.bun_field) = { column : "name" } ];
+}
+
+message Notification
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "notifications"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 senderId = 2 [ (common.bun_field) = { column : "sender_id" } ];
+    int64 channelId = 3 [ (common.bun_field) = { column : "channel_id" } ];
+    string title = 4 [ (common.bun_field) = { column : "title" } ];
+    string content = 5 [ (common.bun_field) = { column : "content" } ];
+    google.protobuf.Timestamp time = 6 [ (common.bun_field) = { column : "time" } ];
+    string icon = 7 [ (common.bun_field) = { column : "icon" } ];
+    NotificationUrgency urgency = 8 [ (common.bun_field) = { column : "urgency" } ];
+    bool private = 9 [ (common.bun_field) = { column : "private" } ];
+}
+
+message SubscribeRequest
+{
+    common.Auth auth = 1;
+    int64 channelID = 2;
+    NotificationUrgency urgency = 3;
+}
+
+message SubscribeResponse
+{
+    NotificationChannel channel = 1;
+    Notification notification = 2;
+}
+
+message SendRequest
+{
+    common.Auth auth = 1;
+    Notification notification = 2;
+}
+
+message CreateChannelRequest
+{
+    common.Auth auth = 1;
+    NotificationChannel channel = 2;
+}
+
+message CreateChannelResponse
+{
+    NotificationChannel channel = 1;
+}
+
+message ListChannelRequest
+{
+    common.Auth auth = 1;
+}
+
+message ListChannelResponse
+{
+    repeated NotificationChannel channels = 1;
+}
+
+message UpdateChannelRequest
+{
+    common.Auth auth = 1;
+    NotificationChannel channel = 2;
+}
+
+message UpdateChannelResponse
+{
+    NotificationChannel channel = 1;
+}
+
+message DeleteChannelRequest
+{
+    common.Auth auth = 1;
+    int64 channelID = 2;
+}
+
+message DeleteChannelResponse
+{
+    int64 channelID = 1;
+}

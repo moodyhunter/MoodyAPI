@@ -1,10 +1,8 @@
 mod models;
 use models::{
     common::Auth,
-    moody_api::{
-        moody_api_service_client::MoodyApiServiceClient, Notification, SendNotificationRequest,
-        SubscribeNotificationsRequest,
-    },
+    moody_api::moody_api_service_client::MoodyApiServiceClient,
+    notifications::{Notification, SendRequest, SubscribeRequest, SubscribeResponse},
 };
 
 use ini::Ini;
@@ -59,11 +57,11 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
     loop {
         let mut client = MoodyApiServiceClient::new(channel.clone());
 
-        let request = Request::new(SubscribeNotificationsRequest {
+        let request = Request::new(SubscribeRequest {
             auth: Some(Auth {
                 client_uuid: api_secret.clone(),
             }),
-            channel_id: 1,
+            ..Default::default()
         });
 
         match client.subscribe_notifications(request).await {
@@ -91,7 +89,8 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
     }
 }
 
-fn display_notification(n: Notification) {
+fn display_notification(resp: SubscribeResponse) {
+    let n = resp.notification.unwrap();
     Notify::new()
         .summary(&n.title)
         .body(&n.content)
@@ -110,7 +109,7 @@ async fn send_notification(title: String, content: String, channel: &Channel, ap
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());
     client
-        .send_notification(Request::new(SendNotificationRequest {
+        .send_notification(Request::new(SendRequest {
             auth: Some(Auth {
                 client_uuid: api_secret.clone(),
             }),

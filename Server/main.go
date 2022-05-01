@@ -28,11 +28,11 @@ func main() {
 	}
 
 	// Setup database
-	dbConfigSection := config.Section("Database")
-	DBAddress := dbConfigSection.Key("Address").MustString("localhost")
-	DBDatabase := dbConfigSection.Key("Database").MustString("moodyapi")
-	DBUser := dbConfigSection.Key("Username").MustString("moodyapi")
-	DBPassword := dbConfigSection.Key("Password").String()
+	dbSection := config.Section("Database")
+	DBAddress := dbSection.Key("Address").MustString("localhost")
+	DBDatabase := dbSection.Key("Database").MustString("moodyapi")
+	DBUser := dbSection.Key("Username").MustString("moodyapi")
+	DBPassword := dbSection.Key("Password").String()
 	db.SetupDBConnection(DBAddress, DBDatabase, DBUser, DBPassword)
 
 	// Setup gRPC Server
@@ -45,17 +45,18 @@ func main() {
 	log.Printf("gRPC server started on: %s", grpcServerAddress)
 
 	// Setup Telegram Bot
-	TgBotIsEnabled := config.Section("Telegram").Key("Enabled").MustBool(false)
-	TgBotApiToken := config.Section("Telegram").Key("BotToken").MustString("")
-	TgBotSafeChatId := config.Section("Telegram").Key("TargetGroup").MustInt64(0)
-	TgBotSafeUserId := config.Section("Telegram").Key("TargetUser").MustInt64(0)
+	tgSection := config.Section("Telegram")
+	TgBotIsEnabled := tgSection.Key("Enabled").MustBool(false)
+	TgBotApiToken := tgSection.Key("BotToken").MustString("")
+	TgBotSafeChatId := tgSection.Key("TargetGroup").MustInt64(0)
+	TgBotSafeUserId := tgSection.Key("TargetUser").MustInt64(0)
 
 	messaging, err := messaging.NewTelegramBot(TgBotIsEnabled, TgBotApiToken, TgBotSafeChatId, TgBotSafeUserId)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	go messaging.SendMessage("Moody API is up and running.")
+	go messaging.SendMessage("我起来了")
 	go messaging.HandleBotCommand()
 
 	grpcServer.Serve(listener)
