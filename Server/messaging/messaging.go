@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"api.mooody.me/common"
-	"api.mooody.me/models"
+	"api.mooody.me/models/notifications"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -59,7 +59,7 @@ func (m *TelegramMessaging) SendMessage(message string) {
 	}
 }
 
-func (m *TelegramMessaging) SendNotification(event *models.Notification) {
+func (m *TelegramMessaging) SendNotification(event *notifications.Notification) {
 	if !m.enabled {
 		return
 	}
