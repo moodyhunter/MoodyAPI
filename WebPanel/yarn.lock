@@ -2198,10 +2198,10 @@ nice-grpc-common@^1.1.0:
     node-abort-controller "^2.0.0"
     ts-error "^1.0.6"
 
-nice-grpc@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.1.1.tgz#fa1453894c6f1ab7bd895dad332eac974574df9d"
-  integrity sha512-bsYDdnhrt+tytA2JEZAGonNxACfVlla79Q+EFD7ga1MGy9EgBwG+DyQMlaUtj6maIAAouaMOsDW2hbyunEWizg==
+nice-grpc@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.2.0.tgz#43b7cbf373c9bab8c21080c2c3bcd181ee9e9645"
+  integrity sha512-M5B8FE7Y9nNgOnjpD2YS7oM+iuzTLy0srrFQtleXFyJ/VWzvqa++utr6kajRMF2XprFFVXllF7xvRVD7FCjXdg==
   dependencies:
     "@grpc/grpc-js" "^1.6.1"
     abort-controller-x "^0.2.4"
