@@ -14,10 +14,13 @@ func (s *MoodyAPIServer) CreateNotificationChannel(ctx context.Context, request 
 		return nil, err
 	}
 
-	// Log current client's operation
 	common.LogClientOperation(ctx, client, `creates notification channel`)
+	result, err := db.CreateNotificationChannel(ctx, request.Channel)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return &notifications.CreateChannelResponse{Channel: result}, nil
 }
 
 func (s *MoodyAPIServer) DeleteNotificationChannel(ctx context.Context, request *notifications.DeleteChannelRequest) (*notifications.DeleteChannelResponse, error) {
@@ -26,10 +29,9 @@ func (s *MoodyAPIServer) DeleteNotificationChannel(ctx context.Context, request 
 		return nil, err
 	}
 
-	// log current client's operation
 	common.LogClientOperation(ctx, client, `deletes notification channel`)
-
-	return nil, nil
+	db.DeleteNotificationChannel(ctx, request.ChannelID)
+	return &notifications.DeleteChannelResponse{}, nil
 }
 
 func (s *MoodyAPIServer) ListNotificationChannel(ctx context.Context, request *notifications.ListChannelRequest) (*notifications.ListChannelResponse, error) {
@@ -38,10 +40,13 @@ func (s *MoodyAPIServer) ListNotificationChannel(ctx context.Context, request *n
 		return nil, err
 	}
 
-	// log current client's operation
 	common.LogClientOperation(ctx, client, `lists notification channels`)
+	result, err := db.ListNotificationChannels(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return &notifications.ListChannelResponse{Channels: result}, nil
 }
 
 func (s *MoodyAPIServer) UpdateNotificationChannel(ctx context.Context, request *notifications.UpdateChannelRequest) (*notifications.UpdateChannelResponse, error) {
@@ -50,8 +55,11 @@ func (s *MoodyAPIServer) UpdateNotificationChannel(ctx context.Context, request 
 		return nil, err
 	}
 
-	// log current client's operation
 	common.LogClientOperation(ctx, client, `updates notification channel`)
+	result, err := db.UpdateNotificationChannel(ctx, request.Channel)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return &notifications.UpdateChannelResponse{Channel: result}, nil
 }

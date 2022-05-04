@@ -38,6 +38,9 @@ func NewTelegramBot(enabled bool, token string, safeChatId int64, safeUserId int
 	}, tgbotapi.BotCommand{
 		Command:     "status",
 		Description: "Get MoodyAPI status",
+	}, tgbotapi.BotCommand{
+		Command:     "channels",
+		Description: "List notification channels",
 	})
 	bot.Request(mm)
 
@@ -90,6 +93,8 @@ func (m *TelegramMessaging) HandleBotCommand() {
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		msg.ReplyToMessageID = update.Message.MessageID
+		msg.Text = "`" + update.Message.Command() + "` is not implemented yet"
+		msg.ParseMode = "markdownv2"
 
 		if update.Message.Chat.ID != m.safeChatId && update.Message.Chat.ID != m.safeUserId {
 			msg.Text = "This bot is only for Moody's chat group."
@@ -98,16 +103,18 @@ func (m *TelegramMessaging) HandleBotCommand() {
 			case "ping":
 				msg.Text = "🏓"
 			case "version":
-				msg.Text = "Server Version: " + common.ServerRevision
+				msg.Text = "Server Version: `" + common.ServerRevision + "`"
 			case "status":
-				msg.Text = fmt.Sprintf("API server has been running for %d minute(s)", int(time.Now().Sub(common.StartTime).Minutes()))
+				msg.Text = fmt.Sprintf("API Server Uptime: `%d` minute\\(s\\)", int(time.Now().Sub(common.StartTime).Minutes()))
+			case "channels":
+				onChannelsAction(&msg)
 			default:
 				msg.Text = "What are you talking about?"
 			}
 		}
 
 		if _, err := m.botApi.Send(msg); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}
 }
