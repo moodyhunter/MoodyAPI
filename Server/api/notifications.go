@@ -8,14 +8,15 @@ import (
 	"api.mooody.me/common"
 	"api.mooody.me/db"
 	"api.mooody.me/models"
+	"api.mooody.me/models/notifications"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *MoodyAPIServer) BroadcastNotification(event *models.Notification) {
+func (s *MoodyAPIServer) BroadcastNotification(event *notifications.Notification) {
 	s.notificationBroadcaster.Broadcast(event)
 }
 
-func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.SendNotificationRequest) (*emptypb.Empty, error) {
+func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifications.SendRequest) (*emptypb.Empty, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
@@ -33,7 +34,7 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *models.S
 	return &emptypb.Empty{}, nil
 }
 
-func (s *MoodyAPIServer) SubscribeNotifications(request *models.SubscribeNotificationsRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
+func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.SubscribeRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
 	client, err := db.GetClientFromAuth(context.Background(), request.Auth, false)
 	if err != nil {
 		common.LogClientError(context.Background(), client, err)
@@ -53,8 +54,9 @@ done:
 		select {
 		case signal := <-eventChannel:
 			{
-				resp := signal.(*models.Notification)
-				server.Send(resp)
+				n := signal.(*notifications.Notification)
+				response := &notifications.SubscribeResponse{Notification: n}
+				server.Send(response)
 			}
 		case <-server.Context().Done():
 			{

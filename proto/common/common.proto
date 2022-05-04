@@ -34,6 +34,13 @@ extend google.protobuf.FieldOptions
     BUNFieldOptions bun_field = 52120;
 }
 
+enum NotificationUrgency
+{
+    NORMAL = 0;
+    IMPORTANT = 1;
+    CRITICAL = 2;
+}
+
 message Auth
 {
     string clientUuid = 1;
