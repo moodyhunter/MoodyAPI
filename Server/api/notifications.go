@@ -3,7 +3,6 @@ package api
 import (
 	context "context"
 	"errors"
-	"time"
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
@@ -34,6 +33,14 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifica
 	return &emptypb.Empty{}, nil
 }
 
+func (s *MoodyAPIServer) SubscribeNotificationInternal(callback func(signal *notifications.Notification)) error {
+	s.notificationBroadcaster.SubscribeWithCallback(func(signal interface{}) {
+		resp := signal.(*notifications.Notification)
+		callback(resp)
+	})
+	return nil
+}
+
 func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.SubscribeRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
 	client, err := db.GetClientFromAuth(context.Background(), request.Auth, false)
 	if err != nil {
@@ -43,30 +50,28 @@ func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.Subscribe
 
 	common.LogClientOperation(context.Background(), client, `subscribed notifications`)
 
-	subscribeId := time.Now().UnixNano()
-	eventChannel, err := s.notificationBroadcaster.Subscribe(subscribeId)
-	if err != nil {
-		return err
-	}
+	s.notificationBroadcaster.SubscribeWithCallback(func(signal interface{}) {
+		resp := signal.(*notifications.Notification)
+		server.Send(resp)
+	})
 
-done:
-	for {
-		select {
-		case signal := <-eventChannel:
-			{
-				n := signal.(*notifications.Notification)
-				response := &notifications.SubscribeResponse{Notification: n}
-				server.Send(response)
-			}
-		case <-server.Context().Done():
-			{
-				common.LogClientOperation(context.Background(), client, `disconnected`)
-				break done
-			}
-		}
-	}
-
-	s.notificationBroadcaster.Unsubscribe(subscribeId)
+	common.LogClientOperation(context.Background(), client, `disconnected`)
 
 	return nil
+}
+
+func (s *MoodyAPIServer) ListNotifications(ctx context.Context, request *notifications.ListRequest) (*notifications.ListResponse, error) {
+	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	if err != nil {
+		common.LogClientError(ctx, client, err)
+		return nil, err
+	}
+
+	common.LogClientOperation(ctx, client, `lists notifications`)
+	result, err := db.ListNotifications(ctx, request.ChannelID, request.SenderID, request.Urgency, request.Private)
+	if err != nil {
+		return nil, err
+	}
+
+	return &notifications.ListResponse{Notifications: result}, nil
 }

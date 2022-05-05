@@ -1,8 +1,10 @@
 package broadcaster
 
 import (
+	"context"
 	"fmt"
 	"sync"
+	"time"
 )
 
 type Broadcaster struct {
@@ -28,6 +30,27 @@ func (b *Broadcaster) Subscribe(id int64) (<-chan interface{}, error) {
 	b.clients[id] = s
 
 	return b.clients[id], nil
+}
+
+func (b *Broadcaster) SubscribeWithCallback(callback func(interface{})) error {
+	subscriptionId := time.Now().UnixNano()
+	channel, err := b.Subscribe(subscriptionId)
+	if err != nil {
+		panic(err)
+	}
+
+done:
+	for {
+		select {
+		case signal := <-channel:
+			callback(signal)
+		case <-context.Background().Done():
+			break done
+		}
+	}
+
+	b.Unsubscribe(subscriptionId)
+	return nil
 }
 
 func (b *Broadcaster) Unsubscribe(id int64) {

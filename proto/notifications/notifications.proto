@@ -37,19 +37,29 @@ message SubscribeRequest
 {
     common.Auth auth = 1;
     int64 channelID = 2;
-    common.NotificationUrgency urgency = 3;
-}
-
-message SubscribeResponse
-{
-    NotificationChannel channel = 1;
-    Notification notification = 2;
+    optional common.NotificationUrgency urgency = 3;
+    repeated int64 channels = 4;
 }
 
 message SendRequest
 {
     common.Auth auth = 1;
     Notification notification = 2;
+}
+
+message ListRequest
+{
+    common.Auth auth = 1;
+    optional int64 channelID = 2;
+    optional int64 senderID = 3;
+    optional common.NotificationUrgency urgency = 4;
+    optional bool private = 5;
+}
+
+message ListResponse
+{
+    repeated Notification notifications = 1;
+    int64 total = 2;
 }
 
 message CreateChannelRequest

@@ -10,6 +10,7 @@ import (
 	"api.mooody.me/api"
 	"api.mooody.me/db"
 	"api.mooody.me/messaging"
+	"api.mooody.me/models/notifications"
 )
 
 func main() {
@@ -41,7 +42,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to start API Server, %s", err)
 	}
-	_, grpcServer := api.CreateServer()
+	apiServer, grpcServer := api.CreateServer()
 	log.Printf("gRPC server started on: %s", grpcServerAddress)
 
 	// Setup Telegram Bot
@@ -51,13 +52,17 @@ func main() {
 	TgBotSafeChatId := tgSection.Key("TargetGroup").MustInt64(0)
 	TgBotSafeUserId := tgSection.Key("TargetUser").MustInt64(0)
 
-	messaging, err := messaging.NewTelegramBot(TgBotIsEnabled, TgBotApiToken, TgBotSafeChatId, TgBotSafeUserId)
+	tgBot, err := messaging.NewTelegramBot(TgBotIsEnabled, TgBotApiToken, TgBotSafeChatId, TgBotSafeUserId)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	go messaging.SendMessage("我起来了")
-	go messaging.HandleBotCommand()
+	go apiServer.SubscribeNotificationInternal(func(signal *notifications.Notification) {
+		tgBot.SendNotification(signal)
+	})
+
+	go tgBot.SendMessage("我起来了")
+	go tgBot.HandleBotCommand()
 
 	grpcServer.Serve(listener)
 }

@@ -7,6 +7,26 @@ import (
 	"api.mooody.me/models/notifications"
 )
 
+func GetNotificationChannelById(ctx context.Context, channelId int64) (*notifications.NotificationChannel, error) {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return nil, err
+	}
+
+	channelORM := &notifications.NotificationChannelORM{}
+
+	err = database.NewSelect().
+		Model(channelORM).
+		Where("id = ?", channelId).
+		Scan(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return channelORM.ToPB(ctx)
+}
+
 func ListNotificationChannels(ctx context.Context) ([]*notifications.NotificationChannel, error) {
 	err := checkDatabaseConnectivity()
 	if err != nil {

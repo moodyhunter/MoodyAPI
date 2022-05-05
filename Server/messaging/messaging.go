@@ -1,11 +1,13 @@
 package messaging
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
 
 	"api.mooody.me/common"
+	"api.mooody.me/db"
 	"api.mooody.me/models/notifications"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -67,7 +69,17 @@ func (m *TelegramMessaging) SendNotification(event *notifications.Notification) 
 		return
 	}
 
-	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%d` [%s]: %s", event.ChannelId, event.Title, event.Content))
+	// get channel name from event's channel Id
+	channelName := "<unknown>"
+	if event.ChannelId != 0 {
+		channel, err := db.GetNotificationChannelById(context.Background(), event.ChannelId)
+		if err != nil {
+			fmt.Println(err)
+		}
+		channelName = channel.Name
+	}
+
+	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%s` [%s]: %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
 

@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+var moodyAPIServer *MoodyAPIServer
+
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
 	cameraEventBroadcaster  *broadcaster.Broadcaster

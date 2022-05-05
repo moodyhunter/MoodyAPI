@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"errors"
-	"time"
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
@@ -44,30 +43,12 @@ func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCam
 	common.LogClientOperation(context.Background(), client, "subscribed to camera change event")
 
 	server.Send(s.lastCameraState)
+	s.cameraEventBroadcaster.SubscribeWithCallback(func(signal interface{}) {
+		resp := signal.(*models.CameraState)
+		server.Send(resp)
+	})
 
-	subscribeId := time.Now().UnixNano()
-	eventChannel, err := s.cameraEventBroadcaster.Subscribe(subscribeId)
-	if err != nil {
-		return err
-	}
-
-done:
-	for {
-		select {
-		case signal := <-eventChannel:
-			{
-				resp := signal.(*models.CameraState)
-				server.Send(resp)
-			}
-		case <-server.Context().Done():
-			{
-				common.LogClientOperation(context.Background(), client, "disconnected")
-				break done
-			}
-		}
-	}
-
-	s.cameraEventBroadcaster.Unsubscribe(subscribeId)
+	common.LogClientOperation(context.Background(), client, "disconnected")
 
 	return nil
 }

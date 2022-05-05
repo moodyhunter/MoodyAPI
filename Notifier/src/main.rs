@@ -2,7 +2,7 @@ mod models;
 use models::{
     common::Auth,
     moody_api::moody_api_service_client::MoodyApiServiceClient,
-    notifications::{Notification, SendRequest, SubscribeRequest, SubscribeResponse},
+    notifications::{Notification, SendRequest, SubscribeRequest},
 };
 
 use ini::Ini;
@@ -89,8 +89,7 @@ async fn listen_notification(channel: Channel, api_secret: String) -> ! {
     }
 }
 
-fn display_notification(resp: SubscribeResponse) {
-    let n = resp.notification.unwrap();
+fn display_notification(n: Notification) {
     Notify::new()
         .summary(&n.title)
         .body(&n.content)
@@ -105,6 +104,7 @@ async fn send_notification(title: String, content: String, channel: &Channel, ap
     let n = Notification {
         title,
         content,
+        channel_id: 0,
         ..Default::default()
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());

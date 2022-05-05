@@ -46,13 +46,16 @@ service MoodyAPIService
     rpc UpdateCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
     rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
 
+    // Notification Channels
     rpc CreateNotificationChannel(notifications.CreateChannelRequest) returns (notifications.CreateChannelResponse);
     rpc ListNotificationChannel(notifications.ListChannelRequest) returns (notifications.ListChannelResponse);
     rpc UpdateNotificationChannel(notifications.UpdateChannelRequest) returns (notifications.UpdateChannelResponse);
     rpc DeleteNotificationChannel(notifications.DeleteChannelRequest) returns (notifications.DeleteChannelResponse);
 
+    // Notifications
     rpc SendNotification(notifications.SendRequest) returns (google.protobuf.Empty);
-    rpc SubscribeNotifications(notifications.SubscribeRequest) returns (stream notifications.SubscribeResponse);
+    rpc ListNotifications(notifications.ListRequest) returns (notifications.ListResponse);
+    rpc SubscribeNotifications(notifications.SubscribeRequest) returns (stream notifications.Notification);
 
     // Privileged RPCs
     rpc CreateClient(privileged.CreateClientRequest) returns (privileged.CreateClientResponse);
