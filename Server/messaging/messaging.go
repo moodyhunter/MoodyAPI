@@ -77,7 +77,7 @@ func (m *TelegramMessaging) SendNotification(event *notifications.Notification) 
 	}
 	channelName = channel.Name
 
-	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%s` [%s]: %s", channelName, event.Title, event.Content))
+	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*New Message From Channel \"%s\"*\n\n*Title:* %s\n*Content:* %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
 
