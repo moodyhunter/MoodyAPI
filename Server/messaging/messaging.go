@@ -71,19 +71,17 @@ func (m *TelegramMessaging) SendNotification(event *notifications.Notification) 
 
 	// get channel name from event's channel Id
 	channelName := "<unknown>"
-	if event.ChannelId != 0 {
-		channel, err := db.GetNotificationChannelById(context.Background(), event.ChannelId)
-		if err != nil {
-			fmt.Println(err)
-		}
-		channelName = channel.Name
+	channel, err := db.GetNotificationChannelById(context.Background(), event.ChannelId)
+	if err != nil {
+		fmt.Println(err)
 	}
+	channelName = channel.Name
 
 	msg := tgbotapi.NewMessage(0, fmt.Sprintf("`%s` [%s]: %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
 
-	_, err := m.botApi.Send(msg)
+	_, err = m.botApi.Send(msg)
 	if err != nil {
 		fmt.Println(err)
 	}
