@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "common/common.proto";
 import "privileged/privileged.proto";
 import "notifications/notifications.proto";
-import "wg/wg.proto";
+import "dns/dns.proto";
 
 package MoodyAPI;
 
@@ -63,9 +63,9 @@ service MoodyAPIService
     rpc DeleteClient(privileged.DeleteClientRequest) returns (privileged.DeleteClientResponse);
     rpc UpdateClient(privileged.UpdateClientRequest) returns (privileged.UpdateClientResponse);
 
-    // Create List Delete Update wireguard clients
-    rpc CreateWireguardClient(wg.CreateClientRequest) returns (wg.CreateClientResponse);
-    rpc ListWireguardClients(wg.ListWireguardClientsRequest) returns (wg.ListWireguardClientsResponse);
-    rpc DeleteWireguardClient(wg.DeleteClientRequest) returns (wg.DeleteClientResponse);
-    rpc UpdateWireguardClient(wg.UpdateClientRequest) returns (wg.UpdateClientResponse);
+    // Dynamic DNS
+    rpc CreateDNSRecord(dns.CreateDNSRecordRequest) returns (dns.CreateDNSRecordResponse);
+    rpc ListDNSRecords(dns.ListDNSRecordsRequest) returns (dns.ListDNSRecordsResponse);
+    rpc DeleteDNSRecord(dns.DeleteDNSRecordRequest) returns (dns.DeleteDNSRecordResponse);
+    rpc UpdateDNSRecord(dns.UpdateDNSRecordRequest) returns (dns.UpdateDNSRecordResponse);
 }

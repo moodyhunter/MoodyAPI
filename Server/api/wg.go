@@ -5,56 +5,52 @@ import (
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
-	"api.mooody.me/models/wg"
+	"api.mooody.me/models/dns"
 )
 
-// CreateWireguardClient creates a new wireguard client, implements the MoodyAPIServer interface
-func (s *MoodyAPIServer) CreateWireguardClient(ctx context.Context, request *wg.CreateClientRequest) (*wg.CreateClientResponse, error) {
+func (s *MoodyAPIServer) CreateDNSRecord(ctx context.Context, request *dns.CreateDNSRecordRequest) (*dns.CreateDNSRecordResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
 
-	common.LogClientOperation(ctx, client, `creates wireguard client`)
+	common.LogClientOperation(ctx, client, `creates dns record`)
 
 	// TODO
 	return nil, nil
 }
 
-// DeleteWireguardClient
-func (s *MoodyAPIServer) DeleteWireguardClient(ctx context.Context, request *wg.DeleteClientRequest) (*wg.DeleteClientResponse, error) {
+func (s *MoodyAPIServer) DeleteDNSRecord(ctx context.Context, request *dns.DeleteDNSRecordRequest) (*dns.DeleteDNSRecordResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
 
-	common.LogClientOperation(ctx, client, `deletes wireguard client`)
+	common.LogClientOperation(ctx, client, `deletes dns record`)
 
 	// TODO
 	return nil, nil
 }
 
-// ListWireguardClients
-func (s *MoodyAPIServer) ListWireguardClients(ctx context.Context, request *wg.ListWireguardClientsRequest) (*wg.ListWireguardClientsResponse, error) {
+func (s *MoodyAPIServer) ListDNSRecords(ctx context.Context, request *dns.ListDNSRecordsRequest) (*dns.ListDNSRecordsResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
 
-	common.LogClientOperation(ctx, client, `lists wireguard clients`)
+	common.LogClientOperation(ctx, client, `lists dns record`)
 
 	// TODO
 	return nil, nil
 }
 
-// UpdateWireguardClient
-func (s *MoodyAPIServer) UpdateWireguardClient(ctx context.Context, request *wg.UpdateClientRequest) (*wg.UpdateClientResponse, error) {
+func (s *MoodyAPIServer) UpdateDNSRecord(ctx context.Context, request *dns.UpdateDNSRecordRequest) (*dns.UpdateDNSRecordResponse, error) {
 	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
 
-	common.LogClientOperation(ctx, client, `updates wireguard client`)
+	common.LogClientOperation(ctx, client, `updates dns record`)
 
 	// TODO
 	return nil, nil

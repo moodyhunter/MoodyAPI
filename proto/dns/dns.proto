@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package dns;
+import "common/common.proto";
+
+option go_package = "api.mooody.me/models/dns";
+
+message DNSRecord
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "dns"
+    };
+    string name = 1 [ (common.bun_field) = { column : "name" } ];
+    string type = 2 [ (common.bun_field) = { column : "type" } ];
+    string ip = 3 [ (common.bun_field) = { column : "ip" } ];
+}
+
+message CreateDNSRecordRequest
+{
+    common.Auth auth = 1;
+    DNSRecord record = 2;
+}
+
+message CreateDNSRecordResponse
+{
+    bool success = 1;
+}
+
+message ListDNSRecordsRequest
+{
+    common.Auth auth = 1;
+    optional string nameFilter = 2;
+}
+
+message ListDNSRecordsResponse
+{
+    repeated DNSRecord entries = 1;
+}
+
+message DeleteDNSRecordRequest
+{
+    common.Auth auth = 1;
+    string name = 2;
+}
+
+message DeleteDNSRecordResponse
+{
+    bool success = 1;
+}
+
+message UpdateDNSRecordRequest
+{
+    common.Auth auth = 1;
+    DNSRecord record = 2;
+}
+
+message UpdateDNSRecordResponse
+{
+    bool success = 1;
+}

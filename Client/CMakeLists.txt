@@ -56,7 +56,7 @@ set(PROTO_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 generate_grpc_source("${PROTO_SOURCE_DIR}/MoodyAPI.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/common/common.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/privileged/privileged.proto")
-generate_grpc_source("${PROTO_SOURCE_DIR}/wg/wg.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/dns/dns.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/notifications/notifications.proto")
 
 qt_add_executable(MoodyAppMain
