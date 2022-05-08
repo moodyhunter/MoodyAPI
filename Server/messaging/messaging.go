@@ -35,9 +35,6 @@ func NewTelegramBot(enabled bool, token string, safeChatId int64, safeUserId int
 		Command:     "ping",
 		Description: "Ping!",
 	}, tgbotapi.BotCommand{
-		Command:     "version",
-		Description: "Get the current version of the bot (git revison)",
-	}, tgbotapi.BotCommand{
 		Command:     "status",
 		Description: "Get MoodyAPI status",
 	}, tgbotapi.BotCommand{
@@ -112,10 +109,9 @@ func (m *TelegramMessaging) HandleBotCommand() {
 			switch update.Message.Command() {
 			case "ping":
 				msg.Text = "🏓"
-			case "version":
-				msg.Text = "Server Version: `" + common.ServerRevision + "`"
 			case "status":
-				msg.Text = fmt.Sprintf("API Server Uptime: `%d` minute\\(s\\)", int(time.Now().Sub(common.StartTime).Minutes()))
+				msg.Text = "Server Revision: `" + common.ServerRevision + "`\n"
+				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Now().Sub(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
 			default:

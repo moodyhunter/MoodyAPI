@@ -9,6 +9,7 @@ import (
 
 	"api.mooody.me/api"
 	"api.mooody.me/db"
+	"api.mooody.me/dns_server"
 	"api.mooody.me/messaging"
 	"api.mooody.me/models/notifications"
 )
@@ -63,6 +64,14 @@ func main() {
 
 	go tgBot.SendMessage("我起来了")
 	go tgBot.HandleBotCommand()
+
+	// Setup DNS Server
+	dnsSection := config.Section("DNS")
+	dnsServerListenAddress := dnsSection.Key("ListenAddress").MustString("127.0.0.1:53")
+	dnsServerBaseDomain := dnsSection.Key("BaseDomain").MustString("local.mooody.me.")
+
+	dnsServer := dns_server.NewDnsServer(dnsServerListenAddress, "udp", dnsServerBaseDomain)
+	go dnsServer.StartAsync()
 
 	grpcServer.Serve(listener)
 }
