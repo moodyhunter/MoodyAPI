@@ -11,7 +11,7 @@ message DNSRecord
         ormable : true,
         table : "dns"
     };
-    string name = 1 [ (common.bun_field) = { column : "name" } ];
+    string name = 1 [ (common.bun_field) = { column : "hostname" } ];
     string type = 2 [ (common.bun_field) = { column : "type" } ];
     string ip = 3 [ (common.bun_field) = { column : "ip" } ];
 }
