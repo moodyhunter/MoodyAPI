@@ -32,7 +32,7 @@ func (b *Broadcaster) Subscribe(id int64) (<-chan interface{}, error) {
 	return b.clients[id], nil
 }
 
-func (b *Broadcaster) SubscribeWithCallback(callback func(interface{})) error {
+func (b *Broadcaster) BlockedSubscribeWithCallback(callback func(interface{})) error {
 	subscriptionId := time.Now().UnixNano()
 	channel, err := b.Subscribe(subscriptionId)
 	if err != nil {

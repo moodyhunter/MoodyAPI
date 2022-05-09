@@ -43,7 +43,7 @@ func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCam
 	common.LogClientOperation(context.Background(), client, "subscribed to camera change event")
 
 	server.Send(s.lastCameraState)
-	s.cameraEventBroadcaster.SubscribeWithCallback(func(signal interface{}) {
+	s.cameraEventBroadcaster.BlockedSubscribeWithCallback(func(signal interface{}) {
 		resp := signal.(*models.CameraState)
 		server.Send(resp)
 	})

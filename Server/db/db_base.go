@@ -26,7 +26,7 @@ func checkDatabaseConnectivity() error {
 	return nil
 }
 
-func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass string) {
+func SetupConnection(dbAddress string, dbName string, dbUser string, dbPass string) {
 	pgconn := pgdriver.NewConnector(
 		pgdriver.WithNetwork("tcp"),
 		pgdriver.WithAddr(dbAddress),
@@ -36,7 +36,14 @@ func SetupDBConnection(dbAddress string, dbName string, dbUser string, dbPass st
 		pgdriver.WithApplicationName("MoodyAPI Server"),
 		pgdriver.WithInsecure(true),
 	)
+	log.Printf("Connecting to database %s@%s", dbName, dbAddress)
 	database = bun.NewDB(sql.OpenDB(pgconn), pgdialect.New())
+	log.Println("Database connection established.")
+}
+
+func ShutdownConnection() {
+	database.Close()
+	log.Println("Database connection closed.")
 }
 
 func GetClientFromAuth(ctx context.Context, auth *common.Auth, requirePrivileged bool) (*common.APIClient, error) {

@@ -12,21 +12,16 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type TelegramMessaging struct {
+type TelegramBot struct {
 	botApi     *tgbotapi.BotAPI
 	safeChatId int64
 	safeUserId int64
-	enabled    bool
 }
 
-func NewTelegramBot(enabled bool, token string, safeChatId int64, safeUserId int64) (*TelegramMessaging, error) {
-	if !enabled {
-		return &TelegramMessaging{botApi: nil, safeChatId: 0, safeUserId: 0, enabled: enabled}, nil
-	}
-
+func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramBot {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -43,14 +38,15 @@ func NewTelegramBot(enabled bool, token string, safeChatId int64, safeUserId int
 	})
 	bot.Request(mm)
 
-	return &TelegramMessaging{botApi: bot, safeChatId: safeChatId, safeUserId: safeUserId, enabled: enabled}, nil
+	return &TelegramBot{botApi: bot, safeChatId: safeChatId, safeUserId: safeUserId}
 }
 
-func (m *TelegramMessaging) SendMessage(message string) {
-	if !m.enabled {
-		return
-	}
+func (bot *TelegramBot) Close() {
+	bot.botApi.StopReceivingUpdates()
+	log.Println("Telegram bot is closed.")
+}
 
+func (m *TelegramBot) SendMessage(message string) {
 	msg := tgbotapi.NewMessage(0, message)
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
@@ -61,11 +57,7 @@ func (m *TelegramMessaging) SendMessage(message string) {
 	}
 }
 
-func (m *TelegramMessaging) SendNotification(event *notifications.Notification) {
-	if !m.enabled {
-		return
-	}
-
+func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 	// get channel name from event's channel Id
 	channelName := "<unknown>"
 	channel, err := db.GetNotificationChannelById(context.Background(), event.ChannelId)
@@ -84,11 +76,7 @@ func (m *TelegramMessaging) SendNotification(event *notifications.Notification) 
 	}
 }
 
-func (m *TelegramMessaging) HandleBotCommand() {
-	if !m.enabled {
-		return
-	}
-
+func (m *TelegramBot) ServeBotCommand() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 

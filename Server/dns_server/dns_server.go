@@ -24,11 +24,17 @@ func NewDnsServer(address string, network string, baseDomain string, recordTtl u
 	return dnsServer
 }
 
-func (d *DnsServer) StartAsync() {
+func (d *DnsServer) Serve() {
+	log.Println("starting DNS server")
 	err := d.server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (d *DnsServer) Close() {
+	d.server.Shutdown()
+	log.Println("DNS server closed")
 }
 
 func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
