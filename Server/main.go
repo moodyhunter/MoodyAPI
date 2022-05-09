@@ -67,11 +67,15 @@ func main() {
 
 	// Setup DNS Server
 	dnsSection := config.Section("DNS")
+	dnsServerIsEnabled := dnsSection.Key("Enabled").MustBool(false)
 	dnsServerListenAddress := dnsSection.Key("ListenAddress").MustString("127.0.0.1:53")
 	dnsServerBaseDomain := dnsSection.Key("BaseDomain").MustString("local.mooody.me.")
+	dnsServerTtl := (uint32)(dnsSection.Key("TTL").MustInt(60))
 
-	dnsServer := dns_server.NewDnsServer(dnsServerListenAddress, "udp", dnsServerBaseDomain)
-	go dnsServer.StartAsync()
+	if dnsServerIsEnabled {
+		dnsServer := dns_server.NewDnsServer(dnsServerListenAddress, "udp", dnsServerBaseDomain, dnsServerTtl)
+		go dnsServer.StartAsync()
+	}
 
 	grpcServer.Serve(listener)
 }
