@@ -16,9 +16,9 @@ Language Ingredients: `C++`, `CMake`, `Golang`, `PostgreSQL`, `QML`, `Rust`, `Ty
 
 - Camera Controlling: Whether to turn on. or turn off a remote camera.
 - Notification Handling: Pushing notifications to all clients.
+- Dynamic DNS Server.
 - (WIP) A central management panel for all functionalities.
-- (TODO) Wireguard Clients Managing: Managing Wireguard clients and setting IPs.
-- (TODO) Dynamic DNS for Wireguard Clients.
+- ~~(TODO) Wireguard Clients Managing: Managing Wireguard clients and setting IPs.~~ Removed due to lack of interests.
 
 ## Components
 
@@ -40,9 +40,10 @@ Language Ingredients: `C++`, `CMake`, `Golang`, `PostgreSQL`, `QML`, `Rust`, `Ty
 
 I don't think anyone would need these code, but just in case, they are licensed under `GPLv3`
 
-Credits:
+Major Credits:
 
 - [@KDAB/android_openssl](https://github.com/KDAB/android_openssl) for prebuilt OpenSSL libraries for Android platforms
 - [@bitbank2/ss_oled](https://github.com/bitbank2/ss_oled) for the SSOLED implementation
 - [@bitbank2/BitBang_I2C](https://github.com/bitbank2/BitBang_I2C) for the actural I2C implementation
   - Although I have removed most of their code.
+- [@miekg/exdns](https://github.com/miekg/exdns) for the great DNS server library
