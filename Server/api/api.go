@@ -15,9 +15,9 @@ var moodyAPIServer *MoodyAPIServer
 
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
-	cameraEventBroadcaster  *broadcaster.Broadcaster
-	notificationBroadcaster *broadcaster.Broadcaster
-	lastCameraState         *models.CameraState
+	cameraEventStream  *broadcaster.Broadcaster
+	notificationStream *broadcaster.Broadcaster
+	lastCameraState    *models.CameraState
 
 	gRPCServer    *grpc.Server
 	listenAddress string
@@ -26,8 +26,8 @@ type MoodyAPIServer struct {
 func CreateServer(listenAddress string) *MoodyAPIServer {
 	apiServer := &MoodyAPIServer{}
 	apiServer.lastCameraState = new(models.CameraState)
-	apiServer.cameraEventBroadcaster = broadcaster.NewBroadcaster()
-	apiServer.notificationBroadcaster = broadcaster.NewBroadcaster()
+	apiServer.cameraEventStream = broadcaster.NewBroadcaster()
+	apiServer.notificationStream = broadcaster.NewBroadcaster()
 	apiServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
 

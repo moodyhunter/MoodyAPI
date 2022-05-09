@@ -51,8 +51,8 @@ func main() {
 	// Setup gRPC Server
 
 	grpcSection := config.Section("gRPC")
-	grpcServerAddress := grpcSection.Key("ListenAddress").MustString("127.0.0.1:1920")
-	apiServer = api.CreateServer(grpcServerAddress)
+	apiAddress := grpcSection.Key("ListenAddress").MustString("127.0.0.1:1920")
+	apiServer = api.CreateServer(apiAddress)
 	go apiServer.Serve()
 
 	// Setup Telegram Bot
@@ -74,12 +74,12 @@ func main() {
 	// Setup DNS Server
 	dnsSection := config.Section("DNS")
 	dnsServerIsEnabled := dnsSection.Key("Enabled").MustBool(false)
-	dnsServerListenAddress := dnsSection.Key("ListenAddress").MustString("127.0.0.1:53")
+	dnsServerAddress := dnsSection.Key("ListenAddress").MustString("127.0.0.1:53")
 	dnsServerBaseDomain := dnsSection.Key("BaseDomain").MustString("local.mooody.me.")
 	dnsServerTtl := (uint32)(dnsSection.Key("TTL").MustInt(60))
 
 	if dnsServerIsEnabled {
-		dnsServer = dns_server.NewDnsServer(dnsServerListenAddress, "udp", dnsServerBaseDomain, dnsServerTtl)
+		dnsServer = dns_server.NewDnsServer(dnsServerAddress, "udp", dnsServerBaseDomain, dnsServerTtl)
 		go dnsServer.Serve()
 	}
 

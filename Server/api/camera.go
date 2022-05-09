@@ -12,7 +12,7 @@ import (
 
 func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 	s.lastCameraState = event
-	s.cameraEventBroadcaster.Broadcast(event)
+	s.cameraEventStream.Broadcast(event)
 }
 
 func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
@@ -28,7 +28,6 @@ func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.
 	}
 
 	common.LogClientOperation(ctx, client, "set camera state to %t", request.State.State)
-
 	s.BroadcastCameraEvent(request.State)
 	return &emptypb.Empty{}, nil
 }
@@ -43,12 +42,11 @@ func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCam
 	common.LogClientOperation(context.Background(), client, "subscribed to camera change event")
 
 	server.Send(s.lastCameraState)
-	s.cameraEventBroadcaster.BlockedSubscribeWithCallback(func(signal interface{}) {
+	s.cameraEventStream.BlockedSubscribeWithCallback(func(signal interface{}) {
 		resp := signal.(*models.CameraState)
 		server.Send(resp)
 	})
 
 	common.LogClientOperation(context.Background(), client, "disconnected")
-
 	return nil
 }

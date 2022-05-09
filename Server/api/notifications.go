@@ -12,7 +12,7 @@ import (
 )
 
 func (s *MoodyAPIServer) BroadcastNotification(event *notifications.Notification) {
-	s.notificationBroadcaster.Broadcast(event)
+	s.notificationStream.Broadcast(event)
 }
 
 func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifications.SendRequest) (*emptypb.Empty, error) {
@@ -34,7 +34,7 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifica
 }
 
 func (s *MoodyAPIServer) SubscribeNotificationInternal(callback func(signal *notifications.Notification)) error {
-	s.notificationBroadcaster.BlockedSubscribeWithCallback(func(signal interface{}) {
+	s.notificationStream.BlockedSubscribeWithCallback(func(signal interface{}) {
 		resp := signal.(*notifications.Notification)
 		callback(resp)
 	})
@@ -50,7 +50,7 @@ func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.Subscribe
 
 	common.LogClientOperation(context.Background(), client, `subscribed notifications`)
 
-	s.notificationBroadcaster.BlockedSubscribeWithCallback(func(signal interface{}) {
+	s.notificationStream.BlockedSubscribeWithCallback(func(signal interface{}) {
 		resp := signal.(*notifications.Notification)
 		server.Send(resp)
 	})
