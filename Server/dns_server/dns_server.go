@@ -71,9 +71,7 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 			msg.Answer = append(msg.Answer, ns)
 			break
 
-		case "A":
-		case "AAAA":
-		case "CNAME":
+		case "A", "AAAA", "CNAME":
 			record, err := db.QueryDnsRecordWithType(hostname, typeString)
 			if err != nil {
 				println("cannot find dns record for", "\""+q.Name+"\"", "of type", "\""+typeString+"\":", err.Error())
