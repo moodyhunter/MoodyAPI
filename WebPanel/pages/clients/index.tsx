@@ -151,6 +151,11 @@ export default function Content() {
             renderCell: (params) => (<div>{(params.row as APIClient).lastSeen ? (dayjs(params.row.lastSeen).format('YYYY/MM/DD HH:mm:ss')) : "N/A"}</div>)
         },
         {
+            hideable: false, editable: false, width: 150, align: 'center', headerAlign: 'center', sortable: false,
+            field: 'privileged', headerName: 'Privileged',
+            renderCell: (params) => (<div>{(params.row as APIClient).privileged ? "✅" : "❌"}</div>)
+        },
+        {
             hideable: false, editable: false, width: 100, align: 'center', headerAlign: 'center', sortable: false, filterable: false,
             field: 'enabled', headerName: "Enabled",
             renderCell: function (params: GridRenderCellParams<boolean>) {
