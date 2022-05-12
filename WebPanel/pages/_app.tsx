@@ -17,8 +17,9 @@ type AppListButtonProps = {
 
 const AppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
+
     return (
-        <Link href={props.link} underline='none'>
+        <Link href={props.link} underline='none' onClick={(e) => { e.preventDefault(); router.push(props.link); }} >
             <ListItemButton selected={router.route === props.link} key={props.name} sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}>
                 <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
                     {props.icon}
