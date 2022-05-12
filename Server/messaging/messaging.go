@@ -103,7 +103,7 @@ func (m *TelegramBot) ServeBotCommand() {
 			case "channels":
 				onChannelsAction(&msg)
 			default:
-				msg.Text = "What are you talking about?"
+				continue
 			}
 		}
 
