@@ -5,7 +5,7 @@ import { GetServerSideProps } from 'next';
 export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
-            title: "Wireguard Clients"
+            title: "DNS Records"
         }
     };
 };
@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function Content() {
     return (
         <Container>
-            Wireguard Clients
+            DNS Record Entries
         </Container>
     );
 }

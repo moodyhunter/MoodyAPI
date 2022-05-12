@@ -37,8 +37,8 @@ const DrawerContent = () => {
             <List>
                 <AppListButton link='/' name='Home' icon={(<HomeIcon />)} />
                 <AppListButton link='/clients' name='API Clients' icon={(<LaptopIcon />)} />
-                <AppListButton link='/wg' name='Wireguard Clients' icon={(<NetworkIcon />)} />
                 <AppListButton link='/notifications' name='Notifications' icon={(<NotificationIcon />)} />
+                <AppListButton link='/dns' name='DNS Records' icon={(<NetworkIcon />)} />
                 <AppListButton link='/status' name='Status' icon={(<DashboardIcon />)} />
             </List>
             <Divider />
