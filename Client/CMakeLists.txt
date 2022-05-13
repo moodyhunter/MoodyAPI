@@ -81,8 +81,8 @@ qt_add_qml_module(MoodyAppMain
         qml/GradientButton.qml
         qml/SvgButton.qml
         qml/SettingsPanel.qml
-    DEPENDENCIES
-        qtgraphicaleffects
+    IMPORT_PATH
+        ${CMAKE_BINARY_DIR}
 )
 
 qt6_add_repc_merged(MoodyAppMain
