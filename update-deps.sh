@@ -9,3 +9,5 @@ for x in ./*/update-deps.sh; do
     $f
     cd $BaseDir
 done
+
+echo "Done."
