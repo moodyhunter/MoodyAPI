@@ -68,4 +68,8 @@ service MoodyAPIService
     rpc ListDNSRecords(dns.ListDNSRecordsRequest) returns (dns.ListDNSRecordsResponse);
     rpc DeleteDNSRecord(dns.DeleteDNSRecordRequest) returns (dns.DeleteDNSRecordResponse);
     rpc UpdateDNSRecord(dns.UpdateDNSRecordRequest) returns (dns.UpdateDNSRecordResponse);
+
+    // Remote Viberator Control
+    // rpc StartViberator(privileged.StartViberatorRequest) returns (privileged.StartViberatorResponse);
+    // rpc StopViberator(privileged.StopViberatorRequest) returns (privileged.StopViberatorResponse);
 }
