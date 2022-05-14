@@ -2,8 +2,7 @@
 #include "device/SH1106.hpp"
 
 #include <bitset>
-#include <cairo-ft.h>
-#include <cairo.h>
+#include <cairomm/cairomm.h>
 #include <cmath>
 #include <iostream>
 
@@ -26,34 +25,43 @@ int main(int argc, char *argv[])
 
         device.SetContrast(std::byte{ 0xaa });
 
-        const auto surface = cairo_image_surface_create(CAIRO_FORMAT_A1, 128, 64);
-        const auto cr = cairo_create(surface);
+        auto surface = Cairo::ImageSurface::create(Cairo::Format::FORMAT_A1, 128, 64);
+        const auto cr = Cairo::Context::create(surface);
 
-        cairo_set_line_width(cr, 1.0);
-        cairo_move_to(cr, 0, 5);
-        cairo_line_to(cr, 0, 0);
-        cairo_line_to(cr, 128, 0);
-        cairo_line_to(cr, 128, 5);
-        cairo_line_to(cr, 60, 32);
+        cr->set_line_width(1);
+
+        cr->move_to(0, 0);
+
+        cr->line_to(0, 64);
+        cr->line_to(128, 64);
+        cr->line_to(128, 0);
+        cr->line_to(0, 0);
+        cr->stroke();
 
         FcPattern *pattern;
         {
-            FcResult result;
             FcInit();
-            pattern = FcNameParse((const FcChar8 *) "JoyPixels");
-            FcDefaultSubstitute(pattern);
-            FcConfigSubstitute(FcConfigGetCurrent(), pattern, FcMatchPattern);
-            pattern = FcFontMatch(FcConfigGetCurrent(), pattern, &result);
+            FcConfig *config = FcInitLoadConfigAndFonts();
+            FcPattern *pat = FcNameParse((const FcChar8 *) "WenQuanYi Micro Hei");
+
+            FcConfigSubstitute(config, pat, FcMatchFont);
+            FcDefaultSubstitute(pat);
+
+            FcResult result;
+            pattern = FcFontMatch(config, pat, &result);
         }
 
-        const auto face = cairo_ft_font_face_create_for_pattern(pattern);
-        cairo_set_font_face(cr, face);
-        cairo_set_font_size(cr, 20.0);
-        cairo_move_to(cr, 0, 50.0);
-        cairo_show_text(cr, "🍆🍑");
-        cairo_move_to(cr, 5, 20.0);
-        cairo_set_font_size(cr, 20.0);
-        cairo_show_text(cr, "🍆🍑");
+        const auto face = Cairo::FtFontFace::create(pattern);
+        cr->set_font_face(face);
+        cr->set_font_size(20.0);
+
+        cr->move_to(0, 20.0);
+        cr->show_text("哈哈AaBb");
+
+        cr->move_to(0, 50.0);
+        cr->show_text("🍆🍑？");
+
+        cr->move_to(0, 80.0);
         {
             double xc = 80.0;
             double yc = 30.0;
@@ -61,26 +69,26 @@ int main(int argc, char *argv[])
             double angle1 = 45.0 * (M_PI / 180.0);  /* angles are specified */
             double angle2 = 180.0 * (M_PI / 180.0); /* in radians           */
 
-            cairo_set_line_width(cr, 3.0);
-            cairo_arc(cr, xc, yc, radius, angle1, angle2);
-            cairo_stroke(cr);
+            cr->set_line_width(3.0);
+            cr->arc(xc, yc, radius, angle1, angle2);
+            cr->stroke();
 
             /* draw helping lines */
-            cairo_set_source_rgba(cr, 1, 0.2, 0.2, 0.6);
-            cairo_set_line_width(cr, 6.0);
+            cr->set_source_rgba(1, 0.2, 0.2, 0.6);
+            cr->set_line_width(6.0);
 
-            cairo_arc(cr, xc, yc, 10.0, 0, 2 * M_PI);
-            cairo_fill(cr);
+            cr->arc(xc, yc, 10.0, 0, 2 * M_PI);
+            cr->fill();
 
-            cairo_arc(cr, xc, yc, radius, angle1, angle1);
-            cairo_line_to(cr, xc, yc);
-            cairo_arc(cr, xc, yc, radius, angle2, angle2);
-            cairo_line_to(cr, xc, yc);
-            cairo_stroke(cr);
+            cr->arc(xc, yc, radius, angle1, angle1);
+            cr->line_to(xc, yc);
+            cr->arc(xc, yc, radius, angle2, angle2);
+            cr->line_to(xc, yc);
+            cr->stroke();
         }
-        cairo_stroke(cr);
+        cr->stroke();
 
-        unsigned char *const buf = cairo_image_surface_get_data(surface);
+        unsigned char *const buf = surface->get_data();
 
         device.DrawBuffer(buf);
         return 0;

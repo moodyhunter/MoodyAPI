@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(CairoPackages REQUIRED IMPORTED_TARGET fontconfig cairo cairo-fc)
+pkg_check_modules(CairoPackages REQUIRED IMPORTED_TARGET fontconfig cairomm-1.0 cairomm-ft-1.0)
 
 option(PISCREEN_DUMMY_DEVICE "Enable the PiScreen dummy device" OFF)
 
