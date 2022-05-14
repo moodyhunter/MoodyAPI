@@ -28,6 +28,7 @@ endmacro()
 add_executable(PiScreen
     ${CMAKE_SOURCE_DIR}/main.cpp
     ${CMAKE_SOURCE_DIR}/config/Config.hpp
+    ${CMAKE_SOURCE_DIR}/config/Config.cpp
 
     # IPiScreen Interface
     ${CMAKE_SOURCE_DIR}/device/IPiScreenDevice.hpp

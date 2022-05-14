@@ -10,16 +10,32 @@ int main(int argc, char *argv[])
     PiScreen::config::ScreenContent config;
     {
         using namespace PiScreen::config;
+
+#if 1
         config.push_back(MakeLine(0, 0, PiScreen::SCREEN_WIDTH, 0, 1));
         config.push_back(MakeLine(PiScreen::SCREEN_WIDTH, 0, PiScreen::SCREEN_WIDTH, PiScreen::SCREEN_HEIGHT, 1));
         config.push_back(MakeLine(0, PiScreen::SCREEN_HEIGHT, PiScreen::SCREEN_WIDTH, PiScreen::SCREEN_HEIGHT, 1));
         config.push_back(MakeLine(0, PiScreen::SCREEN_HEIGHT, 0, 0, 1));
+#endif
 
-        config.push_back(MakeText(20, 20, "Hello World!", 10, false, false));
-        config.push_back(MakeText(80, 50, "👌🏻", 40, true, false));
-        config.push_back(MakeLine(0, 20, 40, 40, 1));
+        config.push_back(MakeStaticText(2, 12, "IP", 13, false, true));
+        config.push_back(MakeStaticText(30, 12, "192.168.200.102", 10, false, false));
+        config.push_back(MakeLine(0, 15, PiScreen::SCREEN_WIDTH, 14, 1));
 
-        config.push_back(MakeDataSourceText(10, 50, "data:id1", 15, false, true));
+        config.push_back(MakeStaticText(2, 27, "CPU", 13, false, true));
+        config.push_back(MakeStaticText(33, 26, "50%", 10, false, false));
+
+        config.push_back(MakeLine(60, 14, 60, 30, 1));
+
+        config.push_back(MakeStaticText(64, 27, "MEM", 13, false, true));
+        config.push_back(MakeStaticText(98, 26, "50%", 10, false, false));
+
+        config.push_back(MakeLine(0, 31, PiScreen::SCREEN_WIDTH, 30, 1));
+
+        config.push_back(MakeStaticText(2, 41, "Camera", 11, false, true));
+        config.push_back(MakeStaticText(11, 59, "OFF", 18, false, true));
+
+        config.push_back(MakeStaticText(98, 55, "👌🏻", 25, true, false));
     }
 
     PiScreen::renderer::ScreenRenderer renderer;
