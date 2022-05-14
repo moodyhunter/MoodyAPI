@@ -7,9 +7,7 @@
 #define OLED_DEBUG 0
 #endif
 
-#if OLED_DEBUG
-#include <iostream>
-#endif
+using namespace PiScreen::devices;
 
 constexpr unsigned char InitSequence[]{
     0x00,
@@ -34,19 +32,16 @@ constexpr unsigned char InitSequence[]{
     0x02, // Sequential/Alternative mode
 };
 
-constexpr auto HSize = 128;
-constexpr auto VSize = 64;
-
 constexpr auto HDotsPerBlock = 8;
 constexpr auto VDotsPerBlock = 8;
 
-constexpr auto HBlocks = HSize / HDotsPerBlock;
-constexpr auto VBlocks = VSize / VDotsPerBlock;
+constexpr auto HBlocks = SH1106DeviceCore::SCREEN_WIDTH / HDotsPerBlock;
+constexpr auto VBlocks = SH1106DeviceCore::SCREEN_HEIGHT / VDotsPerBlock;
 
-SH1106Device::SH1106Device(int busId, int iAddr) : m_Addr(iAddr)
+SH1106DeviceCore::SH1106DeviceCore(int busId, int iAddr) : m_Addr(iAddr)
 {
     // on Linux, SDA = bus number, SCL = device address
-    m_I2CDevice = new I2CDevice(busId);
+    m_I2CDevice = new common::I2CDevice(busId);
 
     // find the device address if requested
     if (!this->m_Addr)
@@ -58,12 +53,12 @@ SH1106Device::SH1106Device(int busId, int iAddr) : m_Addr(iAddr)
     }
 }
 
-SH1106Device::~SH1106Device()
+SH1106DeviceCore::~SH1106DeviceCore()
 {
     delete m_I2CDevice;
 }
 
-bool SH1106Device::InitDevice(bool bFlip, bool bInvert)
+bool SH1106DeviceCore::InitDevice(bool bFlip, bool bInvert)
 {
     if (m_Addr == 0)
         return false;
@@ -94,17 +89,17 @@ bool SH1106Device::InitDevice(bool bFlip, bool bInvert)
     return true;
 }
 
-void SH1106Device::p_I2CWrite(const unsigned char *pData, int iLen)
+void SH1106DeviceCore::p_I2CWrite(const unsigned char *pData, int iLen)
 {
     m_I2CDevice->Write(m_Addr, pData, iLen);
 }
 
-void SH1106Device::SetPower(bool bOn)
+void SH1106DeviceCore::SetPower(bool bOn)
 {
     p_WriteCommand(bOn ? 0xaf : 0xae);
 }
 
-void SH1106Device::p_WriteCommand(unsigned char c)
+void SH1106DeviceCore::p_WriteCommand(unsigned char c)
 {
     unsigned char buf[2];
 
@@ -113,7 +108,7 @@ void SH1106Device::p_WriteCommand(unsigned char c)
     p_I2CWrite(buf, 2);
 }
 
-void SH1106Device::p_WriteCommand(unsigned char c, unsigned char d)
+void SH1106DeviceCore::p_WriteCommand(unsigned char c, unsigned char d)
 {
     unsigned char buf[3];
 
@@ -123,12 +118,12 @@ void SH1106Device::p_WriteCommand(unsigned char c, unsigned char d)
     p_I2CWrite(buf, 3);
 }
 
-void SH1106Device::SetContrast(std::byte ucContrast)
+void SH1106DeviceCore::SetContrast(std::byte ucContrast)
 {
     p_WriteCommand(0x81, (unsigned char) ucContrast);
 }
 
-void SH1106Device::p_SetPosition(int x, int y, bool bRender)
+void SH1106DeviceCore::p_SetPosition(int x, int y, bool bRender)
 {
 
     if (!bRender)
@@ -145,7 +140,7 @@ void SH1106Device::p_SetPosition(int x, int y, bool bRender)
     p_I2CWrite(buf, 4);
 }
 
-void SH1106Device::p_WriteDataBlock(const unsigned char *ucBuf, int iLen, bool bRender)
+void SH1106DeviceCore::p_WriteDataBlock(const unsigned char *ucBuf, int iLen, bool bRender)
 {
     if (!bRender)
         return;
@@ -180,7 +175,7 @@ void SH1106Device::p_WriteDataBlock(const unsigned char *ucBuf, int iLen, bool b
 #endif
 }
 
-void SH1106Device::DrawBuffer(const uint8_t *const buf)
+void SH1106DeviceCore::DrawBuffer(const uint8_t *const buf)
 {
     for (int x = 0; x < HBlocks; x++)
     {

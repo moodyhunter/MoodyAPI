@@ -1,17 +1,23 @@
 #pragma once
 
-#include "common/IPiScreenDevice.hpp"
+#include "IPiScreenDevice.hpp"
 
-// A dummy device for debugging purposes.
-class DummyDevice final : public IPiScreenDevice
+namespace PiScreen::devices
 {
-  public:
-    DummyDevice(int);
+    // A dummy device for debugging purposes.
+    class DummyDevice final : public IPiScreenDevice
+    {
+      public:
+        static constexpr auto SCREEN_WIDTH = 128;
+        static constexpr auto SCREEN_HEIGHT = 64;
 
-    bool InitDevice(bool bFlip = false, bool bInvert = false);
-    void SetPower(bool bOn);
-    void SetContrast(std::byte bContrast);
-    void DrawBuffer(const uint8_t *buf);
-};
+        DummyDevice();
+        ~DummyDevice();
 
-static_assert(is_screen_device_constructable_v<DummyDevice>, "Must be a complete class.");
+        void SetPower(bool bOn);
+        void SetContrast(std::byte bContrast);
+        void DrawBuffer(const uint8_t *buf);
+    };
+
+    static_assert(is_screen_device_valid_v<DummyDevice>, "Must be a complete class.");
+} // namespace PiScreen::devices

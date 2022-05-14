@@ -26,6 +26,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+using namespace PiScreen::common;
+
 constexpr std::string_view dev_i2c = "/dev/i2c-";
 
 I2CDevice::I2CDevice(int busId) : m_busId(busId)

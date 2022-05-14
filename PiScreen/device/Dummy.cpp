@@ -1,17 +1,16 @@
 #include "Dummy.hpp"
 
 #include <bitset>
-#include <cstdlib>
-#include <iostream>
 
-DummyDevice::DummyDevice(int)
+using namespace PiScreen::devices;
+
+DummyDevice::DummyDevice()
 {
     std::cerr << "Using Dummy device" << std::endl;
 }
 
-bool DummyDevice::InitDevice(bool bFlip, bool bInvert)
+DummyDevice::~DummyDevice()
 {
-    return true;
 }
 
 void DummyDevice::SetPower(bool bOn)
