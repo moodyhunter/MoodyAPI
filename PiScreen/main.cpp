@@ -1,13 +1,18 @@
-#include "SH1106dev.hpp"
-
 #include <bitset>
 #include <cairo-ft.h>
 #include <cairo.h>
 #include <cmath>
 #include <iostream>
 
-#ifndef OLED_DEBUG
 #define OLED_DEBUG 0
+
+#include "device/Dummy.hpp"
+#include "device/SH1106.hpp"
+
+#if PISCREEN_DUMMY_DEVICE
+using PiScreenDevice = DummyDevice;
+#else
+using PiScreenDevice = SH1106Device;
 #endif
 
 void oled_print_buffer(const unsigned char *const &buf)
@@ -33,16 +38,20 @@ void oled_print_buffer(const unsigned char *const &buf)
 
 int main(int argc, char *argv[])
 {
+#if PISCREEN_DUMMY_DEVICE
+    std::cerr << "Using Dummy device" << std::endl;
+#endif
+
     int iChannel = -1;
     while (iChannel < 2)
     {
         iChannel++;
 
-        SH1106Device ssoled{ iChannel };
-        if (!ssoled.initDevice())
+        PiScreenDevice device{ iChannel };
+        if (!device.InitDevice())
             continue;
 
-        ssoled.setContrast(std::byte{ 0xaa });
+        device.SetContrast(std::byte{ 0xaa });
 
         const auto surface = cairo_image_surface_create(CAIRO_FORMAT_A1, 128, 64);
         const auto cr = cairo_create(surface);
@@ -104,7 +113,7 @@ int main(int argc, char *argv[])
         oled_print_buffer(buf);
 #endif
 
-        ssoled.DrawBuffer(buf);
+        device.DrawBuffer(buf);
         return 0;
     }
 

@@ -1,4 +1,4 @@
-#include "SH1106dev.hpp"
+#include "SH1106.hpp"
 
 #include <bitset>
 #include <cstring>
@@ -63,7 +63,7 @@ SH1106Device::~SH1106Device()
     delete m_I2CDevice;
 }
 
-bool SH1106Device::initDevice(bool bFlip, bool bInvert)
+bool SH1106Device::InitDevice(bool bFlip, bool bInvert)
 {
     if (m_Addr == 0)
         return false;
@@ -99,7 +99,7 @@ void SH1106Device::p_I2CWrite(const unsigned char *pData, int iLen)
     m_I2CDevice->Write(m_Addr, pData, iLen);
 }
 
-void SH1106Device::setPower(bool bOn)
+void SH1106Device::SetPower(bool bOn)
 {
     p_WriteCommand(bOn ? 0xaf : 0xae);
 }
@@ -123,7 +123,7 @@ void SH1106Device::p_WriteCommand(unsigned char c, unsigned char d)
     p_I2CWrite(buf, 3);
 }
 
-void SH1106Device::setContrast(std::byte ucContrast)
+void SH1106Device::SetContrast(std::byte ucContrast)
 {
     p_WriteCommand(0x81, (unsigned char) ucContrast);
 }
