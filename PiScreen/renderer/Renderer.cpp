@@ -56,7 +56,7 @@ void ScreenRenderer::RenderOne()
                 }
                 else
                 {
-                    m_CairoContext->select_font_face("monospace", Cairo::FONT_SLANT_NORMAL, isBold ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL);
+                    m_CairoContext->select_font_face("sans-serif", Cairo::FONT_SLANT_NORMAL, isBold ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL);
                 }
 
                 m_CairoContext->set_font_size(fontSize);
@@ -90,7 +90,7 @@ void ScreenRenderer::RenderOne()
                 }
                 else
                 {
-                    m_CairoContext->select_font_face("monospace", Cairo::FONT_SLANT_NORMAL, isBold ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL);
+                    m_CairoContext->select_font_face("sans-serif", Cairo::FONT_SLANT_NORMAL, isBold ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL);
                 }
 
                 m_CairoContext->set_font_size(fontSize);
