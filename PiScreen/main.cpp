@@ -3,13 +3,14 @@
 #include <bitset>
 #include <cairo-ft.h>
 #include <cairo.h>
+#include <cmath>
 #include <iostream>
 
 #ifndef OLED_DEBUG
 #define OLED_DEBUG 0
 #endif
 
-void oled_print_buffer(unsigned char *const &buf)
+void oled_print_buffer(const unsigned char *const &buf)
 {
     for (int i = 0; i < 128 * 64 / 8; i++)
     {
@@ -46,12 +47,12 @@ int main(int argc, char *argv[])
         const auto surface = cairo_image_surface_create(CAIRO_FORMAT_A1, 128, 64);
         const auto cr = cairo_create(surface);
 
-        cairo_move_to(cr, 0, 0);
+        cairo_set_line_width(cr, 1.0);
+        cairo_move_to(cr, 0, 5);
+        cairo_line_to(cr, 0, 0);
         cairo_line_to(cr, 128, 0);
-        cairo_move_to(cr, 0, 0);
-        cairo_line_to(cr, 0, 2);
-        cairo_move_to(cr, 128, 0);
-        cairo_line_to(cr, 128, 2);
+        cairo_line_to(cr, 128, 5);
+        cairo_line_to(cr, 60, 32);
 
         FcPattern *pattern;
         {
@@ -62,6 +63,7 @@ int main(int argc, char *argv[])
             FcConfigSubstitute(FcConfigGetCurrent(), pattern, FcMatchPattern);
             pattern = FcFontMatch(FcConfigGetCurrent(), pattern, &result);
         }
+
         const auto face = cairo_ft_font_face_create_for_pattern(pattern);
         cairo_set_font_face(cr, face);
         cairo_set_font_size(cr, 20.0);
@@ -70,8 +72,30 @@ int main(int argc, char *argv[])
         cairo_move_to(cr, 5, 20.0);
         cairo_set_font_size(cr, 20.0);
         cairo_show_text(cr, "🍆🍑");
+        {
+            double xc = 80.0;
+            double yc = 30.0;
+            double radius = 20.0;
+            double angle1 = 45.0 * (M_PI / 180.0);  /* angles are specified */
+            double angle2 = 180.0 * (M_PI / 180.0); /* in radians           */
 
-        cairo_set_line_width(cr, 1.0);
+            cairo_set_line_width(cr, 3.0);
+            cairo_arc(cr, xc, yc, radius, angle1, angle2);
+            cairo_stroke(cr);
+
+            /* draw helping lines */
+            cairo_set_source_rgba(cr, 1, 0.2, 0.2, 0.6);
+            cairo_set_line_width(cr, 6.0);
+
+            cairo_arc(cr, xc, yc, 10.0, 0, 2 * M_PI);
+            cairo_fill(cr);
+
+            cairo_arc(cr, xc, yc, radius, angle1, angle1);
+            cairo_line_to(cr, xc, yc);
+            cairo_arc(cr, xc, yc, radius, angle2, angle2);
+            cairo_line_to(cr, xc, yc);
+            cairo_stroke(cr);
+        }
         cairo_stroke(cr);
 
         unsigned char *const buf = cairo_image_surface_get_data(surface);

@@ -44,7 +44,7 @@ class I2CDevice
     /// Write I2C data
     /// quits if a NACK is received and returns 0
     /// otherwise returns the number of bytes written
-    bool Write(uint8_t iAddr, uint8_t *pData, int iLen);
+    bool Write(uint8_t iAddr, const uint8_t *pData, int iLen);
 
     /// Test if an address responds
     /// returns 0 if no response, 1 if it responds

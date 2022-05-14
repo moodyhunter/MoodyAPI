@@ -56,7 +56,7 @@ void I2CDevice::Scan(uint8_t *pMap)
             pMap[i >> 3] |= (1 << (i & 7));
 }
 
-bool I2CDevice::Write(uint8_t iAddr, uint8_t *pData, int iLen)
+bool I2CDevice::Write(uint8_t iAddr, const uint8_t *pData, int iLen)
 {
     if (!TestDevice(iAddr))
         return false;
