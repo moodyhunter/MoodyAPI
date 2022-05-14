@@ -1,13 +1,11 @@
+#include "device/Dummy.hpp"
+#include "device/SH1106.hpp"
+
 #include <bitset>
 #include <cairo-ft.h>
 #include <cairo.h>
 #include <cmath>
 #include <iostream>
-
-#define OLED_DEBUG 0
-
-#include "device/Dummy.hpp"
-#include "device/SH1106.hpp"
 
 #if PISCREEN_DUMMY_DEVICE
 using PiScreenDevice = DummyDevice;
@@ -15,33 +13,8 @@ using PiScreenDevice = DummyDevice;
 using PiScreenDevice = SH1106Device;
 #endif
 
-void oled_print_buffer(const unsigned char *const &buf)
-{
-    for (int i = 0; i < 128 * 64 / 8; i++)
-    {
-        const auto c = buf[i];
-
-        const auto str = std::bitset<8>(c).to_string();
-        const auto revstr = std::string(str.rbegin(), str.rend());
-
-        // Replace '0' with ' ' and '1' with space and '*'
-        std::string str2;
-        for (auto c : revstr)
-            str2 += (c == '0' ? ' ' : '*');
-
-        std::cout << str2;
-
-        if (((i + 1) * 8) % 128 == 0)
-            std::cout << std::endl;
-    }
-}
-
 int main(int argc, char *argv[])
 {
-#if PISCREEN_DUMMY_DEVICE
-    std::cerr << "Using Dummy device" << std::endl;
-#endif
-
     int iChannel = -1;
     while (iChannel < 2)
     {
@@ -108,10 +81,6 @@ int main(int argc, char *argv[])
         cairo_stroke(cr);
 
         unsigned char *const buf = cairo_image_surface_get_data(surface);
-
-#if OLED_DEBUG
-        oled_print_buffer(buf);
-#endif
 
         device.DrawBuffer(buf);
         return 0;
