@@ -46,6 +46,12 @@ add_executable(PiScreen
 )
 
 piscreen_add_datasource(ip)
+piscreen_add_datasource(cpu)
+piscreen_add_datasource(mem)
+
+# Systemd Service Inspection Support
+pkg_check_modules(DBus REQUIRED IMPORTED_TARGET libsystemd)
+piscreen_add_datasource(service)
 
 piscreen_add_device(SH1106)
 piscreen_add_device(Dummy)
@@ -54,4 +60,4 @@ if(PISCREEN_DUMMY_DEVICE)
     target_compile_definitions(PiScreen PRIVATE "PISCREEN_DUMMY_DEVICE=1")
 endif()
 
-target_link_libraries(PiScreen PRIVATE PkgConfig::CairoPackages)
+target_link_libraries(PiScreen PRIVATE PkgConfig::CairoPackages PkgConfig::DBus)

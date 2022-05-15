@@ -14,6 +14,13 @@ ScreenRenderer::ScreenRenderer()
 
 ScreenRenderer::~ScreenRenderer()
 {
+    m_CairoContext.clear();
+    m_CairoSurface.clear();
+
+    for (auto &ds : m_DataSources)
+    {
+        delete ds.second;
+    }
 }
 
 bool ScreenRenderer::InitDevice(devices::IPiScreenDevice *pScreenDevice)
@@ -37,6 +44,12 @@ std::string ScreenRenderer::GetDataSourceValue(int dataSourceId, const std::stri
 
 void ScreenRenderer::Render()
 {
+    // clear screen
+    m_CairoContext->set_operator(Cairo::OPERATOR_CLEAR);
+    m_CairoContext->rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_CairoContext->paint_with_alpha(1.0);
+    m_CairoContext->set_operator(Cairo::OPERATOR_SOURCE);
+
     for (auto &item : m_Config)
         RenderOne(item);
     m_pScreenDevice->DrawBuffer(m_CairoSurface->get_data());

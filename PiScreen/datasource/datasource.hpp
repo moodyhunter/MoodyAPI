@@ -1,9 +1,10 @@
 #pragma once
 
 #include "IDataSource.hpp"
+#include "datasource/cpu/source.hpp"
+#include "datasource/mem/source.hpp"
+#include "datasource/service/source.hpp"
 #include "ip/source.hpp"
-
-#include <map>
 
 // clang-format off
 #define RegisterDataSource(name)                                                                                                                                         \
@@ -18,4 +19,7 @@
 namespace PiScreen::datasource
 {
     RegisterDataSource(IPAddressDataSource);
+    RegisterDataSource(MemoryDataSource);
+    RegisterDataSource(CPUDataSource);
+    RegisterDataSource(SystemdServiceDataSource);
 } // namespace PiScreen::datasource
