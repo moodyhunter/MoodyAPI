@@ -10,6 +10,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(CairoPackages REQUIRED IMPORTED_TARGET fontconfig cairomm-1.0 cairomm-ft-1.0)
 
 option(PISCREEN_DUMMY_DEVICE "Use the Dummy Device" OFF)
+set(PISCREEN_OUTPUT_LIMIT 0 CACHE STRING "Limit the number of outputs, 0 means no limit")
 
 macro(piscreen_add_datasource SOURCE)
     target_sources(PiScreen PRIVATE
@@ -55,6 +56,8 @@ piscreen_add_datasource(service)
 
 piscreen_add_device(SH1106)
 piscreen_add_device(Dummy)
+
+target_compile_definitions(PiScreen PUBLIC "PISCREEN_OUTPUT_LIMIT=${PISCREEN_OUTPUT_LIMIT}")
 
 if(PISCREEN_DUMMY_DEVICE)
     target_compile_definitions(PiScreen PRIVATE "PISCREEN_DUMMY_DEVICE=1")

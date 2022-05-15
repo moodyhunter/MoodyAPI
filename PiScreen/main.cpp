@@ -4,7 +4,12 @@
 #include "device/device.hpp"
 #include "renderer/Renderer.hpp"
 
-#include <unistd.h>
+#ifndef PISCREEN_OUTPUT_LIMIT
+#warning "PISCREEN_OUTPUT_LIMIT not defined, defaulting to 0"
+#define PISCREEN_OUTPUT_LIMIT 0
+#endif
+
+using namespace std::chrono_literals;
 
 int main(int argc, char *argv[])
 {
@@ -53,11 +58,22 @@ int main(int argc, char *argv[])
     PiScreen::renderer::ScreenRenderer renderer;
     renderer.InitDevice(&device);
     renderer.SetConfiguration(config);
-    renderer.Render();
-    sleep(1);
-    renderer.Render();
-    sleep(1);
-    renderer.Render();
+
+#if PISCREEN_OUTPUT_LIMIT > 0
+    std::size_t frameCount = 0;
+    while (frameCount < PISCREEN_OUTPUT_LIMIT)
+    {
+        renderer.Render();
+        std::this_thread::sleep_for(1s);
+        ++frameCount;
+    }
+#else
+    while (true)
+    {
+        renderer.Render();
+        std::this_thread::sleep_for(2s);
+    }
+#endif
 
     return 0;
 }
