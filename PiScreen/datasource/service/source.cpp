@@ -76,8 +76,6 @@ namespace PiScreen::datasource
             }
         }
 
-        std::cout << ServicePath << ":" << ServiceStatus << std::endl;
-
         sd_bus_message_unref(message);
         std::string ret{ ServiceStatus };
         std::free(ServiceStatus);
