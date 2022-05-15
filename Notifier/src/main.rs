@@ -28,26 +28,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let api_host = conf.general_section().get("Server").unwrap().to_string();
     let client_id = conf.general_section().get("ClientID").unwrap().to_string();
 
-    let channel = Channel::from_shared(api_host.clone())?
+    let grpc_channel = Channel::from_shared(api_host.clone())?
         .connect()
         .await
         .expect("Can't create a channel");
 
     if env::args().len() >= 2 {
         if env::args().len() < 3 {
-            println!("You should provide 2 or 3 parameters:");
-            println!("  title message [channel]");
+            println!("You should provide 3 parameters:");
+            println!("  ChannelID Title Message");
             exit(1);
         }
 
         println!("Sending notifications...");
-        let title = env::args().nth(1).unwrap().to_string();
-        let content = env::args().nth(2).unwrap().to_string();
 
-        send_notification(title, content, &channel, &client_id).await;
+        // notification channel is an integer
+        let n_channel = env::args().nth(1).unwrap().parse::<i64>().unwrap();
+        let n_title = env::args().nth(2).unwrap().to_string();
+        let n_content = env::args().nth(3).unwrap().to_string();
+
+        send_notification(n_channel, n_title, n_content, &grpc_channel, &client_id).await;
     } else {
         println!("Starting in notification client mode, listening for new notifications...");
-        listen_notification(channel, client_id).await
+        listen_notification(grpc_channel, client_id).await
     }
 
     Ok(())
@@ -100,11 +103,17 @@ fn display_notification(n: Notification) {
         .unwrap();
 }
 
-async fn send_notification(title: String, content: String, channel: &Channel, api_secret: &String) {
+async fn send_notification(
+    n_channel: i64,
+    n_title: String,
+    n_content: String,
+    channel: &Channel,
+    api_secret: &String,
+) {
     let n = Notification {
-        title,
-        content,
-        channel_id: 0,
+        title: n_title,
+        content: n_content,
+        channel_id: n_channel,
         ..Default::default()
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());
