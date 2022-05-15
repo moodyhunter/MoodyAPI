@@ -70,6 +70,6 @@ service MoodyAPIService
     rpc UpdateDNSRecord(dns.UpdateDNSRecordRequest) returns (dns.UpdateDNSRecordResponse);
 
     // Remote Viberator Control
-    // rpc StartViberator(privileged.StartViberatorRequest) returns (privileged.StartViberatorResponse);
-    // rpc StopViberator(privileged.StopViberatorRequest) returns (privileged.StopViberatorResponse);
+    rpc StartViberator(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc StopViberator(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
