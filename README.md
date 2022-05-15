@@ -11,12 +11,14 @@ Language Ingredients: `C++`, `CMake`, `Golang`, `PostgreSQL`, `QML`, `Rust`, `Ty
 | Qt Client      | ![Build](../../actions/workflows/build-client.yml/badge.svg)                                                                |
 | Camera Agent   | ![Build](../../actions/workflows/build-agent.yml/badge.svg)                                                                 |
 | Notifier Agent | ![Build](../../actions/workflows/build-notifier.yml/badge.svg)                                                              |
+| PiScreen       | ![Build](../../actions/workflows/build-piscreen.yml/badge.svg)                                                              |
 
 ## Functionalities
 
 - Camera Controlling: Whether to turn on. or turn off a remote camera.
 - Notification Handling: Pushing notifications to all clients.
 - Dynamic DNS Server.
+- Monitoring Screen on RPi: CPU, Memory, systemd serivces, IP Address.
 - (WIP) A central management panel for all functionalities.
 - ~~(TODO) Wireguard Clients Managing: Managing Wireguard clients and setting IPs.~~ Removed due to lack of interests.
 
