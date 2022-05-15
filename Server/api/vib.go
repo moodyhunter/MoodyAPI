@@ -13,12 +13,14 @@ import (
 func sendControlMessage(action string) {
 	json, err := json.Marshal(map[string]string{"action": action})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	resp, err := http.Post("http://vib.local.mooody.me/action", "application/json", bytes.NewReader(json))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer resp.Body.Close()
 }
