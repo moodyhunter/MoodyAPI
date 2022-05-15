@@ -29,9 +29,9 @@ int main(int argc, char *argv[])
 
         {
             config.push_back(MakeDataSourceText(2, 12, PiScreen::datasource::DateTimeDateSource_ID, "%H:%M:%S", 11, false, true));
-            config.push_back(MakeLine(53, 0, 53, 15, 1));
+            config.push_back(MakeLine(50, 0, 50, 15, 1));
             config.push_back(MakeDataSourceText(58, 12, PiScreen::datasource::CPUDataSource_ID, "", 10, false, true));
-            config.push_back(MakeLine(95, 0, 89, 15, 1));
+            config.push_back(MakeLine(93, 0, 86, 15, 1));
             config.push_back(MakeDataSourceText(97, 12, PiScreen::datasource::MemoryDataSource_ID, "", 10, false, true));
         }
 
@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
             config.push_back(MakeLine(18, 14, 18, 30, 1));
             config.push_back(MakeDataSourceText(22, 26, PiScreen::datasource::IPAddressDataSource_ID, "", 11, false, true));
 
-            config.push_back(MakeStaticText(95, 45, "👌", 30, true, false));
+            config.push_back(MakeStaticText(93, 47, "👌", 30, true, false));
         }
 
-        config.push_back(MakeLine(0, 31, PiScreen::SCREEN_WIDTH - 25, 30, 1));
+        config.push_back(MakeLine(0, 31, PiScreen::SCREEN_WIDTH - 27, 30, 1));
 
         {
             config.push_back(MakeStaticText(2, 41, "Camera", 11, false, true));
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
             config.push_back(MakeStaticText(50, 41, "Notifier", 11, false, true));
 
-            config.push_back(MakeLine(98, 31, 98, 64, 1));
+            config.push_back(MakeLine(92, 31, 92, 64, 1));
             config.push_back(MakeStaticText(59, 59, "???", 18, false, true));
         }
     }
