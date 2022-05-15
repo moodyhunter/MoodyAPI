@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"api.mooody.me/models/common"
 	"api.mooody.me/models/notifications"
@@ -54,4 +55,32 @@ func ListNotifications(ctx context.Context, ChannelID *int64, SenderID *int64, U
 	}
 
 	return result, nil
+}
+
+func StoreNotification(ctx context.Context, notification *notifications.Notification) error {
+	err := checkDatabaseConnectivity()
+	if err != nil {
+		return err
+	}
+
+	notificationORM, err := notification.ToORM(ctx)
+	if err != nil {
+		return err
+	}
+
+	result, err := database.NewInsert().
+		Model(&notificationORM).
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+
+	r, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if r == 0 {
+		return errors.New("unexpected affected rows")
+	}
+
+	return nil
 }

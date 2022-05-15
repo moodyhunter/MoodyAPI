@@ -9,6 +9,7 @@ import (
 	"api.mooody.me/models"
 	"api.mooody.me/models/notifications"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *MoodyAPIServer) BroadcastNotification(event *notifications.Notification) {
@@ -27,9 +28,18 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifica
 		return nil, errors.New("invalid request")
 	}
 
-	common.LogClientOperation(ctx, client, `sends "[%s]: %s"`, request.Notification.Title, request.Notification.Content)
+	request.Notification.Time = timestamppb.Now()
+	request.Notification.SenderId = client.Id
 
+	common.LogClientOperation(ctx, client, `sends "[%s]: %s"`, request.Notification.Title, request.Notification.Content)
 	s.BroadcastNotification(request.Notification)
+
+	err = db.StoreNotification(ctx, request.Notification)
+	if err != nil {
+		common.LogClientOperation(ctx, client, `failed to store notification`)
+		return nil, err
+	}
+
 	return &emptypb.Empty{}, nil
 }
 

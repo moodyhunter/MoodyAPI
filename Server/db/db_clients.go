@@ -58,8 +58,6 @@ func CreateClient(ctx context.Context, client *common.APIClient) (*common.APICli
 		return nil, err
 	}
 
-	database.ExecContext(ctx, "")
-
 	result, err := database.NewInsert().
 		Model(&clientORM).
 		Exec(ctx)
