@@ -33,7 +33,7 @@ namespace PiScreen::datasource
                 "org.freedesktop.systemd1",                // The service to call.
                 "/org/freedesktop/systemd1",               // The object path.
                 "org.freedesktop.systemd1.Manager",        // The interface.
-                "GetUnit",                                 // The method to call.
+                "LoadUnit",                                // The method to call.
                 &sdBusError,                               // The error message.
                 &message,                                  // The message.
                 "s",                                       // The signature of the parameters.

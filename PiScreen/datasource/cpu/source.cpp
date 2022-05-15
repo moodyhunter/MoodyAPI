@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <sys/sysinfo.h>
 #include <thread>
