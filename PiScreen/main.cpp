@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
     renderer.InitDevice(device);
     renderer.SetConfiguration(config);
     renderer.Render();
-    sleep(1);
 
     return 0;
 }
