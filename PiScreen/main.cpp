@@ -27,12 +27,13 @@ int main(int argc, char *argv[])
         config.push_back(MakeLine(0, PiScreen::SCREEN_HEIGHT, 0, 0, 1));
 #endif
 
+        constexpr auto FONT_SIZE_COMMON = 11;
         {
-            config.push_back(MakeDataSourceText(2, 12, PiScreen::datasource::DateTimeDateSource_ID, "%H:%M:%S", 11, false, true));
+            config.push_back(MakeDataSourceText(2, 12, PiScreen::datasource::DateTimeDateSource_ID, "%H:%M:%S", FONT_SIZE_COMMON, false, true));
             config.push_back(MakeLine(50, 0, 50, 15, 1));
-            config.push_back(MakeDataSourceText(58, 12, PiScreen::datasource::CPUDataSource_ID, "", 10, false, true));
+            config.push_back(MakeDataSourceText(58, 12, PiScreen::datasource::CPUDataSource_ID, "", FONT_SIZE_COMMON, false, true));
             config.push_back(MakeLine(93, 0, 86, 15, 1));
-            config.push_back(MakeDataSourceText(97, 12, PiScreen::datasource::MemoryDataSource_ID, "", 10, false, true));
+            config.push_back(MakeDataSourceText(97, 12, PiScreen::datasource::MemoryDataSource_ID, "", FONT_SIZE_COMMON, false, true));
         }
 
         config.push_back(MakeLine(0, 15, PiScreen::SCREEN_WIDTH, 14, 1));
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
         {
             config.push_back(MakeStaticText(2, 27, "IP", 13, false, true));
             config.push_back(MakeLine(18, 14, 18, 30, 1));
-            config.push_back(MakeDataSourceText(22, 26, PiScreen::datasource::IPAddressDataSource_ID, "", 11, false, true));
+            config.push_back(MakeDataSourceText(22, 26, PiScreen::datasource::IPAddressDataSource_ID, "", FONT_SIZE_COMMON, false, true));
 
             config.push_back(MakeStaticText(93, 47, "👌", 30, true, false));
         }
