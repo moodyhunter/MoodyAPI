@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <map>
 #include <string>
 
@@ -13,5 +12,5 @@ namespace PiScreen::datasource
         virtual std::string getData(const std::string &extInfo) = 0;
     };
 
-    inline std::map<int, std::function<IDataSource *()>> registrations;
+    inline std::map<int, IDataSource *(*) (void)> registrations;
 } // namespace PiScreen::datasource
