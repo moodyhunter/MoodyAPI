@@ -1,0 +1,33 @@
+name: Build PiScreen
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-piscreen.yml"
+      - "PiScreen/**"
+      - "proto/**"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: raspberrypi
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy to Working Directory
+        run: |
+          rsync -aP --exclude='.git' --exclude='target' . /opt/actions/
+
+      - name: Build
+        run: |
+          cd /opt/actions/PiScreen
+          mkdir -p build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --parallel
+          sudo systemctl stop moodyapi-piscreen.service
+          cp -v ./PiScreen /opt/moodyapi/PiScreen
+          sudo systemctl start moodyapi-piscreen.service

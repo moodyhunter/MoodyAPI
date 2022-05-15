@@ -1,0 +1,13 @@
+[Unit]
+Description=MoodyAPI - PiScreen
+
+[Service]
+Type=simple
+
+# Must have i2c permissions
+User=moodyapi
+ExecStart=/opt/moodyapi/PiScreen
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
