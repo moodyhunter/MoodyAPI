@@ -49,6 +49,8 @@ namespace PiScreen::datasource
             const auto timeDiff = std::chrono::duration_cast<std::chrono::seconds>(thisTime - lastTime).count();
 
             m_idle = (thisIdle - lastIdle) / (float) timeDiff;
+            lastIdle = thisIdle;
+            lastTime = thisTime;
         }
     }
 
