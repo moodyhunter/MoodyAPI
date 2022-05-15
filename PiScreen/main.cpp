@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     while (true)
     {
         renderer.Render();
-        std::this_thread::sleep_for(2s);
+        std::this_thread::sleep_for(1s);
     }
 #endif
 
