@@ -69,7 +69,7 @@ service MoodyAPIService
     rpc DeleteDNSRecord(dns.DeleteDNSRecordRequest) returns (dns.DeleteDNSRecordResponse);
     rpc UpdateDNSRecord(dns.UpdateDNSRecordRequest) returns (dns.UpdateDNSRecordResponse);
 
-    // Remote Viberator Control
-    rpc StartViberator(google.protobuf.Empty) returns (google.protobuf.Empty);
-    rpc StopViberator(google.protobuf.Empty) returns (google.protobuf.Empty);
+    // Remote Vibrator Control
+    rpc StartVibrator(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc StopVibrator(google.protobuf.Empty) returns (google.protobuf.Empty);
 }

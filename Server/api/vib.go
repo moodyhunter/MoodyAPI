@@ -25,12 +25,12 @@ func sendControlMessage(action string) {
 	defer resp.Body.Close()
 }
 
-func (apiServer *MoodyAPIServer) StartViberator(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (apiServer *MoodyAPIServer) StartVibrator(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	sendControlMessage("start")
 	return &emptypb.Empty{}, nil
 }
 
-func (apiServer *MoodyAPIServer) StopViberator(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (apiServer *MoodyAPIServer) StopVibrator(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	sendControlMessage("stop")
 	return &emptypb.Empty{}, nil
 }
