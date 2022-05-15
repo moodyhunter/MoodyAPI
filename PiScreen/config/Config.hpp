@@ -31,8 +31,9 @@ namespace PiScreen::config
         LINE_PROP_END_Y, // End Y
         LINE_PROP_WIDTH, // Line Width
 
-        TEXT_CONTENT,            // Text with static content
-        TEXT_PROP_DATASOURCE_ID, // Text with content from a data source
+        TEXT_CONTENT,                  // Text with static content
+        TEXT_PROP_DATASOURCE_ID,       // Text with content from a data source
+        TEXT_PROP_DATASOURCE_EXT_INFO, // Text with content from a data source
 
         TEXT_PROP_FONT_SIZE, // Font size
         TEXT_PROP_IS_EMOJI,  // Is the text an emoji?
@@ -56,6 +57,7 @@ namespace PiScreen::config
                     case LINE_PROP_END_Y:
                     case LINE_PROP_WIDTH:
                     case TEXT_PROP_FONT_SIZE:
+                    case TEXT_PROP_DATASOURCE_ID:
                     {
                         return std::get<int>(*this);
                     }
@@ -68,7 +70,7 @@ namespace PiScreen::config
                 switch (prop)
                 {
                     case TEXT_CONTENT:
-                    case TEXT_PROP_DATASOURCE_ID:
+                    case TEXT_PROP_DATASOURCE_EXT_INFO:
                     {
                         return std::get<std::string>(*this);
                     }
@@ -119,5 +121,5 @@ namespace PiScreen::config
 
     ScreenItem MakeLine(int startX, int startY, int endX, int endY, int width);
     ScreenItem MakeStaticText(int startX, int startY, std::string text, int fontSize, bool isEmoji, bool isBold);
-    ScreenItem MakeDataSourceText(int startX, int startY, std::string dataSourceId, int fontSize, bool isEmoji, bool isBold);
+    ScreenItem MakeDataSourceText(int startX, int startY, int dataSourceId, std::string datasourceExtInfo, int fontSize, bool isEmoji, bool isBold);
 } // namespace PiScreen::config

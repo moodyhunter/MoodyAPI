@@ -1,6 +1,9 @@
 #include "config/Config.hpp"
+#include "datasource/datasource.hpp"
 #include "device/device.hpp"
 #include "renderer/Renderer.hpp"
+
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +22,7 @@ int main(int argc, char *argv[])
 #endif
 
         config.push_back(MakeStaticText(2, 12, "IP", 13, false, true));
-        config.push_back(MakeStaticText(30, 12, "192.168.200.102", 11, false, true));
+        config.push_back(MakeDataSourceText(30, 12, PiScreen::datasource::IPAddressDataSource_ID, "", 11, false, true));
         config.push_back(MakeLine(0, 15, PiScreen::SCREEN_WIDTH, 14, 1));
 
         config.push_back(MakeStaticText(2, 27, "CPU", 13, false, true));
@@ -35,13 +38,21 @@ int main(int argc, char *argv[])
         config.push_back(MakeStaticText(2, 41, "Camera", 11, false, true));
         config.push_back(MakeStaticText(11, 59, "OFF", 18, false, true));
 
-        config.push_back(MakeStaticText(98, 55, "👌🏻", 25, true, false));
+        config.push_back(MakeLine(48, 31, 47, 64, 1));
+
+        config.push_back(MakeStaticText(50, 41, "Notifier", 11, false, true));
+
+        config.push_back(MakeLine(95, 31, 94, 64, 1));
+        config.push_back(MakeStaticText(59, 59, "???", 18, false, true));
+
+        config.push_back(MakeStaticText(96, 55, "👌🏻", 25, true, false));
     }
 
     PiScreen::renderer::ScreenRenderer renderer;
     renderer.InitDevice(device);
     renderer.SetConfiguration(config);
-    renderer.RenderOne();
+    renderer.Render();
+    sleep(1);
 
     return 0;
 }
