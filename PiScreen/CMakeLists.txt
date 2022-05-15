@@ -49,6 +49,7 @@ add_executable(PiScreen
 piscreen_add_datasource(ip)
 piscreen_add_datasource(cpu)
 piscreen_add_datasource(mem)
+piscreen_add_datasource(datetime)
 
 # Systemd Service Inspection Support
 pkg_check_modules(DBus REQUIRED IMPORTED_TARGET libsystemd)

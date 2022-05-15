@@ -2,6 +2,7 @@
 
 #include "IDataSource.hpp"
 #include "datasource/cpu/source.hpp"
+#include "datasource/datetime/source.hpp"
 #include "datasource/mem/source.hpp"
 #include "datasource/service/source.hpp"
 #include "ip/source.hpp"
@@ -22,4 +23,5 @@ namespace PiScreen::datasource
     RegisterDataSource(MemoryDataSource);
     RegisterDataSource(CPUDataSource);
     RegisterDataSource(SystemdServiceDataSource);
+    RegisterDataSource(DateTimeDateSource);
 } // namespace PiScreen::datasource

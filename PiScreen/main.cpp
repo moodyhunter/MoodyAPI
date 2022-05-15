@@ -27,32 +27,37 @@ int main(int argc, char *argv[])
         config.push_back(MakeLine(0, PiScreen::SCREEN_HEIGHT, 0, 0, 1));
 #endif
 
-        config.push_back(MakeStaticText(2, 12, "IP", 13, false, true));
-        config.push_back(MakeDataSourceText(30, 12, PiScreen::datasource::IPAddressDataSource_ID, "", 11, false, true));
+        {
+            config.push_back(MakeDataSourceText(2, 12, PiScreen::datasource::DateTimeDateSource_ID, "%H:%M:%S", 11, false, true));
+            config.push_back(MakeLine(53, 0, 53, 15, 1));
+            config.push_back(MakeDataSourceText(58, 12, PiScreen::datasource::CPUDataSource_ID, "", 10, false, true));
+            config.push_back(MakeLine(95, 0, 89, 15, 1));
+            config.push_back(MakeDataSourceText(97, 12, PiScreen::datasource::MemoryDataSource_ID, "", 10, false, true));
+        }
 
         config.push_back(MakeLine(0, 15, PiScreen::SCREEN_WIDTH, 14, 1));
 
-        config.push_back(MakeStaticText(2, 27, "CPU", 13, false, true));
-        config.push_back(MakeDataSourceText(33, 27, PiScreen::datasource::CPUDataSource_ID, "", 10, false, true));
+        {
+            config.push_back(MakeStaticText(2, 27, "IP", 13, false, true));
+            config.push_back(MakeLine(18, 14, 18, 30, 1));
+            config.push_back(MakeDataSourceText(22, 26, PiScreen::datasource::IPAddressDataSource_ID, "", 11, false, true));
 
-        config.push_back(MakeLine(60, 14, 60, 30, 1));
+            config.push_back(MakeStaticText(95, 45, "👌", 30, true, false));
+        }
 
-        config.push_back(MakeStaticText(64, 27, "MEM", 13, false, true));
-        config.push_back(MakeDataSourceText(98, 27, PiScreen::datasource::MemoryDataSource_ID, "", 10, false, true));
+        config.push_back(MakeLine(0, 31, PiScreen::SCREEN_WIDTH - 25, 30, 1));
 
-        config.push_back(MakeLine(0, 31, PiScreen::SCREEN_WIDTH, 30, 1));
+        {
+            config.push_back(MakeStaticText(2, 41, "Camera", 11, false, true));
+            config.push_back(MakeDataSourceText(10, 59, PiScreen::datasource::SystemdServiceDataSource_ID, "motion.service", 18, false, true));
 
-        config.push_back(MakeStaticText(2, 41, "Camera", 11, false, true));
-        config.push_back(MakeDataSourceText(11, 59, PiScreen::datasource::SystemdServiceDataSource_ID, "motion.service", 18, false, true));
+            config.push_back(MakeLine(48, 31, 47, 64, 1));
 
-        config.push_back(MakeLine(48, 31, 47, 64, 1));
+            config.push_back(MakeStaticText(50, 41, "Notifier", 11, false, true));
 
-        config.push_back(MakeStaticText(50, 41, "Notifier", 11, false, true));
-
-        config.push_back(MakeLine(96, 31, 95, 64, 1));
-        config.push_back(MakeStaticText(59, 59, "???", 18, false, true));
-
-        config.push_back(MakeStaticText(97, 55, "👌🏻", 25, true, false));
+            config.push_back(MakeLine(98, 31, 98, 64, 1));
+            config.push_back(MakeStaticText(59, 59, "???", 18, false, true));
+        }
     }
 
     PiScreen::renderer::ScreenRenderer renderer;
