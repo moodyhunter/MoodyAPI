@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"api.mooody.me/common"
@@ -59,12 +60,13 @@ func (m *TelegramBot) SendMessage(message string) {
 
 func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 	// get channel name from event's channel Id
-	channelName := "<unknown>"
+	channelName := "INVALID CHANNEL: " + strconv.FormatInt(event.ChannelId, 10)
 	channel, err := db.GetNotificationChannelById(context.Background(), event.ChannelId)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		channelName = channel.Name
 	}
-	channelName = channel.Name
 
 	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*New Message From Channel \"%s\"*\n\n*Title:* %s\n*Content:* %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
