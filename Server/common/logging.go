@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"api.mooody.me/db"
-	"api.mooody.me/models"
 	"api.mooody.me/models/common"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -30,7 +29,7 @@ func logWithApiClient(ctx context.Context, client *common.APIClient, prefix stri
 
 	log.Printf("%s: [%s] %s", prefix, frame, operation)
 
-	logInfo := models.OperationLog{
+	logInfo := common.OperationLog{
 		ClientId:   cid,
 		ClientName: cname,
 		Time:       timestamppb.Now(),

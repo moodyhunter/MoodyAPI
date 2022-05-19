@@ -16,7 +16,7 @@ func (s *MoodyAPIServer) BroadcastCameraEvent(event *models.CameraState) {
 }
 
 func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.UpdateCameraStateRequest) (*emptypb.Empty, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return nil, err
@@ -33,7 +33,7 @@ func (s *MoodyAPIServer) UpdateCameraState(ctx context.Context, request *models.
 }
 
 func (s *MoodyAPIServer) SubscribeCameraStateChange(request *models.SubscribeCameraStateChangeRequest, server models.MoodyAPIService_SubscribeCameraStateChangeServer) error {
-	client, err := db.GetClientFromAuth(context.Background(), request.Auth, false)
+	client, err := db.AuthenticateClient(context.Background(), request.Auth, false)
 	if err != nil {
 		common.LogClientError(context.Background(), client, err)
 		return err

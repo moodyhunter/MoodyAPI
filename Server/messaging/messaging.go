@@ -26,7 +26,6 @@ func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramB
 	}
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	// Update bot commands each time
 	mm := tgbotapi.NewSetMyCommands(tgbotapi.BotCommand{
 		Command:     "ping",
 		Description: "Ping!",

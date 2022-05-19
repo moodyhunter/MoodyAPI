@@ -59,3 +59,16 @@ message APIClient
     optional google.protobuf.Timestamp lastSeen = 5 [ (common.bun_field) = { column : "last_seen" } ];
     optional bool enabled = 6 [ (common.bun_field) = { column : "enabled" } ];
 }
+
+message OperationLog
+{
+    option (common.bun_opts) = {
+        ormable : true,
+        table : "operation_logs"
+    };
+    int64 id = 1 [ (common.bun_field) = { column : "id", primary_key : true, auto_increment : true } ];
+    int64 clientId = 2 [ (common.bun_field) = { column : "client_id" } ];
+    string clientName = 3 [ (common.bun_field) = { column : "client_name" } ];
+    google.protobuf.Timestamp time = 4 [ (common.bun_field) = { column : "time" } ];
+    string operation = 5 [ (common.bun_field) = { column : "operation" } ];
+}

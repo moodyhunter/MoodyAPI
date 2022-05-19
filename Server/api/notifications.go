@@ -17,7 +17,7 @@ func (s *MoodyAPIServer) BroadcastNotification(event *notifications.Notification
 }
 
 func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifications.SendRequest) (*emptypb.Empty, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return &emptypb.Empty{}, err
@@ -52,7 +52,7 @@ func (s *MoodyAPIServer) SubscribeNotificationInternal(callback func(signal *not
 }
 
 func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.SubscribeRequest, server models.MoodyAPIService_SubscribeNotificationsServer) error {
-	client, err := db.GetClientFromAuth(context.Background(), request.Auth, false)
+	client, err := db.AuthenticateClient(context.Background(), request.Auth, false)
 	if err != nil {
 		common.LogClientError(context.Background(), client, err)
 		return err
@@ -71,7 +71,7 @@ func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.Subscribe
 }
 
 func (s *MoodyAPIServer) ListNotifications(ctx context.Context, request *notifications.ListRequest) (*notifications.ListResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return nil, err

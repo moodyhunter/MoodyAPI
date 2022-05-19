@@ -13,7 +13,7 @@ import (
 )
 
 func (s *MoodyAPIServer) ListClients(ctx context.Context, request *privileged.ListClientsRequest) (*privileged.ListClientsResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.AuthenticateClient(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return &privileged.ListClientsResponse{Success: false}, errors.New("unauthenticated")
@@ -29,7 +29,7 @@ func (s *MoodyAPIServer) ListClients(ctx context.Context, request *privileged.Li
 }
 
 func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *privileged.UpdateClientRequest) (*privileged.UpdateClientResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.AuthenticateClient(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return &privileged.UpdateClientResponse{Success: false}, errors.New("unauthenticated")
@@ -87,7 +87,7 @@ func (s *MoodyAPIServer) UpdateClient(ctx context.Context, request *privileged.U
 }
 
 func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *privileged.DeleteClientRequest) (*privileged.DeleteClientResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.AuthenticateClient(ctx, request.Auth, true)
 	if err != nil {
 
 		common.LogClientError(ctx, client, err)
@@ -121,7 +121,7 @@ func (s *MoodyAPIServer) DeleteClient(ctx context.Context, request *privileged.D
 }
 
 func (s *MoodyAPIServer) CreateClient(ctx context.Context, request *privileged.CreateClientRequest) (*privileged.CreateClientResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, true)
+	client, err := db.AuthenticateClient(ctx, request.Auth, true)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
 		return &privileged.CreateClientResponse{Success: false}, errors.New("unauthenticated")

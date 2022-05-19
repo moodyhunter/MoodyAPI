@@ -9,7 +9,7 @@ import (
 )
 
 func (s *MoodyAPIServer) CreateDNSRecord(ctx context.Context, request *dns.CreateDNSRecordRequest) (*dns.CreateDNSRecordResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func (s *MoodyAPIServer) CreateDNSRecord(ctx context.Context, request *dns.Creat
 }
 
 func (s *MoodyAPIServer) DeleteDNSRecord(ctx context.Context, request *dns.DeleteDNSRecordRequest) (*dns.DeleteDNSRecordResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (s *MoodyAPIServer) DeleteDNSRecord(ctx context.Context, request *dns.Delet
 }
 
 func (s *MoodyAPIServer) ListDNSRecords(ctx context.Context, request *dns.ListDNSRecordsRequest) (*dns.ListDNSRecordsResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *MoodyAPIServer) ListDNSRecords(ctx context.Context, request *dns.ListDN
 }
 
 func (s *MoodyAPIServer) UpdateDNSRecord(ctx context.Context, request *dns.UpdateDNSRecordRequest) (*dns.UpdateDNSRecordResponse, error) {
-	client, err := db.GetClientFromAuth(ctx, request.Auth, false)
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		return nil, err
 	}

@@ -9,15 +9,19 @@ import (
 	"api.mooody.me/models"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var moodyAPIServer *MoodyAPIServer
 
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
+
 	cameraEventStream  *broadcaster.Broadcaster
 	notificationStream *broadcaster.Broadcaster
-	lastCameraState    *models.CameraState
+	keepAliveStream    *broadcaster.Broadcaster
+
+	lastCameraState *models.CameraState
 
 	gRPCServer    *grpc.Server
 	listenAddress string
@@ -25,9 +29,12 @@ type MoodyAPIServer struct {
 
 func CreateServer(listenAddress string) *MoodyAPIServer {
 	apiServer := &MoodyAPIServer{}
+
 	apiServer.lastCameraState = new(models.CameraState)
 	apiServer.cameraEventStream = broadcaster.NewBroadcaster()
 	apiServer.notificationStream = broadcaster.NewBroadcaster()
+	apiServer.keepAliveStream = broadcaster.NewBroadcaster()
+
 	apiServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
 
@@ -44,12 +51,14 @@ func (apiServer *MoodyAPIServer) Serve() {
 	if err != nil {
 		log.Fatalf("Failed to start API Server, %s", err)
 	}
+
 	go func() {
 		for {
 			time.Sleep(30 * time.Second)
-			apiServer.BroadcastCameraEvent(apiServer.lastCameraState)
+			apiServer.keepAliveStream.Broadcast(models.KeepAliveMessage{Time: timestamppb.Now()})
 		}
 	}()
+
 	log.Printf("API Server started on %s", apiServer.listenAddress)
 	apiServer.gRPCServer.Serve(listener)
 }

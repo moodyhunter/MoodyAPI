@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 
-	"api.mooody.me/models"
 	"api.mooody.me/models/common"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
@@ -46,7 +45,7 @@ func ShutdownConnection() {
 	log.Println("Database connection closed.")
 }
 
-func GetClientFromAuth(ctx context.Context, auth *common.Auth, requirePrivileged bool) (*common.APIClient, error) {
+func AuthenticateClient(ctx context.Context, auth *common.Auth, requirePrivileged bool) (*common.APIClient, error) {
 	if auth == nil {
 		return nil, errors.New("invalid Auth")
 	}
@@ -90,7 +89,7 @@ func UpdateClientLastSeen(ctx context.Context, client *common.APIClient) (*commo
 	return newClient, nil
 }
 
-func LogOperation(ctx context.Context, logInfo *models.OperationLog) error {
+func LogOperation(ctx context.Context, logInfo *common.OperationLog) error {
 	logORM, _ := logInfo.ToORM(ctx)
 	res, err := database.NewInsert().
 		Model(&logORM).
