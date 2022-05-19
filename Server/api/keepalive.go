@@ -17,8 +17,8 @@ func (apiServer *MoodyAPIServer) KeepAlive(request *models.KeepAliveRequest, ser
 
 	common.LogClientOperation(context.Background(), client, "connected")
 
-	apiServer.keepAliveStream.BlockedSubscribeWithCallback(func(signal interface{}) {
-		server.Send(signal.(*models.KeepAliveMessage))
+	apiServer.keepAliveStream.BlockedSubscribeWithCallback(func(signal *models.KeepAliveMessage) {
+		server.Send(signal)
 	})
 
 	common.LogClientOperation(context.Background(), client, "disconnected")

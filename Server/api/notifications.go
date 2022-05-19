@@ -44,9 +44,8 @@ func (s *MoodyAPIServer) SendNotification(ctx context.Context, request *notifica
 }
 
 func (s *MoodyAPIServer) SubscribeNotificationInternal(callback func(signal *notifications.Notification)) error {
-	s.notificationStream.BlockedSubscribeWithCallback(func(signal interface{}) {
-		resp := signal.(*notifications.Notification)
-		callback(resp)
+	s.notificationStream.BlockedSubscribeWithCallback(func(signal *notifications.Notification) {
+		callback(signal)
 	})
 	return nil
 }
@@ -60,9 +59,8 @@ func (s *MoodyAPIServer) SubscribeNotifications(request *notifications.Subscribe
 
 	common.LogClientOperation(context.Background(), client, `subscribed notifications`)
 
-	s.notificationStream.BlockedSubscribeWithCallback(func(signal interface{}) {
-		resp := signal.(*notifications.Notification)
-		server.Send(resp)
+	s.notificationStream.BlockedSubscribeWithCallback(func(signal *notifications.Notification) {
+		server.Send(signal)
 	})
 
 	common.LogClientOperation(context.Background(), client, `disconnected`)

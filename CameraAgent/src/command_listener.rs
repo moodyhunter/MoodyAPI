@@ -5,15 +5,46 @@ use tonic::{transport::Channel, Request};
 use crate::models::{
     common::Auth,
     moody_api::{
-        moody_api_service_client::MoodyApiServiceClient, SubscribeCameraStateChangeRequest,
+        moody_api_service_client::MoodyApiServiceClient, KeepAliveRequest,
+        SubscribeCameraStateChangeRequest,
     },
 };
 
+pub async fn keep_alive(channel: Channel, client_id: String) {
+    let mut client = MoodyApiServiceClient::new(channel.clone());
+
+    loop {
+        let request = Request::new(KeepAliveRequest {
+            auth: Some(Auth {
+                client_uuid: client_id.clone(),
+            }),
+        });
+
+        match client.keep_alive(request).await {
+            Ok(stream) => {
+                let mut resp = stream.into_inner();
+                loop {
+                    match resp.message().await {
+                        Ok(None) => println!("Received an empty message."),
+                        Ok(Some(keep_alive_resp)) => {
+                            println!("Received a keep alive response: {:?}", keep_alive_resp);
+                        }
+                        Err(e) => {
+                            println!("What? {:?}", e.message());
+                            break;
+                        }
+                    }
+                }
+            }
+            Err(e) => println!("Error: {}", e),
+        };
+    }
+}
+
 pub async fn listen_for_state_change(
-    api_host: &String,
+    channel: &Channel,
     client_id: &String,
 ) -> Result<(), Box<dyn Error>> {
-    let channel = Channel::from_shared(api_host.clone())?.connect().await?;
     let mut client = MoodyApiServiceClient::new(channel.clone());
 
     let request = Request::new(SubscribeCameraStateChangeRequest {

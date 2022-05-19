@@ -7,21 +7,21 @@ import (
 	"time"
 )
 
-type Broadcaster struct {
+type Broadcaster[T any] struct {
 	lock    sync.Mutex
-	clients map[int64]chan interface{}
+	clients map[int64]chan *T
 }
 
-func NewBroadcaster() *Broadcaster {
-	return &Broadcaster{
-		clients: make(map[int64]chan interface{}),
+func NewBroadcaster[T any]() *Broadcaster[T] {
+	return &Broadcaster[T]{
+		clients: make(map[int64]chan *T),
 	}
 }
 
-func (b *Broadcaster) Subscribe(id int64) (<-chan interface{}, error) {
+func (b *Broadcaster[T]) Subscribe(id int64) (<-chan *T, error) {
 	defer b.lock.Unlock()
 	b.lock.Lock()
-	s := make(chan interface{}, 1)
+	s := make(chan *T, 1)
 
 	if _, ok := b.clients[id]; ok {
 		return nil, fmt.Errorf("signal %d already exist", id)
@@ -31,7 +31,7 @@ func (b *Broadcaster) Subscribe(id int64) (<-chan interface{}, error) {
 	return b.clients[id], nil
 }
 
-func (b *Broadcaster) BlockedSubscribeWithCallback(callback func(interface{})) error {
+func (b *Broadcaster[T]) BlockedSubscribeWithCallback(callback func(*T)) error {
 	subscriptionId := time.Now().UnixNano()
 	channel, err := b.Subscribe(subscriptionId)
 	if err != nil {
@@ -52,7 +52,7 @@ done:
 	return nil
 }
 
-func (b *Broadcaster) Unsubscribe(id int64) {
+func (b *Broadcaster[T]) Unsubscribe(id int64) {
 	defer b.lock.Unlock()
 	b.lock.Lock()
 	if _, ok := b.clients[id]; ok {
@@ -62,7 +62,7 @@ func (b *Broadcaster) Unsubscribe(id int64) {
 	delete(b.clients, id)
 }
 
-func (b *Broadcaster) Broadcast(item interface{}) {
+func (b *Broadcaster[T]) Broadcast(item *T) {
 	defer b.lock.Unlock()
 	b.lock.Lock()
 	for k := range b.clients {

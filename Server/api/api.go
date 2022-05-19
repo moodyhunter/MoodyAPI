@@ -7,6 +7,7 @@ import (
 
 	"api.mooody.me/broadcaster"
 	"api.mooody.me/models"
+	"api.mooody.me/models/notifications"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -17,9 +18,9 @@ var moodyAPIServer *MoodyAPIServer
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
 
-	cameraEventStream  *broadcaster.Broadcaster
-	notificationStream *broadcaster.Broadcaster
-	keepAliveStream    *broadcaster.Broadcaster
+	cameraEventStream  *broadcaster.Broadcaster[models.CameraState]
+	notificationStream *broadcaster.Broadcaster[notifications.Notification]
+	keepAliveStream    *broadcaster.Broadcaster[models.KeepAliveMessage]
 
 	lastCameraState *models.CameraState
 
@@ -31,9 +32,9 @@ func CreateServer(listenAddress string) *MoodyAPIServer {
 	apiServer := &MoodyAPIServer{}
 
 	apiServer.lastCameraState = new(models.CameraState)
-	apiServer.cameraEventStream = broadcaster.NewBroadcaster()
-	apiServer.notificationStream = broadcaster.NewBroadcaster()
-	apiServer.keepAliveStream = broadcaster.NewBroadcaster()
+	apiServer.cameraEventStream = broadcaster.NewBroadcaster[models.CameraState]()
+	apiServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
+	apiServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
 
 	apiServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
@@ -55,7 +56,7 @@ func (apiServer *MoodyAPIServer) Serve() {
 	go func() {
 		for {
 			time.Sleep(30 * time.Second)
-			apiServer.keepAliveStream.Broadcast(models.KeepAliveMessage{Time: timestamppb.Now()})
+			apiServer.keepAliveStream.Broadcast(&models.KeepAliveMessage{Time: timestamppb.Now()})
 		}
 	}()
 
