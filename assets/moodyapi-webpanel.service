@@ -6,7 +6,7 @@ Type=simple
 User=moodyapi
 WorkingDirectory=/mnt/disk/moodyapi/WebPanel
 ExecStart=yarn start -p 9008
-Restart=on-abort
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

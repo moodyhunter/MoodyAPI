@@ -7,7 +7,7 @@ Type=simple
 # Must have i2c permissions
 User=moodyapi
 ExecStart=/opt/moodyapi/PiScreen
-Restart=on-abort
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

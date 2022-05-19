@@ -4,7 +4,7 @@ Description=MoodyAPI - Notifier Client
 [Service]
 Type=simple
 ExecStart=%h/.local/moodyapi/notify_client
-Restart=on-abort
+Restart=always
 
 [Install]
 WantedBy=default.target

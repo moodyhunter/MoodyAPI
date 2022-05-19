@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=simple
 User=moodyapi
 ExecStart=/opt/moodyapi/cam_agent
-Restart=on-abort
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
