@@ -1,5 +1,6 @@
-use std::error::Error;
 use std::process::Command;
+use std::{error::Error, time::Duration};
+use tokio::time::sleep;
 use tonic::{transport::Channel, Request};
 
 use crate::models::{
@@ -31,6 +32,7 @@ pub async fn keep_alive(channel: Channel, client_id: String) {
                         }
                         Err(e) => {
                             println!("What? {:?}", e.message());
+                            sleep(Duration::from_secs(5)).await;
                             break;
                         }
                     }
@@ -64,9 +66,12 @@ pub async fn listen_for_state_change(
                     }
                     Err(e) => {
                         println!("What? {:?}", e.message());
+                        sleep(Duration::from_secs(5)).await;
                         break;
                     }
                 }
+
+                sleep(Duration::from_secs(5)).await;
             }
         }
         Err(e) => println!("something went wrong: {:?}", e.message()),
