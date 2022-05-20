@@ -11,13 +11,13 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "^7.17.12",
+        "@babel/core": "^7.18.0",
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
         "@mui/icons-material": "^5.8.0",
         "@mui/material": "^5.8.0",
         "@mui/system": "^5.8.0",
-        "@mui/x-data-grid": "^5.11.0",
+        "@mui/x-data-grid": "^5.11.1",
         "@types/bcrypt": "^5.0.0",
         "bcrypt": "^5.0.1",
         "dayjs": "^1.11.2",
@@ -28,12 +28,12 @@
         "next-auth": "^4.3.4",
         "nextjs-progressbar": "^0.0.14",
         "nice-grpc": "^1.2.0",
-        "protobufjs": "^6.11.2",
+        "protobufjs": "^6.11.3",
         "react": "^18.0.0",
         "react-dom": "^18.0.0"
     },
     "devDependencies": {
-        "@types/node": "^17.0.34",
+        "@types/node": "^17.0.35",
         "@types/react": "^18.0.9",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
         "@typescript-eslint/parser": "^5.25.0",
