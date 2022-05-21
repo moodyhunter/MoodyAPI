@@ -23,27 +23,23 @@ def main():
         P.sub_progress("Removing the demo network '{}' from list", ["demo_network"])
 
     if len(network_list) == 1:
-        chosen_networks = network_list
+        chosen_network_dir = network_list[0]
         P.sub_progress("Only one network available, using it directly")
     else:
-        chosen_networks = enquiries.choose('Select the network(s) you want to configure:', network_list, multi=True)
+        chosen_network_dir = enquiries.choose('Select the network you want to configure:', network_list)[0]
 
-    if len(chosen_networks) == 0:
-        P.error("No networks selected")
+    network = generator.load_network(chosen_network_dir)
 
-    for network_name in chosen_networks:
-        network = generator.load_network(network_name)
+    nodes = network.nodes.keys()
+    chosen_nodes = enquiries.choose('Select the node(s) you want to generate:', nodes, multi=True)
 
-        nodes = network.nodes.keys()
-        chosen_nodes = enquiries.choose('Select the node(s) you want to generate:', nodes, multi=True)
+    P.progress("Generating configuration for network '{}'", [network.name])
+    P.sub_progress("Generating configuration for {} node(s)", [len(chosen_nodes)])
 
-        P.progress("Generating configuration for network '{}'", [network_name])
-        P.sub_progress("Generating configuration for {} node(s)", [len(chosen_nodes)])
-
-        for node_name in chosen_nodes:
-            node = network.nodes[node_name]
-            node.generate_config()
-            P.sub_progress("Generated configuration for node '{}'", [node_name])
+    for node_name in chosen_nodes:
+        node = network.nodes[node_name]
+        node.generate_config()
+        P.sub_progress("Generated configuration for node '{}'", [node_name])
 
     pass
 

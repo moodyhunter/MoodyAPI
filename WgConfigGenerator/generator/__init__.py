@@ -52,7 +52,7 @@ class Network:
 
 
 def load_network(network_name: str) -> Network:
-    P.progress("Reading configurations for network {}:", [network_name])
+    P.progress("Reading configurations from directory '{}':", ["networks/" + network_name])
 
     files = os.listdir('networks/' + network_name)
     files.sort()
