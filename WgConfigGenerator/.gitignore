@@ -1,0 +1,4 @@
+.venv
+generated/
+networks/*/
+__pycache__/

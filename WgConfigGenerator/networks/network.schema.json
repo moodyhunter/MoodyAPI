@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "title": "MoodyAPI WireGuard Client Definition",
+    "description": "A WireGuard Client in MoodyAPI",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the network",
+            "default": "WireGuard Network"
+        },
+        "ipv4_subnet": {
+            "type": "string",
+            "description": "The IPv4 subnet of the network",
+            "default": "192.168.200.0"
+        },
+        "ipv4_subnet_prefix": {
+            "type": "integer",
+            "description": "The IPv4 subnet prefix of the client",
+            "default": 24
+        }
+    }
+}

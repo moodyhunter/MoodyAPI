@@ -1,0 +1,7 @@
+{
+    "$schema": "../node.schema.json",
+    "name": "Demo Client 2",
+    "ipv4": "192.168.200.3",
+    "ipv6": "fd00:1::3",
+    "private_key": "eP5YLHZXfpSjkaszWojCN/3U5D8IvUUIkdVi5+Frd3o="
+}

@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "title": "MoodyAPI WireGuard Node Definition",
+    "description": "A WireGuard Node in MoodyAPI",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the WireGuard Node",
+            "default": "WireGuard Node"
+        },
+        "isServer": {
+            "type": "boolean",
+            "description": "Whether the WireGuard Node is a server",
+            "default": false
+        },
+        "ipv4": {
+            "type": "string",
+            "description": "The IPv4 address of the WireGuard Node",
+            "default": ""
+        },
+        "ipv6": {
+            "type": "string",
+            "description": "The IPv6 address of the WireGuard Node",
+            "default": ""
+        },
+        "port": {
+            "type": "integer",
+            "description": "The port of the WireGuard Node",
+            "default": 51820
+        },
+        "public_key": {
+            "type": "string",
+            "description": "The public key of the WireGuard Node",
+            "default": ""
+        },
+        "private_key": {
+            "type": "string",
+            "description": "The private key of the WireGuard Node",
+            "default": ""
+        },
+        "extra_allowed_ips": {
+            "type": "array",
+            "description": "The extra allowed IPs of the WireGuard Node, except its own IP",
+            "items": {
+                "type": "string"
+            },
+            "default": []
+        },
+        "public_endpoint": {
+            "type": "string",
+            "description": "The public IP endpoint of the WireGuard Node",
+            "default": ""
+        }
+    }
+}

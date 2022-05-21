@@ -1,0 +1,6 @@
+{
+    "$schema": "../network.schema.json",
+    "name": "WireGuard Network",
+    "ipv4_subnet": "192.168.200.0",
+    "ipv4_subnet_prefix": 24
+}

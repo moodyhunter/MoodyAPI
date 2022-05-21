@@ -1,0 +1,12 @@
+{
+    "$schema": "../node.schema.json",
+    "name": "WireGuard Server",
+    "ipv4": "192.168.200.1",
+    "ipv6": "fd00:1::1",
+    "isServer": true,
+    "private_key": "UCASsIuhyT5LLfhnx3nqRdbBJw1CszZ8xs9Vixkxv1c=",
+    "public_endpoint": "server.wireguard.example.com:51820",
+    "extra_allowed_ips": [
+        "10.20.0.1/24"
+    ]
+}
