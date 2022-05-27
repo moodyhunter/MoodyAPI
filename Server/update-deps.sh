@@ -1,5 +1,5 @@
 #!/bin/bash
 
-go get -u ./...
 go generate
+go get -u ./...
 go mod tidy
