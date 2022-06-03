@@ -2,6 +2,7 @@ import { AccountCircleOutlined, KeyOutlined, Visibility, VisibilityOff } from "@
 import { Alert, Box, Button, Container, FormControl, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { getCsrfToken, useSession } from 'next-auth/react';
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type SigninProperty = {
@@ -22,12 +23,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function SignIn({ csrfToken, errorReason }: SigninProperty) {
     const [showPassword, setShowPassword] = useState(false);
     const session = useSession();
+    const router = useRouter();
 
     const handleToggleShowPassword = () => { setShowPassword(!showPassword); };
 
     useEffect(() => {
         if (session.status === "authenticated") {
-            setTimeout(() => { location.href = "/"; }, 1000);
+            setTimeout(() => router.push('/'), 1000);
         }
     });
 
