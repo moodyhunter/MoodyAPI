@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { ReactElement, useEffect, useState } from 'react';
 import { LoadingScreen } from '../components';
 import NextNProgress from "nextjs-progressbar";
+import NextLink from "next/link";
 
 const DrawerWidth = 220;
 
@@ -20,14 +21,16 @@ const AppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
 
     return (
-        <Link href={props.link} underline='none' onClick={(e) => { e.preventDefault(); router.push(props.link); }} >
-            <ListItemButton selected={router.route === props.link} key={props.name} sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}>
-                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
-                    {props.icon}
-                </ListItemIcon>
-                <ListItemText primary={props.name} sx={{ opacity: 1 }} />
-            </ListItemButton>
-        </Link>
+        <NextLink passHref href={props.link}>
+            <Link underline='none'>
+                <ListItemButton selected={router.route === props.link} key={props.name} sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
+                        {props.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={props.name} sx={{ opacity: 1 }} />
+                </ListItemButton>
+            </Link>
+        </NextLink>
     );
 };
 
