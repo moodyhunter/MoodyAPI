@@ -3,7 +3,7 @@ import { Alert, Box, Button, Container, FormControl, IconButton, InputAdornment,
 import { GetServerSideProps } from "next";
 import { getCsrfToken, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type SigninProperty = {
     csrfToken: string;
@@ -25,13 +25,13 @@ export default function SignIn({ csrfToken, errorReason }: SigninProperty) {
     const session = useSession();
     const router = useRouter();
 
-    const handleToggleShowPassword = () => { setShowPassword(!showPassword); };
+    const handleToggleShowPassword = useCallback(() => { setShowPassword(prevState => !prevState); }, []);
 
     useEffect(() => {
         if (session.status === "authenticated") {
             setTimeout(() => router.push('/'), 1000);
         }
-    });
+    }, [router, session.status]);
 
     if (session.status === "authenticated") {
         return (
