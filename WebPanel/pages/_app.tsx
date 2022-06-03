@@ -63,7 +63,7 @@ const AuthenticatePageContent = ({ Component, pageProps: { ...pageProps } }: App
         if (router.route !== "/user/login" && session.status === "unauthenticated") {
             signIn();
         }
-    });
+    }, [router.route, session.status]);
 
     if (router.route === "/user/login") {
         return (<Component {...pageProps}></Component>);
