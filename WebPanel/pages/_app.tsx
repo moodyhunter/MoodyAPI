@@ -4,7 +4,7 @@ import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { memo, ReactElement, useEffect, useMemo, useState } from 'react';
+import { memo, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { LoadingScreen } from '../components';
 import NextNProgress from "nextjs-progressbar";
 import NextLink from "next/link";
@@ -83,12 +83,12 @@ const AuthenticatePageContent = ({ Component, pageProps: { ...pageProps } }: App
 
 const AppFrame = (appProps: AppProps) => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-    const handleDrawerToggle = () => {
-        setMobileDrawerOpen(!mobileDrawerOpen);
-    };
+    const handleDrawerToggle = useCallback(() => {
+        setMobileDrawerOpen(prevState => !prevState);
+    }, []);
 
     const session = useSession();
-    const handleSignout = async () => { await signOut(); };
+    const handleSignout = useCallback(async () => { await signOut(); }, []);
 
 
     return (<>
