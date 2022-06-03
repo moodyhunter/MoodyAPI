@@ -4,7 +4,7 @@ import { DataGrid, GridCellEditCommitParams, GridColDef, GridRenderCellParams, G
 import dayjs from 'dayjs';
 import { useAtom } from 'jotai';
 import { GetServerSideProps } from 'next';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 import { AlertDialog, AlertDialogProps, EmptyFunction, openDialogAtom } from '../../components';
 
@@ -17,23 +17,23 @@ export const getServerSideProps: GetServerSideProps = async () => {
     };
 };
 
+const StyledGridOverlay = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    '& .ant-empty-img-1': { fill: theme.palette.mode === 'light' ? '#aeb8c2' : '#262626' },
+    '& .ant-empty-img-2': { fill: theme.palette.mode === 'light' ? '#f5f5f7' : '#595959' },
+    '& .ant-empty-img-3': { fill: theme.palette.mode === 'light' ? '#dce0e6' : '#434343' },
+    '& .ant-empty-img-4': { fill: theme.palette.mode === 'light' ? '#ffffff' : '#1c1c1c' },
+    '& .ant-empty-img-5': {
+        fillOpacity: theme.palette.mode === 'light' ? '0.8' : '0.08',
+        fill: theme.palette.mode === 'light' ? '#f5f5f5' : '#fff',
+    },
+}));
 
 function CustomNoRowsOverlay() {
-    const StyledGridOverlay = styled('div')(({ theme }) => ({
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        '& .ant-empty-img-1': { fill: theme.palette.mode === 'light' ? '#aeb8c2' : '#262626' },
-        '& .ant-empty-img-2': { fill: theme.palette.mode === 'light' ? '#f5f5f7' : '#595959' },
-        '& .ant-empty-img-3': { fill: theme.palette.mode === 'light' ? '#dce0e6' : '#434343' },
-        '& .ant-empty-img-4': { fill: theme.palette.mode === 'light' ? '#ffffff' : '#1c1c1c' },
-        '& .ant-empty-img-5': {
-            fillOpacity: theme.palette.mode === 'light' ? '0.8' : '0.08',
-            fill: theme.palette.mode === 'light' ? '#f5f5f5' : '#fff',
-        },
-    }));
     return (
         <StyledGridOverlay>
             <svg width="120" height="100" viewBox="0 0 184 152" aria-hidden focusable="false">
@@ -99,9 +99,9 @@ export default function Content() {
     const [rowDisabled, setRowDisabled] = useState<{ [a: string]: boolean }>({});
     const [newClientButtonDisabled, setNewClientButtonDisabled] = useState<boolean>(false);
 
-    const handleCloseSnackbar = () => setSnackbarState(null);
-    const handleSuccessMessage = (msg: string) => setSnackbarState({ children: msg, severity: 'success' });
-    const handleErrorMessage = (msg: string) => setSnackbarState({ children: msg, severity: 'error' });
+    const handleCloseSnackbar = useCallback(() => setSnackbarState(null), []);
+    const handleSuccessMessage = useCallback((msg: string) => setSnackbarState({ children: msg, severity: 'success' }), []);
+    const handleErrorMessage = useCallback((msg: string) => setSnackbarState({ children: msg, severity: 'error' }), []);
 
     const updateClient = useCallback(
         async (params: GridCellEditCommitParams) => {
@@ -116,10 +116,10 @@ export default function Content() {
                 setRows((prev) => [...prev]);
                 handleErrorMessage(`Failed to update client ${params.id}: ${message}`);
             }
-        }, []
+        }, [handleErrorMessage, handleSuccessMessage]
     );
 
-    const refreshClients = () => {
+    const refreshClients = useCallback(() => {
         setLoading(true);
         setRows([]);
         getClientsAsync().then(({ success, message, data }) => {
@@ -133,12 +133,12 @@ export default function Content() {
                 setLoading(false);
             }
         });
-    };
+    }, [handleErrorMessage, handleSuccessMessage]);
 
     useEffect(() => refreshClients(), [refreshClients]);
     const [, openDialog] = useAtom(openDialogAtom);
 
-    const columns: GridColDef[] = [
+    const columns: GridColDef[] = useMemo(() => [
         { hideable: false, editable: false, width: 50, align: 'center', headerAlign: 'center', field: 'id', headerName: 'ID', sortable: true },
         { hideable: false, editable: true, width: 200, align: 'left', headerAlign: 'left', field: 'name', headerName: 'Client Name' },
         {
@@ -230,9 +230,9 @@ export default function Content() {
                 </>);
             }
         }
-    ];
+    ], [handleErrorMessage, handleSuccessMessage, openDialog, rowDisabled]);
 
-    const CustomToolbar = () => {
+    const CustomToolbar = useCallback(() => {
         const createClient = async () => {
             setNewClientButtonDisabled(true);
             const newClient: APIClient = { id: 0, name: "Client " + rows.length.toString() };
@@ -255,7 +255,7 @@ export default function Content() {
                 <GridToolbarExport />
             </GridToolbarContainer >
         );
-    };
+    }, [handleErrorMessage, newClientButtonDisabled, refreshClients, rows.length]);
 
     return (
         <Container style={{ height: '62vh', width: '100%' }}>
