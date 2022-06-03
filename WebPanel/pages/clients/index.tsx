@@ -135,7 +135,7 @@ export default function Content() {
         });
     };
 
-    useEffect(refreshClients, []);
+    useEffect(() => refreshClients(), [refreshClients]);
     const [, openDialog] = useAtom(openDialogAtom);
 
     const columns: GridColDef[] = [

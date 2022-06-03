@@ -4,7 +4,7 @@ import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useState } from 'react';
+import { memo, ReactElement, useEffect, useMemo, useState } from 'react';
 import { LoadingScreen } from '../components';
 import NextNProgress from "nextjs-progressbar";
 import NextLink from "next/link";
@@ -17,13 +17,13 @@ type AppListButtonProps = {
     icon: ReactElement
 };
 
-const AppListButton = (props: AppListButtonProps) => {
+const UnmemoizedAppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
 
     return (
         <NextLink passHref href={props.link}>
             <Link underline='none'>
-                <ListItemButton selected={router.route === props.link} key={props.name} sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}>
+                <ListItemButton selected={router.route === props.link} key={props.name} sx={useMemo(() => ({ minHeight: 48, justifyContent: 'initial', px: 2.5 }), [])}>
                     <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
                         {props.icon}
                     </ListItemIcon>
@@ -33,6 +33,8 @@ const AppListButton = (props: AppListButtonProps) => {
         </NextLink>
     );
 };
+
+const AppListButton = memo(UnmemoizedAppListButton);
 
 const DrawerContent = () => {
     return (
