@@ -14,7 +14,7 @@ using namespace std::chrono_literals;
 int main(int argc, char *argv[])
 {
     PiScreen::PiScreenDevice device;
-    device.SetContrast(std::byte{ 0x44 });
+    device.SetContrast(std::byte{ 0x64 });
 
     PiScreen::config::ScreenContent config;
     {
