@@ -730,9 +730,9 @@ dependencies = [
 
 [[package]]
 name = "mac-notification-sys"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "297c13fc8ff9fa8b2d0e53850f80e0aa962628e865d447031ce58cdb062e5b29"
+checksum = "ab6648898266b0318d588f44580edbcf798320c359ee72ca6e26081aae3d50f8"
 dependencies = [
  "cc",
  "dirs-next 2.0.0",
