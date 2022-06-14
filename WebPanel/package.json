@@ -11,7 +11,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "^7.18.2",
+        "@babel/core": "^7.18.5",
         "@emotion/react": "^11.9.3",
         "@emotion/styled": "^11.9.3",
         "@mui/icons-material": "^5.8.3",
@@ -35,8 +35,8 @@
     "devDependencies": {
         "@types/node": "^17.0.42",
         "@types/react": "^18.0.12",
-        "@typescript-eslint/eslint-plugin": "^5.27.1",
-        "@typescript-eslint/parser": "^5.27.1",
+        "@typescript-eslint/eslint-plugin": "^5.28.0",
+        "@typescript-eslint/parser": "^5.28.0",
         "eslint": "^8.17.0",
         "eslint-config-next": "^12.1.6",
         "grpc-tools": "^1.11.2",
