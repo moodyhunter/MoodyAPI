@@ -14,9 +14,9 @@
         "@babel/core": "^7.18.5",
         "@emotion/react": "^11.9.3",
         "@emotion/styled": "^11.9.3",
-        "@mui/icons-material": "^5.8.3",
-        "@mui/material": "^5.8.3",
-        "@mui/system": "^5.8.3",
+        "@mui/icons-material": "^5.8.4",
+        "@mui/material": "^5.8.4",
+        "@mui/system": "^5.8.4",
         "@mui/x-data-grid": "^5.12.1",
         "@types/bcrypt": "^5.0.0",
         "bcrypt": "^5.0.1",
@@ -29,11 +29,11 @@
         "nextjs-progressbar": "^0.0.14",
         "nice-grpc": "^1.2.0",
         "protobufjs": "^6.11.3",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@types/node": "^17.0.42",
+        "@types/node": "^17.0.43",
         "@types/react": "^18.0.12",
         "@typescript-eslint/eslint-plugin": "^5.28.0",
         "@typescript-eslint/parser": "^5.28.0",
