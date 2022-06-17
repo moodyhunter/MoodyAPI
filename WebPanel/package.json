@@ -17,7 +17,7 @@
         "@mui/icons-material": "^5.8.4",
         "@mui/material": "^5.8.4",
         "@mui/system": "^5.8.4",
-        "@mui/x-data-grid": "^5.12.1",
+        "@mui/x-data-grid": "^5.12.2",
         "@types/bcrypt": "^5.0.0",
         "bcrypt": "^5.0.1",
         "dayjs": "^1.11.3",
@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@types/node": "^18.0.0",
-        "@types/react": "^18.0.12",
+        "@types/react": "^18.0.14",
         "@typescript-eslint/eslint-plugin": "^5.28.0",
         "@typescript-eslint/parser": "^5.28.0",
         "eslint": "^8.17.0",
