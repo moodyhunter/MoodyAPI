@@ -1,5 +1,6 @@
 import { ServiceError } from '@grpc/grpc-js';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 import { Auth } from '../../common/protos/common/common';
 
@@ -7,6 +8,12 @@ import { Auth } from '../../common/protos/common/common';
 type ClientAPIServerResponse = ClientAPIResponse<CreateClientAPIResponse | ListClientsAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
 
 export default async function clients(req: NextApiRequest, resp: NextApiResponse<ClientAPIServerResponse>) {
+    const session = await getSession({ req });
+    if (!session) {
+        resp.status(401);
+        resp.end();
+    }
+
     const client = getServerConnection();
     const requestedClient: APIClient = req.body;
 
