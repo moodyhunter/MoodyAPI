@@ -58,9 +58,11 @@ pub async fn keep_alive() {
 }
 
 pub async fn listen_for_state_change() -> ! {
+    let mut error_message_sent: bool;
     let mut client = MoodyApiServiceClient::new(clone_channel());
 
     loop {
+        error_message_sent = false;
         let request = Request::new(SubscribeCameraStateChangeRequest {
             auth: Some(Auth {
                 client_uuid: get_client_id(),
@@ -75,7 +77,16 @@ pub async fn listen_for_state_change() -> ! {
                         Ok(None) => println!("Received an empty message."),
                         Ok(Some(s)) => {
                             let control_status = start_stop_camera_service(s.state);
-                            if control_status {}
+                            if !control_status && !error_message_sent {
+                                send_notification(
+                                    8,
+                                    "Failed to start/stop service".to_string(),
+                                    "随便测试".to_string(),
+                                )
+                                .await;
+                                error_message_sent = true;
+                            }
+                            report_camera_status_internal(get_camera_status()).await;
                         }
                         Err(e) => {
                             println!("Listener inner error? {:?}", e.message());
@@ -128,6 +139,17 @@ fn start_stop_camera_service(new_status: bool) -> bool {
         return e.success();
     }
 
+    false
+}
+
+fn get_camera_status() -> bool {
+    if let Ok(e) = Command::new("/usr/bin/systemctl")
+        .arg("status")
+        .arg("motion.service")
+        .output()
+    {
+        return e.status.success() && String::from_utf8_lossy(&e.stdout).contains("Active: active");
+    }
     false
 }
 
