@@ -12,7 +12,6 @@ package MoodyAPI;
 
 option go_package = "api.mooody.me/models";
 
-
 message CameraState
 {
     bool state = 1;
@@ -45,8 +44,13 @@ service MoodyAPIService
     rpc KeepAlive(KeepAliveRequest) returns (stream KeepAliveMessage);
 
     // Camera state
-    rpc UpdateCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
-    rpc SubscribeCameraStateChange(SubscribeCameraStateChangeRequest) returns (stream CameraState);
+    // For use on controlers
+    rpc SetCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
+    rpc SubscribeCameraStateReport(SubscribeCameraStateChangeRequest) returns (stream CameraState);
+
+    // For camera agent
+    rpc ReportCameraState(UpdateCameraStateRequest) returns (google.protobuf.Empty);
+    rpc SubscribeCameraControlSignal(SubscribeCameraStateChangeRequest) returns (stream CameraState);
 
     // Notification Channels
     rpc CreateNotificationChannel(notifications.CreateChannelRequest) returns (notifications.CreateChannelResponse);

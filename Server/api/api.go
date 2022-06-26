@@ -18,11 +18,16 @@ var moodyAPIServer *MoodyAPIServer
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
 
-	cameraEventStream  *broadcaster.Broadcaster[models.CameraState]
 	notificationStream *broadcaster.Broadcaster[notifications.Notification]
 	keepAliveStream    *broadcaster.Broadcaster[models.KeepAliveMessage]
 
-	lastCameraState *models.CameraState
+	// to be used by the agent APIs
+	lastCameraState         *models.CameraState                          // the last state of the camera reported by the agent
+	cameraStateReportStream *broadcaster.Broadcaster[models.CameraState] // stream of camera state changes [agent => controllers]
+
+	// to be used by the controllers APIs
+	lastCameraControlSignal   *models.CameraState                          // the last state of the camera control signal sent by the controllers
+	cameraControlSignalStream *broadcaster.Broadcaster[models.CameraState] // stream of control signals [controllers => agent]
 
 	gRPCServer    *grpc.Server
 	listenAddress string
@@ -32,7 +37,9 @@ func CreateServer(listenAddress string) *MoodyAPIServer {
 	apiServer := &MoodyAPIServer{}
 
 	apiServer.lastCameraState = new(models.CameraState)
-	apiServer.cameraEventStream = broadcaster.NewBroadcaster[models.CameraState]()
+	apiServer.lastCameraControlSignal = new(models.CameraState)
+	apiServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
+	apiServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
 	apiServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
 	apiServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
 

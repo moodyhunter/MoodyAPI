@@ -54,7 +54,7 @@ void ServerConnection::run()
             MoodyAPI::SubscribeCameraStateChangeRequest request;
             request.mutable_auth()->set_clientuuid(m_secret.toStdString());
 
-            auto reader = serverStub->SubscribeCameraStateChange(m_pollingContext.get(), request);
+            auto reader = serverStub->SubscribeCameraStateReport(m_pollingContext.get(), request);
 
             MoodyAPI::CameraState resp;
             while (reader->Read(&resp) && true)
@@ -86,5 +86,5 @@ void ServerConnection::SetCameraState(bool newState)
     request.mutable_state()->set_state(newState);
 
     ::google::protobuf::Empty empty;
-    serverStub->UpdateCameraState(&m_pollingContext, request, &empty);
+    serverStub->SetCameraState(&m_pollingContext, request, &empty);
 }
