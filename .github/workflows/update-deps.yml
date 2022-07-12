@@ -11,7 +11,7 @@ jobs:
     name: Update Dependencies
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.2
+        uses: actions/checkout@v2
         with:
           ref: main
 
@@ -19,7 +19,7 @@ jobs:
         run: sudo apt install protobuf-compiler
 
       - name: Setup Go environment
-        uses: actions/setup-go@v3.2.1
+        uses: actions/setup-go@v3
         with:
           go-version: ^1.18
           check-latest: true
