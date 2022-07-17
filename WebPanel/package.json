@@ -17,7 +17,7 @@
         "@mui/icons-material": "^5.8.4",
         "@mui/material": "^5.9.0",
         "@mui/system": "^5.9.0",
-        "@mui/x-data-grid": "^5.13.0",
+        "@mui/x-data-grid": "^5.13.1",
         "@types/bcrypt": "^5.0.0",
         "bcrypt": "^5.0.1",
         "dayjs": "^1.11.3",
@@ -37,10 +37,10 @@
         "@types/react": "^18.0.15",
         "@typescript-eslint/eslint-plugin": "^5.30.6",
         "@typescript-eslint/parser": "^5.30.6",
-        "eslint": "^8.19.0",
+        "eslint": "^8.20.0",
         "eslint-config-next": "^12.2.2",
         "grpc-tools": "^1.11.2",
-        "ts-proto": "^1.117.0",
+        "ts-proto": "^1.117.1",
         "typescript": "4.7.4"
     }
 }
