@@ -1,6 +1,7 @@
 use once_cell::sync::OnceCell;
-use std::process::Command;
+use std::sync::atomic::Ordering;
 use std::time::Duration;
+use std::{process::Command, sync::atomic::AtomicBool};
 use tokio::time::sleep;
 use tonic::{transport::Channel, Request};
 
@@ -14,6 +15,9 @@ use crate::models::{
 };
 
 pub static CLIENT_ID: OnceCell<String> = OnceCell::new();
+
+static CAMERA_STATE: AtomicBool = AtomicBool::new(false);
+static CAMERA_SERVICE: &str = "motion.service";
 
 fn get_client_id() -> String {
     CLIENT_ID.get().unwrap().clone()
@@ -52,6 +56,7 @@ pub async fn keep_alive(mut client: MoodyApiServiceClient<Channel>) {
 
 pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>) -> ! {
     let mut error_message_sent: bool;
+
     loop {
         error_message_sent = false;
         let request = Request::new(SubscribeCameraStateChangeRequest {
@@ -67,8 +72,11 @@ pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>)
                     match resp.message().await {
                         Ok(None) => println!("Received an empty message."),
                         Ok(Some(s)) => {
-                            let control_status = start_stop_camera_service(s.state);
-                            if !control_status && !error_message_sent {
+                            let new_state = s.state;
+                            if new_state == CAMERA_STATE.load(Ordering::Relaxed) {
+                                continue;
+                            }
+                            if !set_camera_state(new_state) && !error_message_sent {
                                 send_notification(
                                     client.clone(),
                                     8,
@@ -78,8 +86,12 @@ pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>)
                                 .await;
                                 error_message_sent = true;
                             }
-                            report_camera_status_internal(client.clone(), get_camera_status())
-                                .await;
+                            CAMERA_STATE.store(get_camera_state(), Ordering::Relaxed);
+                            report_camera_status_internal(
+                                client.clone(),
+                                CAMERA_STATE.load(Ordering::Relaxed),
+                            )
+                            .await;
                         }
                         Err(e) => {
                             println!("Listener inner error? {:?}", e.message());
@@ -98,48 +110,29 @@ pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>)
 
 pub async fn report_camera_status(mut _client: MoodyApiServiceClient<Channel>) {
     loop {
-        sleep(Duration::from_secs(5)).await;
+        CAMERA_STATE.store(get_camera_state(), Ordering::Relaxed);
+        report_camera_status_internal(_client.clone(), CAMERA_STATE.load(Ordering::Relaxed)).await;
+        sleep(Duration::from_secs(30)).await;
     }
 }
 
-async fn report_camera_status_internal(mut client: MoodyApiServiceClient<Channel>, started: bool) {
+async fn report_camera_status_internal(
+    mut client: MoodyApiServiceClient<Channel>,
+    camera_state: bool,
+) {
     let request = Request::new(UpdateCameraStateRequest {
         auth: Some(Auth {
             client_uuid: get_client_id(),
         }),
-        state: Some(CameraState { state: started }),
+        state: Some(CameraState {
+            state: camera_state,
+        }),
     });
 
     client
         .report_camera_state(request)
         .await
         .expect("Failed to send notification.");
-}
-
-fn start_stop_camera_service(new_status: bool) -> bool {
-    println!("Updating camera status: {:?}", new_status);
-
-    if let Ok(e) = Command::new("sudo")
-        .arg("/usr/bin/systemctl")
-        .arg(if new_status { "start" } else { "stop" })
-        .arg("motion.service")
-        .status()
-    {
-        return e.success();
-    }
-
-    false
-}
-
-fn get_camera_status() -> bool {
-    if let Ok(e) = Command::new("/usr/bin/systemctl")
-        .arg("status")
-        .arg("motion.service")
-        .output()
-    {
-        return e.status.success() && String::from_utf8_lossy(&e.stdout).contains("Active: active");
-    }
-    false
 }
 
 async fn send_notification(
@@ -164,4 +157,30 @@ async fn send_notification(
         }))
         .await
         .expect("Failed to send notification.");
+}
+
+fn set_camera_state(new_state: bool) -> bool {
+    println!("Updating camera status: {:?}", new_state);
+
+    if let Ok(e) = Command::new("sudo")
+        .arg("/usr/bin/systemctl")
+        .arg(if new_state { "start" } else { "stop" })
+        .arg(CAMERA_SERVICE)
+        .status()
+    {
+        return e.success();
+    }
+
+    false
+}
+
+fn get_camera_state() -> bool {
+    if let Ok(e) = Command::new("/usr/bin/systemctl")
+        .arg("status")
+        .arg(CAMERA_SERVICE)
+        .output()
+    {
+        return e.status.success() && String::from_utf8_lossy(&e.stdout).contains("Active: active");
+    }
+    false
 }
