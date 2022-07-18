@@ -14,19 +14,12 @@ use crate::models::{
 };
 
 pub static CLIENT_ID: OnceCell<String> = OnceCell::new();
-pub static CHANNEL: OnceCell<Channel> = OnceCell::new();
 
 fn get_client_id() -> String {
     CLIENT_ID.get().unwrap().clone()
 }
 
-fn clone_channel() -> Channel {
-    CHANNEL.get().unwrap().clone()
-}
-
-pub async fn keep_alive() {
-    let mut client = MoodyApiServiceClient::new(clone_channel());
-
+pub async fn keep_alive(mut client: MoodyApiServiceClient<Channel>) {
     loop {
         let request = Request::new(KeepAliveRequest {
             auth: Some(Auth {
@@ -57,10 +50,8 @@ pub async fn keep_alive() {
     }
 }
 
-pub async fn listen_for_state_change() -> ! {
+pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>) -> ! {
     let mut error_message_sent: bool;
-    let mut client = MoodyApiServiceClient::new(clone_channel());
-
     loop {
         error_message_sent = false;
         let request = Request::new(SubscribeCameraStateChangeRequest {
@@ -79,14 +70,16 @@ pub async fn listen_for_state_change() -> ! {
                             let control_status = start_stop_camera_service(s.state);
                             if !control_status && !error_message_sent {
                                 send_notification(
+                                    client.clone(),
                                     8,
                                     "Failed to start/stop service".to_string(),
-                                    "随便测试".to_string(),
+                                    "Why?".to_string(),
                                 )
                                 .await;
                                 error_message_sent = true;
                             }
-                            report_camera_status_internal(get_camera_status()).await;
+                            report_camera_status_internal(client.clone(), get_camera_status())
+                                .await;
                         }
                         Err(e) => {
                             println!("Listener inner error? {:?}", e.message());
@@ -94,8 +87,6 @@ pub async fn listen_for_state_change() -> ! {
                             break;
                         }
                     }
-
-                    sleep(Duration::from_secs(5)).await;
                 }
             }
             Err(e) => println!("Listener error: {:?}", e.message()),
@@ -105,15 +96,13 @@ pub async fn listen_for_state_change() -> ! {
     }
 }
 
-pub async fn report_camera_status() {
+pub async fn report_camera_status(mut _client: MoodyApiServiceClient<Channel>) {
     loop {
         sleep(Duration::from_secs(5)).await;
     }
 }
 
-async fn report_camera_status_internal(started: bool) {
-    let mut client = MoodyApiServiceClient::new(clone_channel());
-
+async fn report_camera_status_internal(mut client: MoodyApiServiceClient<Channel>, started: bool) {
     let request = Request::new(UpdateCameraStateRequest {
         auth: Some(Auth {
             client_uuid: get_client_id(),
@@ -153,14 +142,19 @@ fn get_camera_status() -> bool {
     false
 }
 
-async fn send_notification(n_channel: i64, n_title: String, n_content: String) {
+async fn send_notification(
+    mut client: MoodyApiServiceClient<Channel>,
+    n_channel: i64,
+    n_title: String,
+    n_content: String,
+) -> () {
     let n = Notification {
         title: n_title,
         content: n_content,
         channel_id: n_channel,
         ..Default::default()
     };
-    let mut client = MoodyApiServiceClient::new(clone_channel());
+
     client
         .send_notification(Request::new(SendRequest {
             auth: Some(Auth {
