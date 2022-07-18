@@ -110,9 +110,13 @@ pub async fn listen_for_state_change(mut client: MoodyApiServiceClient<Channel>)
 
 pub async fn report_camera_status(mut _client: MoodyApiServiceClient<Channel>) {
     loop {
-        CAMERA_STATE.store(get_camera_state(), Ordering::Relaxed);
-        report_camera_status_internal(_client.clone(), CAMERA_STATE.load(Ordering::Relaxed)).await;
-        sleep(Duration::from_secs(30)).await;
+        let state = CAMERA_STATE.load(Ordering::Relaxed);
+        let newstate = get_camera_state();
+        if state != newstate {
+            report_camera_status_internal(_client.clone(), newstate).await;
+            CAMERA_STATE.store(newstate, Ordering::Relaxed);
+        }
+        sleep(Duration::from_secs(5)).await;
     }
 }
 
