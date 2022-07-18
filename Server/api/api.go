@@ -71,6 +71,8 @@ func (apiServer *MoodyAPIServer) Serve() {
 		for {
 			time.Sleep(30 * time.Second)
 			apiServer.keepAliveStream.Broadcast(&models.KeepAliveMessage{Time: timestamppb.Now()})
+			apiServer.cameraControlSignalStream.Broadcast(apiServer.lastCameraControlSignal)
+			apiServer.cameraStateReportStream.Broadcast(apiServer.lastCameraState)
 		}
 	}()
 
