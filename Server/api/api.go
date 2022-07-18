@@ -9,6 +9,7 @@ import (
 	"api.mooody.me/models"
 	"api.mooody.me/models/notifications"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -46,7 +47,13 @@ func CreateServer(listenAddress string) *MoodyAPIServer {
 	apiServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
 
-	apiServer.gRPCServer = grpc.NewServer()
+	TIMEOUT := time.Hour * 1
+	apiServer.gRPCServer = grpc.NewServer(
+		grpc.ConnectionTimeout(TIMEOUT),
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			MaxConnectionIdle: TIMEOUT,
+		}),
+	)
 	models.RegisterMoodyAPIServiceServer(apiServer.gRPCServer, apiServer)
 
 	// Register reflection service on gRPC server.
