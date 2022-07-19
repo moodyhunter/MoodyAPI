@@ -5,8 +5,8 @@ go 1.18
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/miekg/dns v1.1.50
-	github.com/uptrace/bun v1.1.5
-	google.golang.org/grpc v1.47.0
+	github.com/uptrace/bun v1.1.6
+	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/ini.v1 v1.66.6
 )
@@ -26,11 +26,11 @@ require (
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
-	github.com/uptrace/bun/dialect/pgdialect v1.1.5
-	github.com/uptrace/bun/driver/pgdriver v1.1.5
-	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
-	golang.org/x/sys v0.0.0-20220624220833-87e55d714810 // indirect
+	github.com/uptrace/bun/dialect/pgdialect v1.1.6
+	github.com/uptrace/bun/driver/pgdriver v1.1.6
+	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20220624142145-8cd45d7dbd1f // indirect
+	google.golang.org/genproto v0.0.0-20220718134204-073382fd740c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
