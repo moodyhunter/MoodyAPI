@@ -24,7 +24,7 @@
         "jotai": "^1.7.6",
         "long": "^5.2.0",
         "minimist": "^1.2.6",
-        "next": "^12.2.2",
+        "next": "^12.2.3",
         "next-auth": "^4.10.2",
         "nextjs-progressbar": "^0.0.14",
         "nice-grpc": "^1.2.0",
