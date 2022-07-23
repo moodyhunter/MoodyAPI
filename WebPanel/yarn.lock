@@ -501,10 +501,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/x-data-grid@^5.13.1":
-  version "5.13.1"
-  resolved "https://registry.yarnpkg.com/@mui/x-data-grid/-/x-data-grid-5.13.1.tgz#401ff147bebef6fea085a17a536be5774fa6cd50"
-  integrity sha512-4DqjOBfiyW8IBpckiZis3BuhliVMl72pv7dC9yfET9WUSZ5m3KlH63W4dckKDDYgDHjdUJqAjHAnLpqNUP/83Q==
+"@mui/x-data-grid@^5.14.0":
+  version "5.14.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-data-grid/-/x-data-grid-5.14.0.tgz#4ea567005b2ede6f6c82e81ddeb6847f10ad8221"
+  integrity sha512-4PT8z6+k9tQNVaDC/wuPxtlPYDO+M58g8jE79Zf2UUiHhRqx700Vxy3qdbC1fr8VkDkmfGQpNMFewg82iInXJQ==
   dependencies:
     "@babel/runtime" "^7.18.6"
     "@mui/utils" "^5.4.1"
@@ -1241,9 +1241,9 @@ dom-helpers@^5.0.1:
     csstype "^3.0.2"
 
 electron-to-chromium@^1.4.188:
-  version "1.4.198"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.198.tgz#36a8e7871046f7f94c01dc0133912fd5cf226c6a"
-  integrity sha512-jwqQPdKGeAslcq8L+1SZZgL6uDiIDmTe9Gq4brsdWAH27y7MJ2g9Ue6MyST3ogmSM49EAQP7bype1V5hsuNrmQ==
+  version "1.4.199"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.199.tgz#e0384fde79fdda89880e8be58196a9153e04db3b"
+  integrity sha512-WIGME0Cs7oob3mxsJwHbeWkH0tYkIE/sjkJ8ML2BYmuRcjhRl/q5kVDXG7W9LOOKwzPU5M0LBlXRq9rlSgnNlg==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
