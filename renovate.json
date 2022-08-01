@@ -2,8 +2,10 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:base",
+        ":automergeBranch",
+        ":automergeDigest",
         ":automergeMinor",
-        ":automergeBranch"
+        ":disableRateLimiting"
     ],
     "postUpdateOptions": [
         "gomodTidy"
