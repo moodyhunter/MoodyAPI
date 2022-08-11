@@ -851,12 +851,10 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abort-controller-x@^0.2.4:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.7.tgz#6fa9be5b278b9c533d4d078d0ba660d40683907e"
-  integrity sha512-hq/lt8yODKrwuZa69GhSTl2l2kcrus2khZ7OjD6Bmqmx6tbW6dnV8cVGnkkdLCWnjXpgSx8zjQo+HUc9mvoQ/w==
-  dependencies:
-    node-abort-controller "^1.2.1 || ^2.0.0"
+abort-controller-x@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.0.tgz#fde25da52548c7ff3d8b3b32dffc943452874d5f"
+  integrity sha512-cuNbw3c/SvEOkWkgxoWOOS3QzcTCC6YXCFH6oTZ/jvjZPBhkjaoUyCLwdAViRRhYmluJPD7vGaTLkHCp67xQVQ==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -2269,33 +2267,21 @@ nextjs-progressbar@0.0.14:
     nprogress "^0.2.0"
     prop-types "^15.7.2"
 
-nice-grpc-common@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/nice-grpc-common/-/nice-grpc-common-1.1.0.tgz#cebfd36f840c08f253ddf6de6ed4389fa5cdb05b"
-  integrity sha512-klxJ/lxMyH1KkT02woMBWL3A7BQSTH5jGodJIpNbbv7WKeFBWJaEtT6p7kZJBhGYXtSsQ+TyMU1EJR9BH14YfQ==
+nice-grpc-common@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nice-grpc-common/-/nice-grpc-common-2.0.0.tgz#36c9b9cdc38d3b4aa8ad7abf120fd4737eff70ea"
+  integrity sha512-8h/QraeDmScnbKLd5ImS+e7uUDxumvByBo6ILj1jLHjKlIa74WKHNSn54u7RmnJ5tFAYE70iTm8VWyvbTv82yg==
   dependencies:
-    node-abort-controller "^2.0.0"
     ts-error "^1.0.6"
 
-nice-grpc@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-1.2.2.tgz#5e31ebfdbd26285857077961ffea2e61ee5d9ad8"
-  integrity sha512-XvVFAOVZyK9FnMEfP/dxqVsPjyfcQx86zxgsh5sNUWNnQGiTMxjig09pC4CLU6ShNS31q8+gMJ85NqbcRr7oWg==
+nice-grpc@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-2.0.0.tgz#0fa3f04e5f45905349cf44330ae26e54e77c6b1c"
+  integrity sha512-BEQgQi5Km9OV2SEv3CsHMrMifP6RiLE0DhjFaxef7UgIBV/6CVtnk/EFhH8gG5+C3xBK8w+2Lwind/W6GdczAQ==
   dependencies:
     "@grpc/grpc-js" "^1.6.1"
-    abort-controller-x "^0.2.4"
-    nice-grpc-common "^1.1.0"
-    node-abort-controller "^1.2.1"
-
-node-abort-controller@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-1.2.1.tgz#1eddb57eb8fea734198b11b28857596dc6165708"
-  integrity sha512-79PYeJuj6S9+yOHirR0JBLFOgjB6sQCir10uN6xRx25iD+ZD4ULqgRn3MwWBRaQGB0vEgReJzWwJo42T1R6YbQ==
-
-"node-abort-controller@^1.2.1 || ^2.0.0", node-abort-controller@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-2.0.0.tgz#800e0d250d3b977175e48df4f74c2d3960076a79"
-  integrity sha512-L8RfEgjBTHAISTuagw51PprVAqNZoG6KSB6LQ6H1bskMVkFs5E71IyjauLBv3XbuomJlguWF/VnRHdJ1gqiAqA==
+    abort-controller-x "^0.4.0"
+    nice-grpc-common "^2.0.0"
 
 node-addon-api@^3.1.0:
   version "3.2.1"
