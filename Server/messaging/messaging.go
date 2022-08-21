@@ -67,6 +67,10 @@ func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 		channelName = channel.Name
 	}
 
+	channelName = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, channelName)
+	event.Title = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, event.Title)
+	event.Content = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, event.Content)
+
 	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*New Message From Channel \"%s\"*\n\n*Title:* %s\n*Content:* %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 	msg.ChatID = m.safeChatId
