@@ -104,7 +104,7 @@ func (m *TelegramBot) ServeBotCommand() {
 				msg.Text = "🏓"
 			case "status":
 				msg.Text = "Server Revision: `" + common.ServerRevision + "`\n"
-				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Now().Sub(common.StartTime).Minutes()))
+				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
 			default:
