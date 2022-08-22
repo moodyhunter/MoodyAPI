@@ -11,7 +11,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "7.18.10",
+        "@babel/core": "7.18.13",
         "@emotion/react": "11.10.0",
         "@emotion/styled": "11.10.0",
         "@mui/icons-material": "5.8.4",
