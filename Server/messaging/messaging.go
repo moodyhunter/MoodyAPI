@@ -73,7 +73,12 @@ func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 
 	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*New Message From Channel \"%s\"*\n\n*Title:* %s\n*Content:* %s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
-	msg.ChatID = m.safeChatId
+
+	if event.Private {
+		msg.ChatID = m.safeUserId
+	} else {
+		msg.ChatID = m.safeChatId
+	}
 
 	_, err = m.botApi.Send(msg)
 	if err != nil {
