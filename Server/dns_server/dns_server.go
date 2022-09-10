@@ -61,7 +61,6 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 				Serial: 20220509, Refresh: 7200, Retry: 3600, Expire: 86400, Minttl: 3600,
 			}
 			msg.Answer = append(msg.Answer, soa)
-			break
 
 		case "NS":
 			ns := &dns.NS{
@@ -69,7 +68,6 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 				Ns:  d.baseDomain,
 			}
 			msg.Answer = append(msg.Answer, ns)
-			break
 
 		case "A", "AAAA", "CNAME":
 			record, err := db.QueryDnsRecordWithType(hostname, typeString)
@@ -85,7 +83,7 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 					Hdr: dns.RR_Header{Name: q.Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: d.recordTtl},
 					A:   net.ParseIP(record),
 				}
-				break
+
 			case "AAAA":
 				ans = &dns.AAAA{
 					Hdr:  dns.RR_Header{Name: q.Name, Rrtype: dns.TypeAAAA, Class: dns.ClassINET, Ttl: d.recordTtl},
