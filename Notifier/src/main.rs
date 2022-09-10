@@ -43,11 +43,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Sending notifications...");
 
         // notification channel is an integer
-        let n_channel = env::args().nth(1).unwrap().parse::<i64>().unwrap();
+        let channel_str = env::args().nth(1).unwrap().to_string();
         let n_title = env::args().nth(2).unwrap().to_string();
         let n_content = env::args().nth(3).unwrap().to_string();
 
-        send_notification(n_channel, n_title, n_content, &grpc_channel, &client_id).await;
+        let n_channel: i64;
+        let is_private: bool = channel_str.ends_with("p");
+        if channel_str.ends_with("p") {
+            n_channel = channel_str[..channel_str.len() - 1].parse().unwrap();
+        } else {
+            n_channel = channel_str.parse().unwrap();
+        }
+
+        send_notification(
+            n_channel,
+            n_title,
+            n_content,
+            &grpc_channel,
+            &client_id,
+            is_private,
+        )
+        .await;
     } else {
         println!("Starting in notification client mode, listening for new notifications...");
         listen_notification(grpc_channel, client_id).await
@@ -109,11 +125,13 @@ async fn send_notification(
     n_content: String,
     channel: &Channel,
     api_secret: &String,
+    is_private: bool,
 ) {
     let n = Notification {
         title: n_title,
         content: n_content,
         channel_id: n_channel,
+        private: is_private,
         ..Default::default()
     };
     let mut client = MoodyApiServiceClient::new(channel.clone());
