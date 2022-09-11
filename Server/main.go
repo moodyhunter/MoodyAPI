@@ -80,7 +80,17 @@ func main() {
 
 	if dnsServerIsEnabled {
 		dnsServer = dns_server.NewDnsServer(dnsServerAddress, "udp", dnsServerBaseDomain, dnsServerTtl)
-		go dnsServer.Serve()
+		go func() {
+
+			log.Println("starting DNS server")
+			err := dnsServer.Server.ListenAndServe()
+			if err != nil {
+				if TgBotIsEnabled {
+					tgBot.SendMessage("我起不来 (DNS)")
+				}
+				log.Fatal(err)
+			}
+		}()
 	}
 
 	log.Printf("MoodyAPI is now ready")

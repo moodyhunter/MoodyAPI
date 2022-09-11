@@ -10,7 +10,7 @@ import (
 )
 
 type DnsServer struct {
-	server     *dns.Server
+	Server     *dns.Server
 	baseDomain string
 	recordTtl  uint32
 }
@@ -18,22 +18,14 @@ type DnsServer struct {
 func NewDnsServer(address string, network string, baseDomain string, recordTtl uint32) *DnsServer {
 	dnsServer := new(DnsServer)
 	dnsServer.baseDomain = baseDomain
-	dnsServer.server = &dns.Server{Addr: address, Net: network}
+	dnsServer.Server = &dns.Server{Addr: address, Net: network}
 	dnsServer.recordTtl = recordTtl
 	dns.HandleFunc(baseDomain, dnsServer.handleRequest)
 	return dnsServer
 }
 
-func (d *DnsServer) Serve() {
-	log.Println("starting DNS server")
-	err := d.server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func (d *DnsServer) Close() {
-	d.server.Shutdown()
+	d.Server.Shutdown()
 	log.Println("DNS server closed")
 }
 
