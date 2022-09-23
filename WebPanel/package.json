@@ -28,13 +28,13 @@
         "next-auth": "4.10.3",
         "nextjs-progressbar": "0.0.14",
         "nice-grpc": "2.0.0",
-        "protobufjs": "7.1.1",
+        "protobufjs": "7.1.2",
         "react": "18.2.0",
         "react-dom": "18.2.0"
     },
     "devDependencies": {
         "@types/node": "18.7.18",
-        "@types/react": "18.0.20",
+        "@types/react": "18.0.21",
         "@typescript-eslint/eslint-plugin": "5.38.0",
         "@typescript-eslint/parser": "5.38.0",
         "eslint": "8.23.1",
