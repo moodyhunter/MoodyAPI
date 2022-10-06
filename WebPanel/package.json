@@ -17,9 +17,9 @@
         "@mui/icons-material": "5.10.6",
         "@mui/material": "5.10.8",
         "@mui/system": "5.10.8",
-        "@mui/x-data-grid": "5.17.5",
+        "@mui/x-data-grid": "5.17.6",
         "@types/bcrypt": "5.0.0",
-        "bcrypt": "5.0.1",
+        "bcrypt": "5.1.0",
         "dayjs": "1.11.5",
         "jotai": "1.8.4",
         "long": "5.2.0",
@@ -33,7 +33,7 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "18.8.2",
+        "@types/node": "18.8.3",
         "@types/react": "18.0.21",
         "@typescript-eslint/eslint-plugin": "5.39.0",
         "@typescript-eslint/parser": "5.39.0",
