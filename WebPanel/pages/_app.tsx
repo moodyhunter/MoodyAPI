@@ -17,6 +17,10 @@ type AppListButtonProps = {
     icon: ReactElement
 };
 
+type AppProp = {
+    title: string
+};
+
 const UnmemoizedAppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
 
@@ -81,7 +85,7 @@ const AuthenticatePageContent = ({ Component, pageProps: { ...pageProps } }: App
 };
 
 
-const AppFrame = (appProps: AppProps) => {
+const AppFrame = (appProps: AppProps<AppProp>) => {
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
     const handleDrawerToggle = useCallback(() => {
         setMobileDrawerOpen(prevState => !prevState);
@@ -134,7 +138,7 @@ const AppFrame = (appProps: AppProps) => {
     </>);
 };
 
-export default function DashboardApp(props: AppProps) {
+export default function DashboardApp(props: AppProps<AppProp>) {
     return (<>
         <SessionProvider>
             <AppFrame {...props} />
