@@ -11,13 +11,13 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "7.19.3",
+        "@babel/core": "7.19.6",
         "@emotion/react": "11.10.4",
         "@emotion/styled": "11.10.4",
         "@mui/icons-material": "5.10.9",
         "@mui/material": "5.10.10",
         "@mui/system": "5.10.10",
-        "@mui/x-data-grid": "5.17.7",
+        "@mui/x-data-grid": "5.17.8",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
         "dayjs": "1.11.5",
@@ -33,7 +33,7 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "18.11.2",
+        "@types/node": "18.11.3",
         "@types/react": "18.0.21",
         "@typescript-eslint/eslint-plugin": "5.40.1",
         "@typescript-eslint/parser": "5.40.1",
