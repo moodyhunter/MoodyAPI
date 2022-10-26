@@ -13,7 +13,7 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
     }
 
     const client = getServerConnection();
-    const requestedClient: LightAPIRequest = req.body;
+    const body: LightAPIRequest = req.body;
 
     const API_CLIENTID = process.env["API_CLIENTID"];
     if (!API_CLIENTID) {
@@ -25,7 +25,7 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
     const AuthObject: Auth = { clientUuid: API_CLIENTID };
 
     try {
-        const result = await client.setLight({ auth: AuthObject, state: requestedClient.state });
+        const result = await client.setLight({ auth: AuthObject, state: body.state });
         console.log(result);
         resp.status(200).json({ success: true, message: "ok", data: undefined });
     } catch (error) {
