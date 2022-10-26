@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
@@ -12,6 +13,12 @@ import (
 func (s *MoodyAPIServer) SetLight(ctx context.Context, request *light.SetLightRequest) (*light.SetLightResponse, error) {
 	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
+		common.LogClientError(ctx, client, err)
+		return nil, err
+	}
+
+	if request.State == nil {
+		err = errors.New("state is nil")
 		common.LogClientError(ctx, client, err)
 		return nil, err
 	}
