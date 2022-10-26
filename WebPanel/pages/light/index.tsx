@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 export default function Content() {
     const [power, setPower] = useState(false);
     const handlePowerChange = () => {
-        let req: LightAPIRequest = {
+        const req: LightAPIRequest = {
             state: {
                 on: !power,
                 brightness: 255,
