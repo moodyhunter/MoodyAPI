@@ -25,15 +25,13 @@ const UnmemoizedAppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
 
     return (
-        <NextLink passHref href={props.link}>
-            <Link underline='none'>
-                <ListItemButton selected={router.route === props.link} key={props.name} sx={useMemo(() => ({ minHeight: 48, justifyContent: 'initial', px: 2.5 }), [])}>
-                    <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
-                        {props.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={props.name} sx={{ opacity: 1 }} />
-                </ListItemButton>
-            </Link>
+        <NextLink passHref href={props.link} style={{ textDecoration: "none" }}>
+            <ListItemButton selected={router.route === props.link} key={props.name} sx={useMemo(() => ({ minHeight: 48, justifyContent: 'initial', px: 2.5 }), [])}>
+                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
+                    {props.icon}
+                </ListItemIcon>
+                <ListItemText primary={props.name} sx={{ opacity: 1 }} />
+            </ListItemButton>
         </NextLink>
     );
 };
