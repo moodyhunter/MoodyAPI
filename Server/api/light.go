@@ -16,6 +16,8 @@ func (s *MoodyAPIServer) SetLight(ctx context.Context, request *light.SetLightRe
 		return nil, err
 	}
 
+	common.LogClientOperation(ctx, client, "set light to %v", request.State.On)
+
 	s.lightControlStream.Broadcast(request.State)
 	s.lastLightState = request.State
 	return &light.SetLightResponse{}, nil
