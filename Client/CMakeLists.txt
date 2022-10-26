@@ -58,6 +58,7 @@ generate_grpc_source("${PROTO_SOURCE_DIR}/common/common.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/privileged/privileged.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/dns/dns.proto")
 generate_grpc_source("${PROTO_SOURCE_DIR}/notifications/notifications.proto")
+generate_grpc_source("${PROTO_SOURCE_DIR}/light/light.proto")
 
 qt_add_executable(MoodyAppMain
     src/main.cpp
