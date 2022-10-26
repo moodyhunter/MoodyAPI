@@ -1,3 +1,5 @@
+mod models;
+
 use btleplug::{
     api::{
         Central, CharPropFlags, Characteristic, Manager as _, Peripheral as _, ScanFilter,
@@ -6,9 +8,21 @@ use btleplug::{
     platform::{Adapter, Manager, Peripheral},
 };
 use core::panic;
+use ini::Ini;
+use models::{
+    light::{light_state::Mode, LightState},
+    moody_api::moody_api_service_client::MoodyApiServiceClient,
+};
+use platform_dirs::AppDirs;
 use std::{error::Error, str::FromStr, time::Duration};
 use tokio::time::sleep;
+use tonic::{transport::Channel, Request};
 use uuid::Uuid;
+
+use crate::models::{common::Auth, light::SubscribeLightRequest};
+
+const FFD5: &str = "0000ffd5-0000-1000-8000-00805f9b34fb";
+const FFD9: &str = "0000ffd9-0000-1000-8000-00805f9b34fb";
 
 async fn get_light(central: &Adapter) -> Peripheral {
     for p in central.peripherals().await.unwrap() {
@@ -26,17 +40,10 @@ async fn get_light(central: &Adapter) -> Peripheral {
     panic!("Could not find light");
 }
 
-async fn send_command(
-    peripheral: &Peripheral,
-    service_uuid: &str,
-    characteristic_uuid: &str,
-    data: &Vec<u8>,
-) -> Result<(), btleplug::Error> {
-    let service_uuid = format!("0000{}-0000-1000-8000-00805f9b34fb", service_uuid);
-    let characteristic_uuid = format!("0000{}-0000-1000-8000-00805f9b34fb", characteristic_uuid);
+async fn send_command(peripheral: &Peripheral, data: &Vec<u8>) -> Result<(), btleplug::Error> {
     let cc = Characteristic {
-        service_uuid: Uuid::from_str(&service_uuid).unwrap(),
-        uuid: Uuid::from_str(&characteristic_uuid).unwrap(),
+        service_uuid: Uuid::from_str(&FFD5).unwrap(),
+        uuid: Uuid::from_str(&FFD9).unwrap(),
         properties: CharPropFlags::WRITE_WITHOUT_RESPONSE,
     };
     return peripheral
@@ -69,26 +76,99 @@ async fn main() -> Result<(), Box<dyn Error>> {
         )
     });
 
-    let on_command = vec![0xcc, 0x23, 0x33];
-    let off_command = vec![0xcc, 0x24, 0x33];
-    send_command(&light, "ffd5", "ffd9", &on_command).await?;
-    sleep(Duration::from_secs(1)).await;
+    let dirs = AppDirs::new(Some("moodyapi"), false).unwrap();
+    let ini_path = dirs.config_dir.as_path().join("LightDaemon.ini");
 
-    send_command(&light, "ffd5", "ffd9", &off_command).await?;
-    sleep(Duration::from_secs(1)).await;
+    let conf = if let Ok(ini_file) = Ini::load_from_file(ini_path.as_path()) {
+        ini_file
+    } else if let Ok(ini_file) = Ini::load_from_file("/etc/moodyapi/LightDaemon.ini") {
+        ini_file
+    } else {
+        panic!("Failed to locate configurations.");
+    };
 
-    let red_command = vec![0x56, 0xff, 0x00, 0x00, 0x00, 0xf0, 0xaa];
-    let green_command = vec![0x56, 0x00, 0xff, 0x00, 0x00, 0xf0, 0xaa];
-    let blue_command = vec![0x56, 0x00, 0x00, 0xff, 0x00, 0xf0, 0xaa];
-    let nice_command = vec![0x56, 0x00, 0x00, 0x00, 0xff, 15, 0xaa];
+    let api_host = conf.general_section().get("Server").unwrap().to_string();
+    let client_id = conf.general_section().get("ClientID").unwrap().to_string();
 
-    send_command(&light, "ffd5", "ffd9", &on_command).await?;
-    sleep(Duration::from_secs(1)).await;
+    let grpc_channel = Channel::from_shared(api_host.clone())?
+        .connect()
+        .await
+        .expect("Can't create a channel");
+
+    println!("Starting in notification client mode, listening for new notifications...");
 
     loop {
-        for command in vec![&red_command, &green_command, &blue_command, &nice_command] {
-            send_command(&light, "ffd5", "ffd9", command).await?;
-            sleep(Duration::from_secs(1)).await;
+        let mut client = MoodyApiServiceClient::new(grpc_channel.clone());
+
+        let request = Request::new(SubscribeLightRequest {
+            auth: Some(Auth {
+                client_uuid: client_id.clone(),
+            }),
+            ..Default::default()
+        });
+
+        match client.subscribe_light(request).await {
+            Err(e) => println!("something went wrong: {}", e),
+            Ok(stream) => {
+                let mut resp_stream = stream.into_inner();
+                loop {
+                    match resp_stream.message().await {
+                        Ok(None) => println!("expect a light object"),
+                        Ok(Some(l)) => {
+                            println!("Received LightState: {:?}", l);
+                            match send_light_command(&light, l).await {
+                                Ok(_) => {}
+                                Err(e) => println!("Failed to send light command: {}", e),
+                            }
+                        }
+                        Err(e) => {
+                            println!("something went wrong: {}", &e);
+                            break;
+                        }
+                    }
+                    sleep(Duration::from_secs(1)).await;
+                }
+            }
         }
+
+        sleep(Duration::from_secs(10)).await;
     }
+}
+
+async fn send_light_command(
+    light_dev: &Peripheral,
+    lightstate: LightState,
+) -> Result<(), btleplug::Error> {
+    let on_command = vec![0xcc, 0x23, 0x33];
+    let off_command = vec![0xcc, 0x24, 0x33];
+
+    if lightstate.on {
+        send_command(&light_dev, &on_command).await?;
+        let brightness = (lightstate.brightness as f32 / 100.0 * 255.0) as u8;
+        match lightstate.mode {
+            Some(m) => match m {
+                Mode::Colored(color) => {
+                    let command = vec![
+                        0x56,
+                        color.red as u8,
+                        color.green as u8,
+                        color.blue as u8,
+                        brightness,
+                        0x00,
+                        0xaa,
+                    ];
+                    send_command(&light_dev, &command).await?
+                }
+                Mode::Warmwhite(_) => {
+                    let command = vec![0x56, 0x00, 0x00, 0x00, brightness, 0x0F, 0xaa];
+                    send_command(&light_dev, &command).await?
+                }
+            },
+            None => unreachable!(),
+        }
+    } else {
+        send_command(&light_dev, &off_command).await?
+    }
+
+    Ok(())
 }

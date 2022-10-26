@@ -1,5 +1,6 @@
 fn main() -> Result<(), std::io::Error> {
     println!("cargo:rerun-if-changed=../proto/");
+    println!("cargo:rerun-if-changed=models/generated");
 
     tonic_build::configure()
         .build_server(false)
