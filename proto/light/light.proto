@@ -3,6 +3,8 @@ syntax = "proto3";
 package light;
 import "common/common.proto";
 
+option go_package = "api.mooody.me/models/light";
+
 message SetLightRequest
 {
     common.Auth auth = 1;
