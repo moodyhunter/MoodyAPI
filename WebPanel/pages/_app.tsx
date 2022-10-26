@@ -1,5 +1,5 @@
-import { Dashboard as DashboardIcon, Home as HomeIcon, Laptop as LaptopIcon, Lightbulb, LightbulbCircleOutlined, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
-import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, Link, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
+import { Dashboard as DashboardIcon, Home as HomeIcon, Laptop as LaptopIcon, Lightbulb, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';

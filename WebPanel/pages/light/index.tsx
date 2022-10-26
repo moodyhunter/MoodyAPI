@@ -12,8 +12,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Content() {
-    var [power, setPower] = useState(false);
-    var handlePowerChange = () => {
+    let [power, setPower] = useState(false);
+    let handlePowerChange = () => {
         // post to api '/api/light'
         fetch('/api/light', {
             method: 'POST',
