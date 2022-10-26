@@ -1,5 +1,6 @@
 import { ChannelCredentials, createChannel, createClient } from "nice-grpc";
 import { APIClient } from "./protos/common/common";
+import { LightState } from "./protos/light/light";
 import { MoodyAPIServiceDefinition } from "./protos/MoodyAPI";
 
 export { APIClient } from "./protos/common/common";
@@ -16,6 +17,10 @@ export type CreateClientAPIResponse = { client: APIClient }
 export type ListClientsAPIResponse = { clients: APIClient[] }
 export type UpdateClientAPIResponse = { client: APIClient }
 export type DeleteClientAPIResponse = { deleted: boolean };
+
+export type LightAPIRequest = { state: LightState };
+export type UpdateLightAPIResponse = { state: LightState };
+export type GetLightAPIResponse = { state: LightState };
 
 export type ClientAPIResponse<T> = {
     success: boolean,

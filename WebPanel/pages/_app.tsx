@@ -1,4 +1,4 @@
-import { Dashboard as DashboardIcon, Home as HomeIcon, Laptop as LaptopIcon, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { Dashboard as DashboardIcon, Home as HomeIcon, Laptop as LaptopIcon, Lightbulb, LightbulbCircleOutlined, Logout as LogoutIcon, Menu as MenuIcon, NetworkCheck as NetworkIcon, NotificationsNone as NotificationIcon, Settings as SettingsIcon } from '@mui/icons-material';
 import { AppBar, Box, Button, CssBaseline, Divider, Drawer, IconButton, Link, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import { AppProps } from 'next/app';
@@ -14,7 +14,8 @@ const DrawerWidth = 220;
 type AppListButtonProps = {
     name: string,
     link: string,
-    icon: ReactElement
+    icon: ReactElement,
+    open_in_new_tab?: boolean,
 };
 
 type AppProp = {
@@ -25,7 +26,7 @@ const UnmemoizedAppListButton = (props: AppListButtonProps) => {
     const router = useRouter();
 
     return (
-        <NextLink passHref href={props.link} style={{ textDecoration: "none" }}>
+        <NextLink passHref href={props.link} style={{ textDecoration: "none" }} target={props.open_in_new_tab ? "_blank" : undefined}>
             <ListItemButton selected={router.route === props.link} key={props.name} sx={useMemo(() => ({ minHeight: 48, justifyContent: 'initial', px: 2.5 }), [])}>
                 <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
                     {props.icon}
@@ -47,7 +48,8 @@ const DrawerContent = () => {
                 <AppListButton link='/clients' name='API Clients' icon={(<LaptopIcon />)} />
                 <AppListButton link='/notifications' name='Notifications' icon={(<NotificationIcon />)} />
                 <AppListButton link='/dns' name='DNS Records' icon={(<NetworkIcon />)} />
-                <AppListButton link='/status' name='Status' icon={(<DashboardIcon />)} />
+                <AppListButton link='/light' name='Light Control' icon={(<Lightbulb />)} />
+                <AppListButton link='https://g.mooody.me' name='Status' open_in_new_tab icon={(<DashboardIcon />)} />
             </List>
             <Divider />
             <List>
