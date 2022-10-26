@@ -12,8 +12,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Content() {
-    let [power, setPower] = useState(false);
-    let handlePowerChange = () => {
+    const [power, setPower] = useState(false);
+    const handlePowerChange = () => {
         // post to api '/api/light'
         fetch('/api/light', {
             method: 'POST',
@@ -22,7 +22,7 @@ export default function Content() {
             },
             body: JSON.stringify({ power: power })
         }).then(res => {
-            var status = res as unknown as ClientAPIResponse<UpdateLightAPIResponse>;
+            const status = res as unknown as ClientAPIResponse<UpdateLightAPIResponse>;
             if (status.success) {
                 setPower(status.data?.state.on ?? false);
             }

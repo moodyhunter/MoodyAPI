@@ -25,8 +25,8 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
     const AuthObject: Auth = { clientUuid: API_CLIENTID };
 
     try {
-        let result = await client.setLight({ auth: AuthObject, state: requestedClient.state });
-        console.log(result)
+        const result = await client.setLight({ auth: AuthObject, state: requestedClient.state });
+        console.log(result);
         resp.status(200).json({ success: true, message: "ok", data: undefined });
     } catch (error) {
         resp.status(503).send({ message: "server error", success: false, data: undefined });
