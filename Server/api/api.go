@@ -44,6 +44,7 @@ func CreateServer(listenAddress string) *MoodyAPIServer {
 
 	apiServer.lastCameraState = new(models.CameraState)
 	apiServer.lastCameraControlSignal = new(models.CameraState)
+	apiServer.lastLightState = new(light.LightState)
 	apiServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
 	apiServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
 	apiServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
