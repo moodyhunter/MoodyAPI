@@ -43,7 +43,7 @@ export default NextAuth({
                 }
 
                 console.log(`User ${cred.username} logged in successfully.`);
-                return { id: 1, name: cred.username, email: "" };
+                return { id: "1", name: cred.username, email: "" };
             }
         })
     ]
