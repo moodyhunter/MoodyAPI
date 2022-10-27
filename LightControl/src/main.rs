@@ -108,12 +108,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         });
 
         match client.subscribe_light(request).await {
-            Err(e) => println!("something went wrong: {}", e),
             Ok(stream) => {
                 let mut resp_stream = stream.into_inner();
                 loop {
                     match resp_stream.message().await {
-                        Ok(None) => println!("expect a light object"),
                         Ok(Some(l)) => {
                             println!("Received LightState: {:?}", l);
                             match send_light_command(&light, l).await {
@@ -121,13 +119,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                 Err(e) => println!("Failed to send light command: {}", e),
                             }
                         }
-                        Err(e) => {
-                            println!("something went wrong: {}", &e);
+                        _ => {
+                            println!("something went wrong");
+                            sleep(Duration::from_secs(1)).await;
                             break;
                         }
                     }
-                    sleep(Duration::from_secs(1)).await;
                 }
+            }
+            _ => {
+                println!("something went wrong");
+                sleep(Duration::from_secs(1)).await;
             }
         }
 

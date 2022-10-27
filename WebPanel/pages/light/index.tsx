@@ -1,7 +1,7 @@
 import { Container, Switch } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
-import { LightAPIRequest, UpdateLightAPIResponse } from '../../common';
+import { ClientAPIResponse, LightAPIRequest, UpdateLightAPIResponse } from '../../common';
 
 export const getServerSideProps: GetServerSideProps = async () => {
     return {
@@ -22,6 +22,7 @@ export default function Content() {
                 warmwhite: true,
             }
         };
+
         // post to api '/api/light'
         fetch('/api/light', {
             method: 'POST',
@@ -30,8 +31,11 @@ export default function Content() {
             },
             body: JSON.stringify(req)
         }).then(res => {
-            res.json().then((data: UpdateLightAPIResponse) => {
-                setPower(data.state.on);
+            res.json().then((data: ClientAPIResponse<UpdateLightAPIResponse>) => {
+                console.log(data);
+                if (data.success) {
+                    setPower(data.data?.state.on ?? false);
+                }
             }).catch(err => {
                 console.error(err);
             });

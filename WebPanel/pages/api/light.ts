@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { ClientAPIResponse, GetLightAPIResponse, getServerConnection, LightAPIRequest, UpdateLightAPIResponse } from '../../common';
 import { Auth } from '../../common/protos/common/common';
-import { SetLightResponse } from '../../common/protos/light/light';
 
 type UpdateLightResponse = ClientAPIResponse<GetLightAPIResponse | UpdateLightAPIResponse>;
 
@@ -26,8 +25,7 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
     const AuthObject: Auth = { clientUuid: API_CLIENTID };
 
     try {
-        const result: SetLightResponse = await client.setLight({ auth: AuthObject, state: body.state });
-        console.log(result);
+        await client.setLight({ auth: AuthObject, state: body.state });
         resp.status(200).json({ success: true, message: "ok", data: { state: body.state } });
     } catch (error) {
         resp.status(503).send({ message: "server error", success: false, data: undefined });
