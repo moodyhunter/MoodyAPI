@@ -30,6 +30,7 @@ export default function Content() {
             },
             body: JSON.stringify(req)
         }).then(res => {
+            console.log(res)
             const status = res as unknown as ClientAPIResponse<UpdateLightAPIResponse>;
             if (status.success) {
                 setPower(status.data?.state.on ?? false);

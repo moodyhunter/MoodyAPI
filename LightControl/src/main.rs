@@ -144,7 +144,7 @@ async fn send_light_command(
 
     if lightstate.on {
         send_command(&light_dev, &on_command).await?;
-        let brightness = (lightstate.brightness as f32 / 100.0 * 255.0) as u8;
+        let brightness = lightstate.brightness as u8;
         match lightstate.mode {
             Some(m) => match m {
                 Mode::Colored(color) => {
@@ -154,7 +154,7 @@ async fn send_light_command(
                         color.green as u8,
                         color.blue as u8,
                         brightness,
-                        0x00,
+                        0xf0,
                         0xaa,
                     ];
                     send_command(&light_dev, &command).await?
