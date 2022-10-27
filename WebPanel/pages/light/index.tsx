@@ -1,7 +1,7 @@
 import { Container, Switch } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
-import { ClientAPIResponse, LightAPIRequest, UpdateLightAPIResponse } from '../../common';
+import { LightAPIRequest, UpdateLightAPIResponse } from '../../common';
 
 export const getServerSideProps: GetServerSideProps = async () => {
     return {
@@ -30,14 +30,11 @@ export default function Content() {
             },
             body: JSON.stringify(req)
         }).then(res => {
-            console.log(res);
-            const status = res as unknown as ClientAPIResponse<UpdateLightAPIResponse>;
-            if (status.success) {
-                setPower(status.data?.state.on ?? false);
-            }
-            else {
-                console.log("Error: " + status.message);
-            }
+            res.json().then((data: UpdateLightAPIResponse) => {
+                setPower(data.state.on);
+            }).catch(err => {
+                console.error(err);
+            });
         }).catch(err => {
             console.log(err);
         });
