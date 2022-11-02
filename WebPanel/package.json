@@ -27,7 +27,7 @@
         "next": "13.0.1",
         "next-auth": "4.15.0",
         "nextjs-progressbar": "0.0.16",
-        "nice-grpc": "2.0.0",
+        "nice-grpc": "2.0.1",
         "protobufjs": "7.1.2",
         "react": "18.2.0",
         "react-dom": "18.2.0"
