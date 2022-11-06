@@ -9,7 +9,7 @@ chrono = "0.4.22"
 notify-rust = "4"
 platform-dirs = "0.3.0"
 prost = "0.11.2"
-prost-types = "0.11.1"
+prost-types = "0.11.2"
 rust-ini = "0.18.0"
 tokio = {version = "1.21.2", features = ["rt-multi-thread"]}
 tonic = {version = "0.8.2", features = ["transport", "tls", "tls-roots"]}
