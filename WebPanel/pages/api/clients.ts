@@ -1,9 +1,7 @@
 import { ServiceError } from '@grpc/grpc-js';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-import { APIClient, ClientAPIResponse, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
-import { Auth } from '../../common/protos/common/common';
-
+import { APIClient, ClientAPIResponse, createAuth, CreateClientAPIResponse, DeleteClientAPIResponse, getServerConnection, ListClientsAPIResponse, UpdateClientAPIResponse } from '../../common';
 
 type ClientAPIServerResponse = ClientAPIResponse<CreateClientAPIResponse | ListClientsAPIResponse | UpdateClientAPIResponse | DeleteClientAPIResponse>
 
@@ -15,16 +13,15 @@ export default async function clients(req: NextApiRequest, resp: NextApiResponse
     }
 
     const client = getServerConnection();
-    const requestedClient: APIClient = req.body;
+    const AuthObject = createAuth();
 
-    const API_CLIENTID = process.env["API_CLIENTID"];
-    if (!API_CLIENTID) {
-        console.error("API_CLIENTID is not set.");
-        resp.status(503).send({ message: "invalid server configuration", success: false, data: undefined });
-        return;
+    if (!AuthObject) {
+        resp.status(500);
+        resp.end();
     }
 
-    const AuthObject: Auth = { clientUuid: API_CLIENTID };
+    const requestedClient: APIClient = req.body;
+
     try {
         if (req.method == "GET") {
             const result = await client.listClients({ auth: AuthObject });
