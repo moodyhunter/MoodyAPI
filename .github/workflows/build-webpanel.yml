@@ -26,6 +26,7 @@ jobs:
             --exclude='node_modules' \
             --delete \
             ./WebPanel/ /mnt/disk/moodyapi/WebPanel
+          cp /bin/protoc /mnt/disk/moodyapi/WebPanel/node_modules/grpc-tools/bin/protoc
 
       - name: Build
         run: |
