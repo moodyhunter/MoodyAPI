@@ -28,10 +28,10 @@ const UnmemoizedAppListButton = (props: AppListButtonProps) => {
     return (
         <NextLink passHref href={props.link} style={{ textDecoration: "none" }} target={props.open_in_new_tab ? "_blank" : undefined}>
             <ListItemButton selected={router.route === props.link} key={props.name} sx={useMemo(() => ({ minHeight: 48, justifyContent: 'initial', px: 2.5 }), [])}>
-                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: 'center' }} style={{ color: router.route === props.link ? "#3f51b5" : undefined }}>
                     {props.icon}
                 </ListItemIcon>
-                <ListItemText primary={props.name} sx={{ opacity: 1 }} />
+                <ListItemText primary={props.name} sx={{ opacity: 1 }} style={{ color: router.route === props.link ? "#3f51b5" : "black" }} />
             </ListItemButton>
         </NextLink>
     );
