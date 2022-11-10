@@ -52,17 +52,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
     if (resp.state === undefined)
         resp.state = {} as LightState;
 
-    if (resp.state.brightness === undefined)
-        resp.state.brightness = 0;
-
     if (resp.state.on === undefined)
         resp.state.on = false;
 
     if (resp.state.colored === undefined)
-        resp.state.colored = { red: 0, green: 0, blue: 0 };
+        resp.state.colored = { red: 255, green: 255, blue: 255 };
 
     if (resp.state.warmwhite === undefined)
-        resp.state.warmwhite = true;
+        resp.state.warmwhite = false;
 
     return {
         props: {
@@ -80,7 +77,7 @@ export default function Content(props: { title: string, lightState: LightState }
     const [warmwhite, setWarmwhite] = useState(state.warmwhite ?? false);
 
     if (state.colored === undefined)
-        state.colored = { red: 0, green: 0, blue: 0 };
+        state.colored = { red: 255, green: 255, blue: 255 };
 
     const [color, setColor] = useState({ r: state.colored.red, g: state.colored.green, b: state.colored.blue } as RgbColor);
 
@@ -106,7 +103,12 @@ export default function Content(props: { title: string, lightState: LightState }
     }
 
     const handlePowerChange = () => {
-        const state: LightState = { on: !power, brightness: brightness, colored: warmwhite ? undefined : { red: color.r, green: color.g, blue: color.b }, warmwhite: warmwhite };
+        const state: LightState = {
+            on: !power,
+            brightness: brightness,
+            colored: warmwhite ? undefined : { red: color.r, green: color.g, blue: color.b },
+            warmwhite: warmwhite ? true : undefined,
+        };
         doUpdate(state);
     };
 
@@ -138,7 +140,9 @@ export default function Content(props: { title: string, lightState: LightState }
         setColor(color.rgb);
     };
 
-    const handleColorChangeComplete = () => {
+    const handleColorChangeComplete = (new_color: ColorResult) => {
+        handleColorChange(new_color);
+        const color = new_color.rgb;
         const state: LightState = { on: power, brightness: brightness, colored: { red: color.r, green: color.g, blue: color.b }, warmwhite: undefined };
         doUpdate(state);
     };
@@ -160,40 +164,21 @@ export default function Content(props: { title: string, lightState: LightState }
                     <Typography id="discrete-slider" gutterBottom>Brightness</Typography>
                 </Grid>
                 <Grid item xs={9} columns={2}>
-                    <Slider
-                        value={brightness}
-                        onChange={handleBrightnessChange}
-                        onChangeCommitted={handleBrightnessSubmit}
-                        min={0}
-                        max={255}
-                        disabled={!power}
-                    />
+                    <Slider value={brightness} onChange={handleBrightnessChange} onChangeCommitted={handleBrightnessSubmit} min={0} max={255} disabled={!power} />
                 </Grid>
 
                 <Grid item xs={3}>
                     <Typography id="discrete-slider" gutterBottom>Warm White</Typography>
                 </Grid>
                 <Grid item xs={9}>
-                    <Checkbox
-                        checked={warmwhite}
-                        onChange={swapWarmWhite}
-                        name="Warm White"
-                        inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        disabled={!power}
-                    />
+                    <Checkbox checked={warmwhite} onChange={swapWarmWhite} name="Warm White" disabled={!power} />
                 </Grid>
 
                 <Grid item xs={3}>
                     <Typography id="discrete-slider" gutterBottom>Color</Typography>
                 </Grid>
                 <Grid item xs={9}>
-                    <HuePicker
-                        color={color}
-                        width="100%"
-                        onChange={handleColorChange}
-                        onChangeComplete={handleColorChangeComplete}
-                        pointer={SliderPointer}
-                    />
+                    <HuePicker color={color} width="100%" onChange={handleColorChange} onChangeComplete={handleColorChangeComplete} pointer={SliderPointer} />
                 </Grid>
             </Grid>
         </Container>
