@@ -21,7 +21,6 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
 
     const body: LightAPIRequest = req.body;
 
-
     try {
         if (req.method === "GET") {
             const light = await client.getLightState({ auth: AuthObject });
@@ -35,7 +34,7 @@ export default async function power(req: NextApiRequest, resp: NextApiResponse<U
             resp.status(200).json({ success: true, message: "ok", data: { state: body.state } });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         resp.status(503).send({ message: "server error", success: false, data: undefined });
     }
 }

@@ -7,7 +7,7 @@ import { LightState } from '../../common/protos/light/light';
 export const getServerSideProps: GetServerSideProps = async () => {
     const client = getServerConnection();
     const AuthObject = createAuth();
-    let resp = await client.getLightState({ auth: AuthObject });
+    const resp = await client.getLightState({ auth: AuthObject });
 
     if (resp.state === undefined)
         resp.state = {} as LightState;
@@ -32,11 +32,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     };
 };
 
-export default function Content(props: { title: string, lightState: LightState | undefined }) {
-    if (props.lightState === undefined) {
-        return <div>Invalid Server State</div>;
-    }
-
+export default function Content(props: { title: string, lightState: LightState }) {
     const state = props.lightState;
 
     const [power, setPower] = useState(state.on);
@@ -74,7 +70,7 @@ export default function Content(props: { title: string, lightState: LightState |
         doUpdate(req);
     };
 
-    const handleBrightnessChange = (event: any, newValue: number | number[]) => {
+    const handleBrightnessChange = (_event: Event, newValue: number | number[]) => {
         const req: LightAPIRequest = {
             state: {
                 on: power,
