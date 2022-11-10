@@ -23,6 +23,25 @@ func (s *MoodyAPIServer) SetLightState(ctx context.Context, request *light.SetLi
 		return nil, err
 	}
 
+	// preprocess color with brightness if warmwhite is not set
+
+	if !request.State.GetWarmwhite() {
+		if request.State.GetColored() == nil {
+			common.LogClientError(ctx, client, errors.New("neither warmwhite nor color is set"))
+			return nil, errors.New("neither warmwhite nor color is set")
+		}
+
+		// normalize color
+
+		var red = uint32(float32(request.State.GetColored().Red) * (float32(request.State.GetBrightness()) / 255))
+		var green = uint32(float32(request.State.GetColored().Green) * (float32(request.State.GetBrightness()) / 255))
+		var blue = uint32(float32(request.State.GetColored().Blue) * (float32(request.State.GetBrightness()) / 255))
+
+		request.State.GetColored().Blue = blue
+		request.State.GetColored().Green = green
+		request.State.GetColored().Red = red
+	}
+
 	s.lightControlStream.Broadcast(request.State)
 	s.lastLightState = request.State
 	return &light.SetLightResponse{}, nil
