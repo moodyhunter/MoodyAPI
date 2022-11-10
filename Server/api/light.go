@@ -10,7 +10,7 @@ import (
 	"api.mooody.me/models/light"
 )
 
-func (s *MoodyAPIServer) SetLight(ctx context.Context, request *light.SetLightRequest) (*light.SetLightResponse, error) {
+func (s *MoodyAPIServer) SetLightState(ctx context.Context, request *light.SetLightRequest) (*light.SetLightResponse, error) {
 	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
 		common.LogClientError(ctx, client, err)
@@ -30,7 +30,19 @@ func (s *MoodyAPIServer) SetLight(ctx context.Context, request *light.SetLightRe
 	return &light.SetLightResponse{}, nil
 }
 
-func (s *MoodyAPIServer) SubscribeLight(subscribeLightStateRequest *light.SubscribeLightRequest, server models.MoodyAPIService_SubscribeLightServer) error {
+func (s *MoodyAPIServer) GetLightState(ctx context.Context, request *light.GetLightRequest) (*light.GetLightResponse, error) {
+	client, err := db.AuthenticateClient(ctx, request.Auth, false)
+	if err != nil {
+		common.LogClientError(ctx, client, err)
+		return nil, err
+	}
+
+	common.LogClientOperation(ctx, client, "get light state")
+
+	return &light.GetLightResponse{State: s.lastLightState}, nil
+}
+
+func (s *MoodyAPIServer) SubscribeLightStateChange(subscribeLightStateRequest *light.SubscribeLightRequest, server models.MoodyAPIService_SubscribeLightStateChangeServer) error {
 	client, err := db.AuthenticateClient(server.Context(), subscribeLightStateRequest.Auth, false)
 	if err != nil {
 		common.LogClientError(server.Context(), client, err)

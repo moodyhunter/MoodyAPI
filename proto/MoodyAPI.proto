@@ -81,6 +81,7 @@ service MoodyAPIService
     rpc StopVibrator(google.protobuf.Empty) returns (google.protobuf.Empty);
 
     // Light Control
-    rpc SetLight(light.SetLightRequest) returns (light.SetLightResponse);
-    rpc SubscribeLight(light.SubscribeLightRequest) returns (stream light.LightState);
+    rpc SetLightState(light.SetLightRequest) returns (light.SetLightResponse);
+    rpc GetLightState(light.GetLightRequest) returns (light.GetLightResponse);
+    rpc SubscribeLightStateChange(light.SubscribeLightRequest) returns (stream light.LightState);
 }

@@ -107,7 +107,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ..Default::default()
         });
 
-        match client.subscribe_light(request).await {
+        match client.subscribe_light_state_change(request).await {
             Ok(stream) => {
                 let mut resp_stream = stream.into_inner();
                 loop {

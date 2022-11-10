@@ -33,6 +33,16 @@ message LightState
     }
 }
 
+message GetLightRequest
+{
+    common.Auth auth = 1;
+}
+
+message GetLightResponse
+{
+    LightState state = 1;
+}
+
 message SubscribeLightRequest
 {
     common.Auth auth = 1;
