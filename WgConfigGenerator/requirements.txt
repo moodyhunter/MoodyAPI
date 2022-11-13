@@ -1,2 +1,2 @@
 enquiries==0.1.0
-colored==1.4.3
+colored==1.4.4
