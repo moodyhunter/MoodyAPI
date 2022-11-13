@@ -7,7 +7,7 @@ version = "0.1.0"
 
 [dependencies]
 btleplug = {version = "0.10", features = ["serde"]}
-chrono = "0.4.22"
+chrono = "0.4.23"
 platform-dirs = "0.3.0"
 prost = "0.11.2"
 prost-types = "0.11.2"
