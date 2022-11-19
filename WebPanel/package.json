@@ -38,7 +38,7 @@
         "@types/react": "18.0.25",
         "@typescript-eslint/eslint-plugin": "5.43.0",
         "@typescript-eslint/parser": "5.43.0",
-        "eslint": "8.27.0",
+        "eslint": "8.28.0",
         "eslint-config-next": "13.0.4",
         "grpc-tools": "1.11.3",
         "ts-proto": "1.132.1",
