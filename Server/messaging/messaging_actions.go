@@ -26,11 +26,11 @@ func onChannelsAction(msg *tgbotapi.MessageConfig) {
 func onLightOffAction(msg *tgbotapi.MessageConfig) {
 	api.APIServer.LastLightState.On = false
 	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
-	msg.Text = "Light is off."
+	msg.Text = "Light is off"
 }
 
 func onLightOnAction(msg *tgbotapi.MessageConfig) {
 	api.APIServer.LastLightState.On = true
 	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
-	msg.Text = "Light is on."
+	msg.Text = "Light is on"
 }
