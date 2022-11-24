@@ -166,7 +166,11 @@ async fn send_light_command(
                     send_command(&light_dev, &command).await?
                 }
             },
-            None => unreachable!(),
+            None => {
+                // No mode set, default to warm white
+                let command = vec![0x56, 0x00, 0x00, 0x00, brightness, 0x0F, 0xaa];
+                send_command(&light_dev, &command).await?
+            }
         }
     } else {
         send_command(&light_dev, &off_command).await?
