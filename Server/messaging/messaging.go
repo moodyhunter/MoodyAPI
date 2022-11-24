@@ -26,19 +26,12 @@ func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramB
 	}
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	mm := tgbotapi.NewSetMyCommands(tgbotapi.BotCommand{
-		Command:     "ping",
-		Description: "Ping!",
-	}, tgbotapi.BotCommand{
-		Command:     "status",
-		Description: "Get MoodyAPI status",
-	}, tgbotapi.BotCommand{
-		Command:     "channels",
-		Description: "List notification channels",
-	}, tgbotapi.BotCommand{
-		Command:     "light_off",
-		Description: "Turn off the light",
-	},
+	mm := tgbotapi.NewSetMyCommands(
+		tgbotapi.BotCommand{Command: "ping", Description: "Ping!"},
+		tgbotapi.BotCommand{Command: "status", Description: "Get MoodyAPI status"},
+		tgbotapi.BotCommand{Command: "channels", Description: "List notification channels"},
+		tgbotapi.BotCommand{Command: "light_off", Description: "Turn off the light"},
+		tgbotapi.BotCommand{Command: "light_on", Description: "Turn on the light"},
 	)
 	bot.Request(mm)
 
@@ -118,6 +111,8 @@ func (m *TelegramBot) ServeBotCommand() {
 				onChannelsAction(&msg)
 			case "light_off":
 				onLightOffAction(&msg)
+			case "light_on":
+				onLightOnAction(&msg)
 			default:
 				continue
 			}

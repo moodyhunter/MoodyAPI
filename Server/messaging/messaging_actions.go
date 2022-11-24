@@ -6,7 +6,6 @@ import (
 
 	"api.mooody.me/api"
 	"api.mooody.me/db"
-	"api.mooody.me/models/light"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -25,8 +24,13 @@ func onChannelsAction(msg *tgbotapi.MessageConfig) {
 }
 
 func onLightOffAction(msg *tgbotapi.MessageConfig) {
-	state := &light.LightState{
-		On: false,
-	}
-	api.APIServer.BroadcastLightStatus(state)
+	api.APIServer.LastLightState.On = false
+	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
+	msg.Text = "Light is off."
+}
+
+func onLightOnAction(msg *tgbotapi.MessageConfig) {
+	api.APIServer.LastLightState.On = true
+	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
+	msg.Text = "Light is on."
 }
