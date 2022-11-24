@@ -42,7 +42,7 @@ func onGetLightAction(msg *tgbotapi.MessageConfig) {
 		msg.Text = "Light is off"
 	}
 
-	msg.Text += fmt.Sprintf(" (brightness: %d)", api.APIServer.LastLightState.Brightness)
+	msg.Text += fmt.Sprintf(" \\(brightness: %d\\)", api.APIServer.LastLightState.Brightness)
 
 	if api.APIServer.LastLightState.GetColored() != nil {
 		color := api.APIServer.LastLightState.GetColored()
