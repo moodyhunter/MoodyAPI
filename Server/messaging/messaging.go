@@ -32,6 +32,7 @@ func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramB
 		tgbotapi.BotCommand{Command: "channels", Description: "List notification channels"},
 		tgbotapi.BotCommand{Command: "light_off", Description: "Turn off the light"},
 		tgbotapi.BotCommand{Command: "light_on", Description: "Turn on the light"},
+		tgbotapi.BotCommand{Command: "get_light", Description: "Get light status"},
 	)
 	bot.Request(mm)
 
@@ -113,6 +114,8 @@ func (m *TelegramBot) ServeBotCommand() {
 				onLightOffAction(&msg)
 			case "light_on":
 				onLightOnAction(&msg)
+			case "get_light":
+				onGetLightAction(&msg)
 			default:
 				continue
 			}

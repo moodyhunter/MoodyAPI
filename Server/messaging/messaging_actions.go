@@ -25,12 +25,29 @@ func onChannelsAction(msg *tgbotapi.MessageConfig) {
 
 func onLightOffAction(msg *tgbotapi.MessageConfig) {
 	api.APIServer.LastLightState.On = false
-	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
+	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
 	msg.Text = "Light is off"
 }
 
 func onLightOnAction(msg *tgbotapi.MessageConfig) {
 	api.APIServer.LastLightState.On = true
-	api.APIServer.BroadcastLightStatus(api.APIServer.LastLightState)
+	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
 	msg.Text = "Light is on"
+}
+
+func onGetLightAction(msg *tgbotapi.MessageConfig) {
+	if api.APIServer.LastLightState.On {
+		msg.Text = "Light is on"
+	} else {
+		msg.Text = "Light is off"
+	}
+
+	msg.Text += fmt.Sprintf(" (brightness: %d)", api.APIServer.LastLightState.Brightness)
+
+	if api.APIServer.LastLightState.GetColored() != nil {
+		color := api.APIServer.LastLightState.GetColored()
+		msg.Text += fmt.Sprintf("\nColor: %d, %d, %d", color.Red, color.Green, color.Blue)
+	} else {
+		msg.Text += "\nColor: Warm White"
+	}
 }
