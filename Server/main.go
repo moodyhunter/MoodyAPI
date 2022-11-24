@@ -16,7 +16,6 @@ import (
 )
 
 var (
-	apiServer *api.MoodyAPIServer
 	tgBot     *messaging.TelegramBot
 	dnsServer *dns_server.DnsServer
 )
@@ -52,8 +51,8 @@ func main() {
 
 	grpcSection := config.Section("gRPC")
 	apiAddress := grpcSection.Key("ListenAddress").MustString("127.0.0.1:1920")
-	apiServer = api.CreateServer(apiAddress)
-	go apiServer.Serve()
+	api.CreateServer(apiAddress)
+	go api.APIServer.Serve()
 
 	// Setup Telegram Bot
 	tgSection := config.Section("Telegram")
@@ -65,7 +64,7 @@ func main() {
 	if TgBotIsEnabled {
 		tgBot = messaging.NewTelegramBot(TgBotApiToken, TgBotSafeChatId, TgBotSafeUserId)
 		log.Printf("Telegram bot is enabled")
-		go apiServer.SubscribeNotificationInternal(tgBot.SendNotification)
+		go api.APIServer.SubscribeNotificationInternal(tgBot.SendNotification)
 		log.Printf("Telegram bot is subscribed to notifications")
 		go tgBot.SendMessage("我起来了")
 		go tgBot.ServeBotCommand()
@@ -101,7 +100,7 @@ func main() {
 
 	log.Printf("signal %d received, shutting down...", sig)
 
-	apiServer.Stop()
+	api.APIServer.Stop()
 
 	if dnsServerIsEnabled {
 		dnsServer.Close()

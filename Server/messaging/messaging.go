@@ -35,7 +35,11 @@ func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramB
 	}, tgbotapi.BotCommand{
 		Command:     "channels",
 		Description: "List notification channels",
-	})
+	}, tgbotapi.BotCommand{
+		Command:     "light_off",
+		Description: "Turn off the light",
+	},
+	)
 	bot.Request(mm)
 
 	return &TelegramBot{botApi: bot, safeChatId: safeChatId, safeUserId: safeUserId}
@@ -112,6 +116,8 @@ func (m *TelegramBot) ServeBotCommand() {
 				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
+			case "light_off":
+				onLightOffAction(&msg)
 			default:
 				continue
 			}

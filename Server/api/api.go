@@ -15,7 +15,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var moodyAPIServer *MoodyAPIServer
+var APIServer *MoodyAPIServer
 
 type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
@@ -40,33 +40,33 @@ type MoodyAPIServer struct {
 }
 
 func CreateServer(listenAddress string) *MoodyAPIServer {
-	apiServer := &MoodyAPIServer{}
+	APIServer = &MoodyAPIServer{}
 
-	apiServer.lastCameraState = new(models.CameraState)
-	apiServer.lastCameraControlSignal = new(models.CameraState)
-	apiServer.lastLightState = new(light.LightState)
-	apiServer.lastLightState.Brightness = 255
-	apiServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
-	apiServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
-	apiServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
-	apiServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
-	apiServer.lightControlStream = broadcaster.NewBroadcaster[light.LightState]()
+	APIServer.lastCameraState = new(models.CameraState)
+	APIServer.lastCameraControlSignal = new(models.CameraState)
+	APIServer.lastLightState = new(light.LightState)
+	APIServer.lastLightState.Brightness = 255
+	APIServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
+	APIServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
+	APIServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
+	APIServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
+	APIServer.lightControlStream = broadcaster.NewBroadcaster[light.LightState]()
 
-	apiServer.listenAddress = listenAddress
+	APIServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
 
 	TIMEOUT := time.Hour * 1
-	apiServer.gRPCServer = grpc.NewServer(
+	APIServer.gRPCServer = grpc.NewServer(
 		grpc.ConnectionTimeout(TIMEOUT),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle: TIMEOUT,
 		}),
 	)
-	models.RegisterMoodyAPIServiceServer(apiServer.gRPCServer, apiServer)
+	models.RegisterMoodyAPIServiceServer(APIServer.gRPCServer, APIServer)
 
 	// Register reflection service on gRPC server.
-	reflection.Register(apiServer.gRPCServer)
-	return apiServer
+	reflection.Register(APIServer.gRPCServer)
+	return APIServer
 }
 
 func (apiServer *MoodyAPIServer) Serve() {

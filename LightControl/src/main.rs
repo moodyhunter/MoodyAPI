@@ -119,16 +119,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                 Err(e) => println!("Failed to send light command: {}", e),
                             }
                         }
-                        _ => {
-                            println!("something went wrong");
+                        e => {
+                            println!("something went wrong: {:?}", e);
                             sleep(Duration::from_secs(1)).await;
                             break;
                         }
                     }
                 }
             }
-            _ => {
-                println!("something went wrong");
+            e => {
+                println!("something went wrong: {:?}", e);
                 sleep(Duration::from_secs(1)).await;
             }
         }

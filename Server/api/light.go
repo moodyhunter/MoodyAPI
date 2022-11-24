@@ -10,6 +10,11 @@ import (
 	"api.mooody.me/models/light"
 )
 
+func (s *MoodyAPIServer) BroadcastLightStatus(status *light.LightState) {
+	s.lastLightState = status
+	s.lightControlStream.Broadcast(status)
+}
+
 func (s *MoodyAPIServer) SetLightState(ctx context.Context, request *light.SetLightRequest) (*light.SetLightResponse, error) {
 	client, err := db.AuthenticateClient(ctx, request.Auth, false)
 	if err != nil {
@@ -39,8 +44,7 @@ func (s *MoodyAPIServer) SetLightState(ctx context.Context, request *light.SetLi
 		request.State.GetColored().Red = red
 	}
 
-	s.lastLightState = request.State
-	s.lightControlStream.Broadcast(request.State)
+	s.BroadcastLightStatus(request.State)
 	return &light.SetLightResponse{}, nil
 }
 
