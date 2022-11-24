@@ -121,6 +121,8 @@ func (m *TelegramBot) ServeBotCommand() {
 			}
 		}
 
+		msg.Text = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, msg.Text)
+
 		if _, err := m.botApi.Send(msg); err != nil {
 			log.Println(err)
 		}
