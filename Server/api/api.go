@@ -24,15 +24,15 @@ type MoodyAPIServer struct {
 	keepAliveStream    *broadcaster.Broadcaster[models.KeepAliveMessage]
 
 	// to be used by the agent APIs
-	lastCameraState         *models.CameraState                          // the last state of the camera reported by the agent
+	LastCameraState         *models.CameraState                          // the last state of the camera reported by the agent
 	cameraStateReportStream *broadcaster.Broadcaster[models.CameraState] // stream of camera state changes [agent => controllers]
 
 	// to be used by the controllers APIs
-	lastCameraControlSignal   *models.CameraState                          // the last state of the camera control signal sent by the controllers
+	LastCameraControlSignal   *models.CameraState                          // the last state of the camera control signal sent by the controllers
 	cameraControlSignalStream *broadcaster.Broadcaster[models.CameraState] // stream of control signals [controllers => agent]
 
 	// to be used by the light APIs
-	lastLightState     *light.LightState                          // the last state of the light reported by the agent
+	LastLightState     *light.LightState                          // the last state of the light reported by the agent
 	lightControlStream *broadcaster.Broadcaster[light.LightState] // stream of light control signals [controllers => agent]
 
 	gRPCServer    *grpc.Server
@@ -42,10 +42,10 @@ type MoodyAPIServer struct {
 func CreateServer(listenAddress string) *MoodyAPIServer {
 	APIServer = &MoodyAPIServer{}
 
-	APIServer.lastCameraState = new(models.CameraState)
-	APIServer.lastCameraControlSignal = new(models.CameraState)
-	APIServer.lastLightState = new(light.LightState)
-	APIServer.lastLightState.Brightness = 255
+	APIServer.LastCameraState = new(models.CameraState)
+	APIServer.LastCameraControlSignal = new(models.CameraState)
+	APIServer.LastLightState = new(light.LightState)
+	APIServer.LastLightState.Brightness = 255
 	APIServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
 	APIServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
 	APIServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
@@ -79,8 +79,8 @@ func (apiServer *MoodyAPIServer) Serve() {
 		for {
 			time.Sleep(30 * time.Second)
 			apiServer.keepAliveStream.Broadcast(&models.KeepAliveMessage{Time: timestamppb.Now()})
-			apiServer.cameraControlSignalStream.Broadcast(apiServer.lastCameraControlSignal)
-			apiServer.cameraStateReportStream.Broadcast(apiServer.lastCameraState)
+			apiServer.cameraControlSignalStream.Broadcast(apiServer.LastCameraControlSignal)
+			apiServer.cameraStateReportStream.Broadcast(apiServer.LastCameraState)
 		}
 	}()
 

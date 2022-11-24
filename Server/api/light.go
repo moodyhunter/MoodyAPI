@@ -11,7 +11,7 @@ import (
 )
 
 func (s *MoodyAPIServer) BroadcastLightStatus(status *light.LightState) {
-	s.lastLightState = status
+	s.LastLightState = status
 	s.lightControlStream.Broadcast(status)
 }
 
@@ -55,7 +55,7 @@ func (s *MoodyAPIServer) GetLightState(ctx context.Context, request *light.GetLi
 		return nil, err
 	}
 
-	return &light.GetLightResponse{State: s.lastLightState}, nil
+	return &light.GetLightResponse{State: s.LastLightState}, nil
 }
 
 func (s *MoodyAPIServer) SubscribeLightStateChange(subscribeLightStateRequest *light.SubscribeLightRequest, server models.MoodyAPIService_SubscribeLightStateChangeServer) error {
@@ -65,7 +65,7 @@ func (s *MoodyAPIServer) SubscribeLightStateChange(subscribeLightStateRequest *l
 		return err
 	}
 
-	server.Send(s.lastLightState)
+	server.Send(s.LastLightState)
 	s.lightControlStream.BlockedSubscribeWithCallback(func(signal *light.LightState) {
 		server.Send(signal)
 	})
