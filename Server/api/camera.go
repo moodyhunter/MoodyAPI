@@ -12,13 +12,13 @@ import (
 
 // Broadcast camera state to controllers
 func (s *MoodyAPIServer) BroadcastCameraStateToControllers(event *models.CameraState) {
-	s.lastCameraState = event
+	s.LastCameraState = event
 	s.cameraStateReportStream.Broadcast(event)
 }
 
 // Broadcast camera control signal to agents
 func (s *MoodyAPIServer) BroadcastCameraControlSignalToAgents(event *models.CameraState) {
-	s.lastCameraControlSignal = event
+	s.LastCameraControlSignal = event
 	s.cameraControlSignalStream.Broadcast(event)
 }
 
@@ -48,7 +48,7 @@ func (s *MoodyAPIServer) SubscribeCameraStateReport(request *models.SubscribeCam
 
 	common.LogClientOperation(context.Background(), client, "subscribed to camera change event")
 
-	server.Send(s.lastCameraState)
+	server.Send(s.LastCameraState)
 	s.cameraStateReportStream.BlockedSubscribeWithCallback(func(signal *models.CameraState) {
 		server.Send(signal)
 	})
@@ -83,7 +83,7 @@ func (s *MoodyAPIServer) SubscribeCameraControlSignal(req *models.SubscribeCamer
 
 	common.LogClientOperation(context.Background(), client, "subscribed to camera control signal")
 
-	server.Send(s.lastCameraControlSignal)
+	server.Send(s.LastCameraControlSignal)
 	s.cameraControlSignalStream.BlockedSubscribeWithCallback(func(signal *models.CameraState) {
 		server.Send(signal)
 	})
