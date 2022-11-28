@@ -100,7 +100,7 @@ func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
 				msg.Text = "颜色格式不对：" + err.Error()
 			} else {
 				api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: uint32(c.R), Green: uint32(c.G), Blue: uint32(c.B)}}
-				msg.Text = from + " 把灯调成了 " + color[0]
+				msg.Text = from + " 把灯调成了 \\" + color[0]
 			}
 		} else {
 			msg.Text = "不对"
