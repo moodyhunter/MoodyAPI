@@ -26,25 +26,32 @@ func onChannelsAction(msg *tgbotapi.MessageConfig) {
 }
 
 func onLightOffAction(msg *tgbotapi.MessageConfig, from string) {
-	api.APIServer.LastLightState.On = false
-	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
-	msg.Text = from + " 把灯关了"
+	if api.APIServer.LastLightState.On {
+		api.APIServer.LastLightState.On = false
+		api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
+		msg.Text = from + " 把灯关了"
+	} else {
+		msg.Text = "灯没开"
+	}
 }
 
 func onLightOnAction(msg *tgbotapi.MessageConfig, from string) {
-	api.APIServer.LastLightState.On = true
-	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
-	msg.Text = from + " 把灯打开了"
+	if !api.APIServer.LastLightState.On {
+		api.APIServer.LastLightState.On = true
+		api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
+		msg.Text = from + " 把灯打开了"
+	} else {
+		msg.Text = "灯已经开着了"
+	}
 }
 
 func onGetLightAction(msg *tgbotapi.MessageConfig) {
 	if api.APIServer.LastLightState.On {
 		msg.Text = "灯亮着"
+		msg.Text += fmt.Sprintf(" \\(%d\\)", api.APIServer.LastLightState.Brightness)
 	} else {
 		msg.Text = "灯关着"
 	}
-
-	msg.Text += fmt.Sprintf(" \\(brightness: %d\\)", api.APIServer.LastLightState.Brightness)
 
 	if api.APIServer.LastLightState.GetColored() != nil {
 		color := api.APIServer.LastLightState.GetColored()
