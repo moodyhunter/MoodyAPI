@@ -116,6 +116,8 @@ func (m *TelegramBot) ServeBotCommand() {
 			continue
 		}
 
+		fromUser := update.Message.From.FirstName
+
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		msg.ReplyToMessageID = update.Message.MessageID
 		msg.Text = "`" + command + "` 是什么？"
@@ -133,9 +135,9 @@ func (m *TelegramBot) ServeBotCommand() {
 			case "channels":
 				onChannelsAction(&msg)
 			case "light_off", "关灯":
-				onLightOffAction(&msg)
+				onLightOffAction(&msg, fromUser)
 			case "light_on", "开灯":
-				onLightOnAction(&msg)
+				onLightOnAction(&msg, fromUser)
 			case "get_light", "灯":
 				onGetLightAction(&msg)
 			default:

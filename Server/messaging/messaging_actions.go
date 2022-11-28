@@ -23,16 +23,16 @@ func onChannelsAction(msg *tgbotapi.MessageConfig) {
 	}
 }
 
-func onLightOffAction(msg *tgbotapi.MessageConfig) {
+func onLightOffAction(msg *tgbotapi.MessageConfig, from string) {
 	api.APIServer.LastLightState.On = false
 	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
-	msg.Text = "Light is off"
+	msg.Text = from + "把灯关了"
 }
 
-func onLightOnAction(msg *tgbotapi.MessageConfig) {
+func onLightOnAction(msg *tgbotapi.MessageConfig, from string) {
 	api.APIServer.LastLightState.On = true
 	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
-	msg.Text = "Light is on"
+	msg.Text = from + "把灯打开了"
 }
 
 func onGetLightAction(msg *tgbotapi.MessageConfig) {
