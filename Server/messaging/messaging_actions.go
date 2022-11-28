@@ -59,28 +59,28 @@ func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
 		if color[0] == "暖白" || color[0] == "warm" || color[0] == "ww" || color[0] == "warmwhite" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Warmwhite{Warmwhite: true}
 			msg.Text = from + " 把灯调成了暖白"
-		} else if color[0] == "red" || color[0] == "红" || color[0] == "r" || color[0] == "R" {
+		} else if color[0] == "red" || color[0] == "红" || color[0] == "r" || color[0] == "R" || color[0] == "红色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 0, Blue: 0}}
 			msg.Text = from + " 把灯调成了红色"
-		} else if color[0] == "green" || color[0] == "绿" || color[0] == "g" || color[0] == "G" {
+		} else if color[0] == "green" || color[0] == "绿" || color[0] == "g" || color[0] == "G" || color[0] == "绿色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 255, Blue: 0}}
 			msg.Text = from + " 把灯调成了绿色"
-		} else if color[0] == "blue" || color[0] == "蓝" || color[0] == "b" || color[0] == "B" {
+		} else if color[0] == "blue" || color[0] == "蓝" || color[0] == "b" || color[0] == "B" || color[0] == "蓝色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 0, Blue: 255}}
 			msg.Text = from + " 把灯调成了蓝色"
-		} else if color[0] == "yellow" || color[0] == "黄" || color[0] == "y" || color[0] == "Y" {
+		} else if color[0] == "yellow" || color[0] == "黄" || color[0] == "y" || color[0] == "Y" || color[0] == "黄色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 0}}
 			msg.Text = from + " 把灯调成了黄色"
-		} else if color[0] == "cyan" || color[0] == "青" || color[0] == "c" || color[0] == "C" {
+		} else if color[0] == "cyan" || color[0] == "青" || color[0] == "c" || color[0] == "C" || color[0] == "青色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 255, Blue: 255}}
 			msg.Text = from + " 把灯调成了青色"
-		} else if color[0] == "purple" || color[0] == "紫" || color[0] == "p" || color[0] == "P" {
+		} else if color[0] == "purple" || color[0] == "紫" || color[0] == "p" || color[0] == "P" || color[0] == "紫色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 0, Blue: 255}}
 			msg.Text = from + " 把灯调成了紫色"
-		} else if color[0] == "black" || color[0] == "黑" || color[0] == "k" || color[0] == "K" {
+		} else if color[0] == "black" || color[0] == "黑" || color[0] == "k" || color[0] == "K" || color[0] == "黑色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 0, Blue: 0}}
 			msg.Text = from + " 把灯调成了黑色（？）"
-		} else if color[0] == "white" || color[0] == "白" || color[0] == "w" || color[0] == "W" {
+		} else if color[0] == "white" || color[0] == "白" || color[0] == "w" || color[0] == "W" || color[0] == "白色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 255}}
 			msg.Text = from + " 把灯调成了白色"
 		} else {
