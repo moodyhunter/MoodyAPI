@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"api.mooody.me/api"
+	"api.mooody.me/common"
 	"api.mooody.me/db"
 	"api.mooody.me/models/light"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -92,6 +94,14 @@ func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
 			msg.Text = from + " 把灯调成了白色"
 		} else if color[0] == "色" {
 			msg.Text = "好！"
+		} else if strings.HasPrefix(color[0], "#") {
+			c, err := common.ParseHexColorFast(color[0])
+			if err != nil {
+				msg.Text = "颜色格式不对：" + err.Error()
+			} else {
+				api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: uint32(c.R), Green: uint32(c.G), Blue: uint32(c.B)}}
+				msg.Text = from + " 把灯调成了 " + color[0]
+			}
 		} else {
 			msg.Text = "不对"
 			return
