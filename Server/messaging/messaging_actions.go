@@ -55,42 +55,36 @@ func onGetLightAction(msg *tgbotapi.MessageConfig) {
 }
 
 func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
-	isWarmWhite := false
-
 	if len(color) == 1 {
-		if color[0] == "白" {
-			isWarmWhite = true
+		if color[0] == "白" || color[0] == "warm" || color[0] == "ww" || color[0] == "warmwhite" || color[0] == "暖白" {
+			api.APIServer.LastLightState.Mode = &light.LightState_Warmwhite{Warmwhite: true}
+			msg.Text = from + " 把灯调成了暖白"
 		} else {
-			msg.Text = "不对吧？"
+			msg.Text = color[0] + " 不对吧？"
 			return
 		}
 	} else if len(color) != 3 {
 		msg.Text = "不够色"
 		return
-	}
-
-	red, err := strconv.Atoi(color[0])
-	if err != nil || red < 0 || red > 255 {
-		msg.Text = "红色不对"
-		return
-	}
-
-	green, err := strconv.Atoi(color[1])
-	if err != nil || green < 0 || green > 255 {
-		msg.Text = "绿色不对"
-		return
-	}
-
-	blue, err := strconv.Atoi(color[2])
-	if err != nil || blue < 0 || blue > 255 {
-		msg.Text = "蓝色不对"
-		return
-	}
-
-	if isWarmWhite {
-		api.APIServer.LastLightState.Mode = &light.LightState_Warmwhite{Warmwhite: true}
-		msg.Text = from + " 把灯调成了暖白"
 	} else {
+		red, err := strconv.Atoi(color[0])
+		if err != nil || red < 0 || red > 255 {
+			msg.Text = "红色不对"
+			return
+		}
+
+		green, err := strconv.Atoi(color[1])
+		if err != nil || green < 0 || green > 255 {
+			msg.Text = "绿色不对"
+			return
+		}
+
+		blue, err := strconv.Atoi(color[2])
+		if err != nil || blue < 0 || blue > 255 {
+			msg.Text = "蓝色不对"
+			return
+		}
+
 		api.APIServer.LastLightState.Mode = &light.LightState_Colored{
 			Colored: &light.LightColor{
 				Red:   uint32(red),
