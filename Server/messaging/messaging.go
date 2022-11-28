@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"api.mooody.me/common"
@@ -23,6 +24,7 @@ var NonCommandVerbs = []string{
 	"灯",
 	"开灯",
 	"关灯",
+	"色",
 }
 
 func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramBot {
@@ -101,12 +103,28 @@ func (m *TelegramBot) ServeBotCommand() {
 		}
 
 		command := ""
+		args := []string{} // only supported for NonCommandVerbs
+
 		if update.Message.IsCommand() {
 			command = update.Message.Command()
 		} else {
+			tmp_args := strings.Split(update.Message.Text, " ")
+			if len(tmp_args) <= 0 {
+				continue
+			}
+
+			tmp_command := tmp_args[0]
+
+			if !strings.HasPrefix(tmp_command, "/") {
+				continue
+			}
+
+			tmp_command = strings.TrimPrefix(tmp_command, "/")
+
 			for _, verb := range NonCommandVerbs {
-				if update.Message.Text == "/"+verb {
-					command = verb
+				if tmp_command == verb {
+					command = tmp_command
+					args = tmp_args[1:]
 					break
 				}
 			}
@@ -140,6 +158,8 @@ func (m *TelegramBot) ServeBotCommand() {
 				onLightOnAction(&msg, fromUser)
 			case "get_light", "灯":
 				onGetLightAction(&msg)
+			case "色":
+				onColorAction(&msg, fromUser, args)
 			default:
 				continue
 			}
