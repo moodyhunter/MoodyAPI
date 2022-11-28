@@ -90,6 +90,8 @@ func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
 		} else if color[0] == "white" || color[0] == "白" || color[0] == "w" || color[0] == "W" || color[0] == "白色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 255}}
 			msg.Text = from + " 把灯调成了白色"
+		} else if color[0] == "色" {
+			msg.Text = "好！"
 		} else {
 			msg.Text = "不对"
 			return
