@@ -24,7 +24,7 @@ var NonCommandVerbs = []string{
 	"灯",
 	"开灯",
 	"关灯",
-	"色",
+	"色", "color",
 }
 
 func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramBot {
@@ -158,7 +158,7 @@ func (m *TelegramBot) ServeBotCommand() {
 				onLightOnAction(&msg, fromUser)
 			case "get_light", "灯":
 				onGetLightAction(&msg)
-			case "色":
+			case "色", "color":
 				onColorAction(&msg, fromUser, args)
 			default:
 				continue
