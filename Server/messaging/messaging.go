@@ -19,6 +19,12 @@ type TelegramBot struct {
 	safeUserId int64
 }
 
+var NonCommandVerbs = []string{
+	"灯",
+	"开灯",
+	"关灯",
+}
+
 func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramBot {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -90,19 +96,35 @@ func (m *TelegramBot) ServeBotCommand() {
 
 	updates := m.botApi.GetUpdatesChan(u)
 	for update := range updates {
-		if update.Message == nil || !update.Message.IsCommand() {
+		if update.Message == nil {
+			continue
+		}
+
+		command := ""
+		if update.Message.IsCommand() {
+			command = update.Message.Command()
+		} else {
+			for _, verb := range NonCommandVerbs {
+				if update.Message.Text == "/"+verb {
+					command = verb
+					break
+				}
+			}
+		}
+
+		if command == "" {
 			continue
 		}
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		msg.ReplyToMessageID = update.Message.MessageID
-		msg.Text = "`" + update.Message.Command() + "` is not implemented yet"
+		msg.Text = "`" + command + "` 是什么？"
 		msg.ParseMode = "markdownv2"
 
 		if update.Message.Chat.ID != m.safeChatId && update.Message.Chat.ID != m.safeUserId {
 			msg.Text = "This bot is only for Moody's chat group."
 		} else {
-			switch update.Message.Command() {
+			switch command {
 			case "ping":
 				msg.Text = "🏓"
 			case "status":
@@ -110,11 +132,11 @@ func (m *TelegramBot) ServeBotCommand() {
 				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
-			case "light_off":
+			case "light_off", "关灯":
 				onLightOffAction(&msg)
-			case "light_on":
+			case "light_on", "开灯":
 				onLightOnAction(&msg)
-			case "get_light":
+			case "get_light", "灯":
 				onGetLightAction(&msg)
 			default:
 				continue
