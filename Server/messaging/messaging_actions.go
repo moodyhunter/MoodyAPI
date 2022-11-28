@@ -93,19 +93,19 @@ func onColorAction(msg *tgbotapi.MessageConfig, from string, color []string) {
 	} else {
 		red, err := strconv.Atoi(color[0])
 		if err != nil || red < 0 || red > 255 {
-			msg.Text = "红色不对"
+			msg.Text = "红色不对: " + color[0]
 			return
 		}
 
 		green, err := strconv.Atoi(color[1])
 		if err != nil || green < 0 || green > 255 {
-			msg.Text = "绿色不对"
+			msg.Text = "绿色不对: " + color[1]
 			return
 		}
 
 		blue, err := strconv.Atoi(color[2])
 		if err != nil || blue < 0 || blue > 255 {
-			msg.Text = "蓝色不对"
+			msg.Text = "蓝色不对: " + color[2]
 			return
 		}
 
