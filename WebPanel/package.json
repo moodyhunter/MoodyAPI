@@ -18,7 +18,7 @@
         "@mui/icons-material": "5.10.16",
         "@mui/material": "5.10.16",
         "@mui/system": "5.10.16",
-        "@mui/x-data-grid": "5.17.13",
+        "@mui/x-data-grid": "5.17.14",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
         "dayjs": "1.11.6",
