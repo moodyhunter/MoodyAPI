@@ -19,4 +19,4 @@ uuid = "1.2.2"
 
 [build-dependencies]
 protoc-rust-grpc = "0.8.3"
-tonic-build = {version = "0.8.2"}
+tonic-build = {version = "0.8.4"}
