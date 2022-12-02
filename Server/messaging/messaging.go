@@ -78,7 +78,7 @@ func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 	event.Title = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, event.Title)
 	event.Content = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, event.Content)
 
-	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*<%s>* - %s\n %s", channelName, event.Title, event.Content))
+	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*<%s>* - %s\n%s", channelName, event.Title, event.Content))
 	msg.ParseMode = "markdown"
 
 	if event.Private {
