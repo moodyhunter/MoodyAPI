@@ -41,6 +41,7 @@ func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramB
 		tgbotapi.BotCommand{Command: "light_off", Description: "Turn off the light"},
 		tgbotapi.BotCommand{Command: "light_on", Description: "Turn on the light"},
 		tgbotapi.BotCommand{Command: "get_light", Description: "Get light status"},
+		tgbotapi.BotCommand{Command: "pin", Description: "Pin a message"},
 	)
 	bot.Request(mm)
 
@@ -158,6 +159,18 @@ func (m *TelegramBot) ServeBotCommand() {
 				onGetLightAction(&msg)
 			case "色", "color":
 				onColorAction(&msg, args)
+			case "pin":
+				pinChatMessageConfig := tgbotapi.PinChatMessageConfig{
+					ChatID:              update.Message.Chat.ID,
+					MessageID:           update.Message.MessageID,
+					DisableNotification: true,
+				}
+				_, err := m.botApi.Request(pinChatMessageConfig)
+				if err != nil {
+					msg.Text = err.Error()
+				} else {
+					msg.Text = "好！"
+				}
 			default:
 				continue
 			}
