@@ -1886,10 +1886,10 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-grpc-tools@1.11.3:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/grpc-tools/-/grpc-tools-1.11.3.tgz#8218a86ef994e58bd06330b74033de8d7719ea0d"
-  integrity sha512-cRSK2uhDKHtZ9hLRM35HxaMAMxyh/L7C96Ojt58DhQBdwTOQlV1VIJHSK6X/pDeSQKhaQqWMFfebt8tIcvRfjQ==
+grpc-tools@1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/grpc-tools/-/grpc-tools-1.12.0.tgz#9620c6c4566a18ada68a1a87158e1754ef42752a"
+  integrity sha512-OMF6ZR0rLQsCvPrXNGXR/iWZItKm6W2q/uO56WWYRzqZztETaFX82cRDiVCX3JEJeN5+TTKJbXzovb3KZ2HMDA==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.5"
 
@@ -2130,10 +2130,10 @@ jose@^4.10.0, jose@^4.9.3:
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.11.1.tgz#8f7443549befe5bddcf4bae664a9cbc1a62da4fa"
   integrity sha512-YRv4Tk/Wlug8qicwqFNFVEZSdbROCHRAC6qu/i0dyNKr5JQdoa2pIGoS04lLO/jXQX7Z9omoNewYIVIxqZBd9Q==
 
-jotai@1.10.0:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.10.0.tgz#50c5224789282eca1cdc907a51e316d8d94c5976"
-  integrity sha512-3Q8kQU3Ktds+80Ku4dVcvnwSXEcK0Fg0b6mC1+4wz3rmF64lOGNUySKXQ4njvYCWodR8bw2HygOKYSYkHxQQmA==
+jotai@1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.11.0.tgz#d2a666f16935797743eb41a3b75583ea4e17fefb"
+  integrity sha512-8OzJmRxcTZoAOJSz6uTnmofmjAOgNOdAOy26rvyw3OBxt6XIoklNnfUTCm8wgp84SSLJbPZA01VS5O/SUz+QYg==
 
 js-sdsl@^4.1.4:
   version "4.2.0"
@@ -2192,17 +2192,17 @@ json5@^2.2.1:
     array-includes "^3.1.5"
     object.assign "^4.1.3"
 
-language-subtag-registry@~0.3.2:
+language-subtag-registry@^0.3.20:
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/language-subtag-registry/-/language-subtag-registry-0.3.22.tgz#2e1500861b2e457eba7e7ae86877cbd08fa1fd1d"
   integrity sha512-tN0MCzyWnoz/4nHS6uxdlFWoUZT7ABptwKPQ52Ea7URk6vll88bWBVhodtnlfEuCcKWNGoc+uGbw1cwa9IKh/w==
 
 language-tags@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/language-tags/-/language-tags-1.0.5.tgz#d321dbc4da30ba8bf3024e040fa5c14661f9193a"
-  integrity sha512-qJhlO9cGXi6hBGKoxEG/sKZDAHD5Hnu9Hs4WbOY3pCWXDhw0N8x1NenNzm2EnNLkLkk7J2SdxAkDSbb6ftT+UQ==
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/language-tags/-/language-tags-1.0.6.tgz#c087cc42cd92eb71f0925e9e271d4f8be5a93430"
+  integrity sha512-HNkaCgM8wZgE/BZACeotAAgpL9FUjEnhgF0FVQMIgH//zqTPreLYMb3rWYkYAqPoF75Jwuycp1da7uz66cfFQg==
   dependencies:
-    language-subtag-registry "~0.3.2"
+    language-subtag-registry "^0.3.20"
 
 levn@^0.4.1:
   version "0.4.1"
