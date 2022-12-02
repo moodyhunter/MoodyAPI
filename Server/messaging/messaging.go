@@ -160,16 +160,19 @@ func (m *TelegramBot) ServeBotCommand() {
 			case "色", "color":
 				onColorAction(&msg, args)
 			case "pin":
-				pinChatMessageConfig := tgbotapi.PinChatMessageConfig{
-					ChatID:              update.Message.Chat.ID,
-					MessageID:           update.Message.MessageID,
-					DisableNotification: true,
-				}
-				_, err := m.botApi.Request(pinChatMessageConfig)
-				if err != nil {
-					msg.Text = err.Error()
+				if update.Message.ReplyToMessage != nil {
+					_, err := m.botApi.Request(tgbotapi.PinChatMessageConfig{
+						ChatID:              update.Message.Chat.ID,
+						MessageID:           update.Message.ReplyToMessage.MessageID,
+						DisableNotification: true,
+					})
+					if err != nil {
+						msg.Text = err.Error()
+					} else {
+						msg.Text = "好！"
+					}
 				} else {
-					msg.Text = "好！"
+					msg.Text = "坏！"
 				}
 			default:
 				continue
