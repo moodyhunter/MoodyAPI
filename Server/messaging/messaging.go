@@ -169,7 +169,7 @@ func (m *TelegramBot) ServeBotCommand() {
 					if err != nil {
 						msg.Text = err.Error()
 					} else {
-						msg.Text = "好！"
+						msg.Text = "" // empty message
 					}
 				} else {
 					msg.Text = "坏！"
@@ -179,10 +179,12 @@ func (m *TelegramBot) ServeBotCommand() {
 			}
 		}
 
-		msg.Text = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, msg.Text)
+		if msg.Text != "" {
+			msg.Text = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, msg.Text)
 
-		if _, err := m.botApi.Send(msg); err != nil {
-			log.Println(err)
+			if _, err := m.botApi.Send(msg); err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }
