@@ -172,7 +172,7 @@ func (m *TelegramBot) ServeBotCommand() {
 						msg.Text = "" // empty message
 					}
 				} else {
-					msg.Text = "坏！"
+					msg.Text = "不行"
 				}
 			default:
 				continue
