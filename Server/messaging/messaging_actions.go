@@ -67,39 +67,39 @@ func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
 	if len(color) == 1 {
 		if color[0] == "暖白" || color[0] == "warm" || color[0] == "ww" || color[0] == "warmwhite" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Warmwhite{Warmwhite: true}
-			msg.Text = "暖白"
+			msg.Text = "嗯"
 		} else if color[0] == "red" || color[0] == "红" || color[0] == "r" || color[0] == "R" || color[0] == "红色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 0, Blue: 0}}
-			msg.Text = "红"
+			msg.Text = "嗯"
 		} else if color[0] == "green" || color[0] == "绿" || color[0] == "g" || color[0] == "G" || color[0] == "绿色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 255, Blue: 0}}
-			msg.Text = "绿"
+			msg.Text = "嗯"
 		} else if color[0] == "blue" || color[0] == "蓝" || color[0] == "b" || color[0] == "B" || color[0] == "蓝色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 0, Blue: 255}}
-			msg.Text = "蓝"
+			msg.Text = "嗯"
 		} else if color[0] == "yellow" || color[0] == "黄" || color[0] == "y" || color[0] == "Y" || color[0] == "黄色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 0}}
-			msg.Text = "黄！"
+			msg.Text = "嗯"
 		} else if color[0] == "cyan" || color[0] == "青" || color[0] == "c" || color[0] == "C" || color[0] == "青色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 255, Blue: 255}}
-			msg.Text = "青色"
+			msg.Text = "嗯"
 		} else if color[0] == "purple" || color[0] == "紫" || color[0] == "p" || color[0] == "P" || color[0] == "紫色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 0, Blue: 255}}
-			msg.Text = "紫"
+			msg.Text = "嗯"
 		} else if color[0] == "black" || color[0] == "黑" || color[0] == "k" || color[0] == "K" || color[0] == "黑色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 0, Green: 0, Blue: 0}}
-			msg.Text = "黑灯（？）"
+			msg.Text = "有病吧"
 		} else if color[0] == "white" || color[0] == "白" || color[0] == "w" || color[0] == "W" || color[0] == "白色" {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 255}}
-			msg.Text = "白色"
+			msg.Text = "嗯"
 		} else if color[0] == "色" {
 			msg.Text = "嗯"
 		} else if strings.HasPrefix(color[0], "#") {
 			c, err := common.ParseHexColorFast(color[0])
 			if c.B == 0 && c.G == 0 && c.R == 0 {
-				msg.Text = "黑的"
+				msg.Text = "有病吧"
 			} else if c.B == 255 && c.G == 255 && c.R == 255 {
-				msg.Text = "白色"
+				msg.Text = "嗯"
 			} else {
 				msg.Text = ""
 			}
@@ -141,7 +141,7 @@ func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
 				Blue:  uint32(blue),
 			},
 		}
-		msg.Text = "灯: " + color[0] + ", " + color[1] + ", " + color[2]
+		msg.Text = "嗯知道了，" + color[0] + ", " + color[1] + ", " + color[2]
 	}
 
 	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
