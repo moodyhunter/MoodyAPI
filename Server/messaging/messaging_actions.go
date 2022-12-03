@@ -93,15 +93,15 @@ func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
 			api.APIServer.LastLightState.Mode = &light.LightState_Colored{Colored: &light.LightColor{Red: 255, Green: 255, Blue: 255}}
 			msg.Text = "白色"
 		} else if color[0] == "色" {
-			msg.Text = "好！"
+			msg.Text = "嗯"
 		} else if strings.HasPrefix(color[0], "#") {
 			c, err := common.ParseHexColorFast(color[0])
 			if c.B == 0 && c.G == 0 && c.R == 0 {
-				msg.Text = "黑灯（？）"
+				msg.Text = "黑的"
 			} else if c.B == 255 && c.G == 255 && c.R == 255 {
 				msg.Text = "白色"
 			} else {
-				msg.Text = "好！"
+				msg.Text = ""
 			}
 			if err != nil {
 				msg.Text = "颜色格式不对：" + err.Error()
@@ -114,8 +114,7 @@ func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
 			return
 		}
 	} else if len(color) != 3 {
-		msg.Text = "不够色"
-		return
+		msg.Text = "不行"
 	} else {
 		red, err := strconv.Atoi(color[0])
 		if err != nil || red < 0 || red > 255 {

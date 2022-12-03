@@ -137,7 +137,7 @@ func (m *TelegramBot) ServeBotCommand() {
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		msg.ReplyToMessageID = update.Message.MessageID
-		msg.Text = "`" + command + "` 是什么？"
+		msg.Text = "不认识 `" + command + "`"
 		msg.ParseMode = "markdownv2"
 
 		if update.Message.Chat.ID != m.safeChatId && update.Message.Chat.ID != m.safeUserId {
@@ -147,8 +147,8 @@ func (m *TelegramBot) ServeBotCommand() {
 			case "ping":
 				msg.Text = "🏓"
 			case "status":
-				msg.Text = "Server Revision: `" + common.ServerRevision + "`\n"
-				msg.Text += fmt.Sprintf("Uptime: `%d` minute\\(s\\)", int(time.Since(common.StartTime).Minutes()))
+				msg.Text = "`" + common.ServerRevision + "`\n"
+				msg.Text += fmt.Sprintf("`%d` 分钟了", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
 			case "light_off", "关灯":
