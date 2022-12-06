@@ -21,7 +21,7 @@
         "@mui/x-data-grid": "5.17.14",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
-        "dayjs": "1.11.6",
+        "dayjs": "1.11.7",
         "jotai": "1.11.0",
         "long": "5.2.1",
         "minimist": "1.2.7",
