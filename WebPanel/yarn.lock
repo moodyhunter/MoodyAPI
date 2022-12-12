@@ -3115,10 +3115,10 @@ ts-proto-descriptors@1.7.1:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@1.135.2:
-  version "1.135.2"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.135.2.tgz#d67630035d6e38eb0f2df2abd94976a1f2e6cdf6"
-  integrity sha512-Zk/uNZ5Ffe6DSc29Rzd7Eq+uRdsc6HrM0102GD0ewfEX07GEPjrAAui0Lf2LmjwdIP9HLNPVzGmaZTh6wz3JVQ==
+ts-proto@1.135.3:
+  version "1.135.3"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.135.3.tgz#f2fe6e48456dae4c511809c0595e6e4ab1c90362"
+  integrity sha512-MQhRh018zZU4jNf7VocXih8SqFycqQGNxW5PGwWIUweH3P7j55MqrmUARr8eKWLkeU45sCZiWSp0B46LcoyDww==
   dependencies:
     "@types/object-hash" "^1.3.0"
     case-anything "^2.1.10"
