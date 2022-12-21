@@ -8,7 +8,7 @@ version = "0.1.0"
 chrono = "0.4.23"
 notify-rust = "4"
 platform-dirs = "0.3.0"
-prost = "0.11.3"
+prost = "0.11.5"
 prost-types = "0.11.2"
 rust-ini = "0.18.0"
 tokio = {version = "1.23.0", features = ["rt-multi-thread"]}
