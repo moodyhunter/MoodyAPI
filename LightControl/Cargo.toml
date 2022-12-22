@@ -10,7 +10,7 @@ btleplug = {version = "0.10", features = ["serde"]}
 chrono = "0.4.23"
 platform-dirs = "0.3.0"
 prost = "0.11.5"
-prost-types = "0.11.2"
+prost-types = "0.11.5"
 rand = "0.8.5"
 rust-ini = "0.18.0"
 tokio = {version = "1.23.0", features = ["rt-multi-thread"]}
