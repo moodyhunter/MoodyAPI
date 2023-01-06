@@ -39,24 +39,13 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 
 [[package]]
 name = "async-broadcast"
-version = "0.4.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d26004fe83b2d1cd3a97609b21e39f9a31535822210fe83205d2ce48866ea61"
+checksum = "1b19760fa2b7301cf235360ffd6d3558b1ed4249edd16d6cca8d690cee265b95"
 dependencies = [
  "event-listener",
  "futures-core",
  "parking_lot",
-]
-
-[[package]]
-name = "async-channel"
-version = "1.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf46fee83e5ccffc220104713af3292ff9bc7c64c7de289f66dae8e38d826833"
-dependencies = [
- "concurrent-queue",
- "event-listener",
- "futures-core",
 ]
 
 [[package]]
@@ -1164,9 +1153,9 @@ checksum = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de"
 
 [[package]]
 name = "prettyplease"
-version = "0.1.22"
+version = "0.1.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c8992a85d8e93a28bdf76137db888d3874e3b230dee5ed8bebac4c9f7617773"
+checksum = "e97e3215779627f01ee256d2fad52f3d95e8e1c11e9fc6fd08f7cd455d5d5c78"
 dependencies = [
  "proc-macro2",
  "syn",
@@ -1757,9 +1746,9 @@ checksum = "2e153e1f1acaef8acc537e68b44906d2db6436e2b35ac2c6b42640fff91f00fd"
 
 [[package]]
 name = "tokio"
-version = "1.23.1"
+version = "1.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38a54aca0c15d014013256222ba0ebed095673f89345dd79119d912eb561b7a8"
+checksum = "7125661431c26622a80ca5051a2f936c9a678318e0351007b0cc313143024e5c"
 dependencies = [
  "autocfg",
  "bytes",
@@ -2331,12 +2320,11 @@ checksum = "f40009d85759725a34da6d89a94e63d7bdc50a862acf0dbc7c8e488f1edcb6f5"
 
 [[package]]
 name = "zbus"
-version = "3.6.2"
+version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "938ea6da98c75c2c37a86007bd17fd8e208cbec24e086108c87ece98e9edec0d"
+checksum = "379d587c0ccb632d1179cf44082653f682842f0535f0fdfaefffc34849cc855e"
 dependencies = [
  "async-broadcast",
- "async-channel",
  "async-executor",
  "async-io",
  "async-lock",
@@ -2370,9 +2358,9 @@ dependencies = [
 
 [[package]]
 name = "zbus_macros"
-version = "3.6.2"
+version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45066039ebf3330820e495e854f8b312abb68f0a39e97972d092bd72e8bb3e8e"
+checksum = "66492a2e90c0df7190583eccb8424aa12eb7ff06edea415a4fff6688fae18cf8"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -2383,9 +2371,9 @@ dependencies = [
 
 [[package]]
 name = "zbus_names"
-version = "2.4.0"
+version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c737644108627748a660d038974160e0cbb62605536091bdfa28fd7f64d43c8"
+checksum = "f34f314916bd89bdb9934154627fab152f4f28acdda03e7c4c68181b214fe7e3"
 dependencies = [
  "serde",
  "static_assertions",
