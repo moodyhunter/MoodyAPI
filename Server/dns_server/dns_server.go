@@ -43,17 +43,16 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 		hostname = strings.TrimSuffix(hostname, ".")
 
 		typeString := dns.TypeToString[q.Qtype]
+		soa := &dns.SOA{
+			Hdr:    dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 3600},
+			Ns:     d.baseDomain,
+			Mbox:   "root." + d.baseDomain,
+			Serial: 20220509, Refresh: 7200, Retry: 3600, Expire: 86400, Minttl: 3600,
+		}
 
 		switch typeString {
 		case "SOA":
-			soa := &dns.SOA{
-				Hdr:    dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeSOA, Class: dns.ClassINET, Ttl: 3600},
-				Ns:     d.baseDomain,
-				Mbox:   "root." + d.baseDomain,
-				Serial: 20220509, Refresh: 7200, Retry: 3600, Expire: 86400, Minttl: 3600,
-			}
 			msg.Answer = append(msg.Answer, soa)
-
 		case "NS":
 			ns := &dns.NS{
 				Hdr: dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: 3600},
@@ -65,14 +64,8 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 			record, err := db.QueryDnsRecordWithType(hostname, typeString)
 			if err != nil {
 				println("cannot find dns record for", "\""+q.Name+"\"", "of type", "\""+typeString+"\":", err.Error())
-
-				// return nxDomain
-				msg.Rcode = dns.RcodeNameError
-				ans := &dns.NS{
-					Hdr: dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: 3600},
-					Ns:  d.baseDomain,
-				}
-				msg.Ns = append(msg.Ns, ans)
+				msg.Ns = append(msg.Ns, soa)
+				msg.Authoritative = true
 				break
 			}
 
