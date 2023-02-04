@@ -26,8 +26,8 @@ CREATE TABLE notifications (
     content     VARCHAR     NOT NULL,
     time        TIMESTAMP   NOT NULL,
     urgency     INTEGER     NOT NULL    DEFAULT 0,
-    private     BOOLEAN     NOT NULL    DEFAULT FALSE
-    icon        VARCHAR,
+    private     BOOLEAN     NOT NULL    DEFAULT FALSE,
+    icon        VARCHAR
 );
 
 CREATE TABLE dns (
