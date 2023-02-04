@@ -68,6 +68,11 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 
 				// return nxDomain
 				msg.Rcode = dns.RcodeNameError
+				ans := &dns.NS{
+					Hdr: dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: 3600},
+					Ns:  d.baseDomain,
+				}
+				msg.Ns = append(msg.Ns, ans)
 				break
 			}
 
