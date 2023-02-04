@@ -118,7 +118,7 @@ class Network:
 
             buffer += "PersistentKeepalive = 10\n"
 
-        print(buffer)
+        return buffer
 
 
 def load_network(network_name: str) -> Network:

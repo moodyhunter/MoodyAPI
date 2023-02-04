@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from genericpath import isdir
 import os
 import shutil
@@ -61,6 +62,10 @@ def main():
     for node_name in chosen_nodes:
         P.sub_progress("Generated configuration for node '{}'", [node_name])
         text = network.generate_node_configuration(node_name)
+        print(text)
+
+        import pyqrcode
+        print(pyqrcode.create(text).terminal())
 
     pass
 
