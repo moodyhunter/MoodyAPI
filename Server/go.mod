@@ -26,7 +26,7 @@ require (
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
-	github.com/uptrace/bun/dialect/pgdialect v1.1.9
+	github.com/uptrace/bun/dialect/pgdialect v1.1.11
 	github.com/uptrace/bun/driver/pgdriver v1.1.9
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/sys v0.2.0 // indirect
