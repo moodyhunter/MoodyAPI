@@ -20,7 +20,7 @@ jobs:
         config:
           - {
               builder_name: "Server",
-              builder: azure,
+              builder: self-hosted,
               build_path: "/mnt/disk/moodyapi",
               distribute: true,
             }
