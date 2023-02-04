@@ -17,24 +17,24 @@ jobs:
 
       - name: Copy to Working Directory
         run: |
-          rm -rf /mnt/disk/moodyapi/proto/ || true
-          cp -rv ./proto/ /mnt/disk/moodyapi/
+          rm -rf /mnt/moodyapi/proto/ || true
+          cp -rv ./proto/ /mnt/moodyapi/
           rsync -aP \
             --exclude='.git' \
             --exclude='.env' \
             --exclude='.next' \
             --exclude='node_modules' \
             --delete \
-            ./WebPanel/ /mnt/disk/moodyapi/WebPanel
+            ./WebPanel/ /mnt/moodyapi/WebPanel
 
       - name: Build
         run: |
-          cd /mnt/disk/moodyapi/WebPanel/
+          cd /mnt/moodyapi/WebPanel/
           export NODE_OPTIONS=--max_old_space_size=10240
           yarn config set ignore-engines true
           yarn install
           yarn lint
-          cp /bin/protoc /mnt/disk/moodyapi/WebPanel/node_modules/grpc-tools/bin/protoc
+          cp /bin/protoc /mnt/moodyapi/WebPanel/node_modules/grpc-tools/bin/protoc
           yarn build
 
       - name: Restart Service
