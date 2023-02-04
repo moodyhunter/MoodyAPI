@@ -65,6 +65,9 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 			record, err := db.QueryDnsRecordWithType(hostname, typeString)
 			if err != nil {
 				println("cannot find dns record for", "\""+q.Name+"\"", "of type", "\""+typeString+"\":", err.Error())
+
+				// return nxDomain
+				msg.Rcode = dns.RcodeNameError
 				break
 			}
 
