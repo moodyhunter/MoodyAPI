@@ -65,7 +65,8 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 			if err != nil {
 				println("cannot find dns record for", "\""+q.Name+"\"", "of type", "\""+typeString+"\":", err.Error())
 				msg.Ns = append(msg.Ns, soa)
-				msg.Authoritative = true
+				// set the error code to "name error"
+				msg.Rcode = dns.RcodeNameError
 				break
 			}
 
