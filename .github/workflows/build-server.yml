@@ -26,5 +26,5 @@ jobs:
       - name: Deploy
         run: |
           sudo /usr/bin/systemctl stop moodyapi-server.service
-          cp -v ./Server/apiserver /mnt/disk/moodyapi/apiserver
+          cp -v ./Server/apiserver /mnt/moodyapi/apiserver
           sudo /usr/bin/systemctl start moodyapi-server.service
