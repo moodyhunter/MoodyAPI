@@ -8,12 +8,13 @@ const CredentialDescriptor = {
 };
 
 // Need env:NEXTAUTH_SECRET
+// Need env:PANEL_BASE_URL
 
 export default NextAuth({
     pages: {
-        signIn: '/user/login',
-        error: `/user/login`,
-        signOut: '/user/logout'
+        signIn: process.env["PANEL_BASE_URL"] + '/user/login',
+        error: process.env["PANEL_BASE_URL"] + '/user/login',
+        signOut: process.env["PANEL_BASE_URL"] + '/user/logout'
     },
     secret: process.env["NEXTAUTH_SECRET"],
     jwt: { secret: process.env["NEXTAUTH_SECRET"] },
