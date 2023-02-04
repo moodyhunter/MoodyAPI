@@ -14,7 +14,7 @@ export type AlertDialogProps = {
 
 export const openAtom = atom(false);
 export const dialogPropsAtom = atom<AlertDialogProps | null>(null);
-export const openDialogAtom = atom<null, AlertDialogProps>(
+export const openDialogAtom = atom<null, AlertDialogProps[], void>(
     null,
     (_, set, by) => {
         set(dialogPropsAtom, by);
@@ -22,7 +22,10 @@ export const openDialogAtom = atom<null, AlertDialogProps>(
     }
 );
 
-export const closeDialogAtom = atom<null, never>(null, (_, set) => {
-    set(dialogPropsAtom, null);
-    set(openAtom, false);
-});
+export const closeDialogAtom = atom<null, never, void>(
+    null,
+    (_, set) => {
+        set(dialogPropsAtom, null);
+        set(openAtom, false);
+    }
+);
