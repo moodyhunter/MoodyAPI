@@ -24,7 +24,7 @@
         "dayjs": "1.11.7",
         "jotai": "2.0.1",
         "long": "5.2.1",
-        "minimist": "1.2.7",
+        "minimist": "1.2.8",
         "next": "13.1.6",
         "next-auth": "4.19.2",
         "nextjs-progressbar": "0.0.16",
