@@ -34,6 +34,7 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 	msg.SetReply(reply)
 
 	for _, q := range reply.Question {
+		q.Name = strings.ToLower(q.Name)
 		if !strings.HasSuffix(q.Name, d.baseDomain) {
 			println("requested domain", q.Name, "doesn't match the provided baseDomain")
 			continue
