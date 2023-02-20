@@ -16,7 +16,7 @@
         "@emotion/styled": "11.10.6",
         "@hello-pangea/color-picker": "^3.2.2",
         "@mui/icons-material": "5.11.9",
-        "@mui/material": "5.11.9",
+        "@mui/material": "5.11.10",
         "@mui/system": "5.11.9",
         "@mui/x-data-grid": "5.17.24",
         "@types/bcrypt": "5.0.0",
