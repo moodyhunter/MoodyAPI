@@ -2539,10 +2539,10 @@ nice-grpc-common@^2.0.1:
   dependencies:
     ts-error "^1.0.6"
 
-nice-grpc@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-2.1.0.tgz#ee2546db9aed6fde55972768c1adcc0925f9f06f"
-  integrity sha512-O2ShDuvZhFC8yo1jtP3EpmnnlCxtDSoaFrBCSDGTDka6sO4SbmHTJdZDqsi61+l4dyXUPUNilKo5e1z7cMCzAw==
+nice-grpc@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-2.1.1.tgz#e40e9e94000cceaa1bce7eaeecf48cb184ecfc1e"
+  integrity sha512-AkY+mY1zBzAFyGa7ucxdW3EyV2mA0tRLqWwqouWJk8iLz6rXmE/SuQg+9lGQgBjPwQvsj2an/ZaUlstGxr3flg==
   dependencies:
     "@grpc/grpc-js" "^1.7.3"
     abort-controller-x "^0.4.0"
