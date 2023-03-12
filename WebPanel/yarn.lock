@@ -2453,9 +2453,9 @@ minipass@^3.0.0:
     yallist "^4.0.0"
 
 minipass@^4.0.0:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.4.tgz#7d0d97434b6a19f59c5c3221698b48bbf3b2cd06"
-  integrity sha512-lwycX3cBMTvcejsHITUgYj6Gy6A7Nh4Q6h9NP4sTHY1ccJlC7yKzDmiShEHsJ16Jf1nKGDEaiHxiltsJEvk0nQ==
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.5.tgz#9e0e5256f1e3513f8c34691dd68549e85b2c8ceb"
+  integrity sha512-+yQl7SX3bIT83Lhb4BVorMAHVuqsskxRdlmO9kTpyukp8vsm2Sn/fUOV9xlnG8/a5JsypJzap21lz/y3FBMJ8Q==
 
 minizlib@^2.1.1:
   version "2.1.2"
@@ -2551,10 +2551,10 @@ nice-grpc-common@^2.0.1:
   dependencies:
     ts-error "^1.0.6"
 
-nice-grpc@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-2.1.1.tgz#e40e9e94000cceaa1bce7eaeecf48cb184ecfc1e"
-  integrity sha512-AkY+mY1zBzAFyGa7ucxdW3EyV2mA0tRLqWwqouWJk8iLz6rXmE/SuQg+9lGQgBjPwQvsj2an/ZaUlstGxr3flg==
+nice-grpc@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/nice-grpc/-/nice-grpc-2.1.2.tgz#83f4199740c108d9cf5f970a23e07d7ad3b01c54"
+  integrity sha512-wzaj4D0gr6RbNDSPJi0mkiUgrTrU2yCNQulvoZS2pXomlG4UQ00VmwviXTPt3Ndps5u31HEKAIHUs07iCMtAgQ==
   dependencies:
     "@grpc/grpc-js" "^1.7.3"
     abort-controller-x "^0.4.0"
@@ -3246,9 +3246,9 @@ ts-error@^1.0.6:
   integrity sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==
 
 ts-poet@^6.2.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/ts-poet/-/ts-poet-6.3.0.tgz#954f2a6923ccaa2d4cdf55979f2e991d440e30a3"
-  integrity sha512-RjS37SnXMa9En8xvQf//+rvNNNCB7x2TKP/ZfsiQFidtfN3A6FYgPDESe4r7YA3F663XO2ozx+2buQItGOLMxg==
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/ts-poet/-/ts-poet-6.4.1.tgz#e68d314a07cf9c0d568a3bfd87023ec91ff77964"
+  integrity sha512-AjZEs4h2w4sDfwpHMxQKHrTlNh2wRbM5NRXmLz0RiH+yPGtSQFbe9hBpNocU8vqVNgfh0BIOiXR80xDz3kKxUQ==
   dependencies:
     dprint-node "^1.0.7"
 
@@ -3260,10 +3260,10 @@ ts-proto-descriptors@1.7.1:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@1.141.0:
-  version "1.141.0"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.141.0.tgz#9ce22a72ab766ef47baf6d7fa2bd6e77d951aa04"
-  integrity sha512-CTV1n5XyH372OnllX46KPsxQuTdiwv+gtzrOpql0+Ng6rVtbdDA76M2RUC8rurLbpvqfNFAA6bpK2xva2xPUwQ==
+ts-proto@1.141.1:
+  version "1.141.1"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.141.1.tgz#ef84dc210b000682a1632ace69ae0422c51b20a4"
+  integrity sha512-1b7Ka6R96FvFZldHnYPTFy4rzwOo+OTpIP1mBFW0dDwq4WWtSkIVlZ+SokOQSC1TiccNshOJwQC9soVyWfQ7Zg==
   dependencies:
     "@types/object-hash" "^1.3.0"
     case-anything "^2.1.10"
