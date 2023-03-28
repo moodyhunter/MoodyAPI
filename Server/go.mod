@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/miekg/dns v1.1.51
+	github.com/miekg/dns v1.1.53
 	github.com/uptrace/bun v1.1.12
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
