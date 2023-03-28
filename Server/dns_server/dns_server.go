@@ -51,22 +51,26 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 			Serial: 20220509, Refresh: 7200, Retry: 3600, Expire: 86400, Minttl: 3600,
 		}
 
+		ns := &dns.NS{
+			Hdr: dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: 3600},
+			Ns:  d.baseDomain,
+		}
+
+		// set the AA flag to indicate that this is an authoritative answer
+		msg.Authoritative = true
+
 		switch typeString {
 		case "SOA":
 			msg.Answer = append(msg.Answer, soa)
 		case "NS":
-			ns := &dns.NS{
-				Hdr: dns.RR_Header{Name: d.baseDomain, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: 3600},
-				Ns:  d.baseDomain,
-			}
 			msg.Answer = append(msg.Answer, ns)
-
 		case "A", "AAAA", "CNAME":
 			record, err := db.QueryDnsRecordWithType(hostname, typeString)
+
 			if err != nil {
-				println("cannot find dns record for", "\""+q.Name+"\"", "of type", "\""+typeString+"\":", err.Error())
+				log.Printf("cannot find dns record for '%s' of type '%s', error: %s", q.Name, typeString, err.Error())
 				msg.Ns = append(msg.Ns, soa)
-				// set the error code to "name error"
+				msg.Ns = append(msg.Ns, ns)
 				msg.Rcode = dns.RcodeNameError
 				break
 			}
@@ -78,7 +82,6 @@ func (d *DnsServer) handleRequest(writer dns.ResponseWriter, reply *dns.Msg) {
 					Hdr: dns.RR_Header{Name: q.Name, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: d.recordTtl},
 					A:   net.ParseIP(record),
 				}
-
 			case "AAAA":
 				ans = &dns.AAAA{
 					Hdr:  dns.RR_Header{Name: q.Name, Rrtype: dns.TypeAAAA, Class: dns.ClassINET, Ttl: d.recordTtl},
