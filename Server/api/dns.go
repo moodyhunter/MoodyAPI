@@ -16,8 +16,12 @@ func (s *MoodyAPIServer) CreateDNSRecord(ctx context.Context, request *dns.Creat
 
 	common.LogClientOperation(ctx, client, `creates dns record`)
 
-	// TODO
-	return nil, nil
+	err = db.CreateDNSRecord(request.Record.Name, request.Record.Type, request.Record.Ip)
+	if err != nil {
+		return &dns.CreateDNSRecordResponse{Success: false}, err
+	}
+
+	return &dns.CreateDNSRecordResponse{Success: true}, nil
 }
 
 func (s *MoodyAPIServer) DeleteDNSRecord(ctx context.Context, request *dns.DeleteDNSRecordRequest) (*dns.DeleteDNSRecordResponse, error) {
@@ -28,8 +32,12 @@ func (s *MoodyAPIServer) DeleteDNSRecord(ctx context.Context, request *dns.Delet
 
 	common.LogClientOperation(ctx, client, `deletes dns record`)
 
-	// TODO
-	return nil, nil
+	err = db.DeleteDNSRecord(request.Name, request.Type)
+	if err != nil {
+		return &dns.DeleteDNSRecordResponse{Success: false}, err
+	}
+
+	return &dns.DeleteDNSRecordResponse{Success: true}, nil
 }
 
 func (s *MoodyAPIServer) ListDNSRecords(ctx context.Context, request *dns.ListDNSRecordsRequest) (*dns.ListDNSRecordsResponse, error) {
@@ -40,8 +48,12 @@ func (s *MoodyAPIServer) ListDNSRecords(ctx context.Context, request *dns.ListDN
 
 	common.LogClientOperation(ctx, client, `lists dns record`)
 
-	// TODO
-	return nil, nil
+	data, err := db.ListDNSRecords()
+	if err != nil {
+		return &dns.ListDNSRecordsResponse{Entries: []*dns.DNSRecord{}}, err
+	}
+
+	return &dns.ListDNSRecordsResponse{Entries: data}, nil
 }
 
 func (s *MoodyAPIServer) UpdateDNSRecord(ctx context.Context, request *dns.UpdateDNSRecordRequest) (*dns.UpdateDNSRecordResponse, error) {
@@ -52,6 +64,10 @@ func (s *MoodyAPIServer) UpdateDNSRecord(ctx context.Context, request *dns.Updat
 
 	common.LogClientOperation(ctx, client, `updates dns record`)
 
-	// TODO
-	return nil, nil
+	err = db.UpdateDNSRecord(request.Record.Name, request.Record.Type, request.Record.Ip)
+	if err != nil {
+		return &dns.UpdateDNSRecordResponse{Success: false}, err
+	}
+
+	return &dns.UpdateDNSRecordResponse{Success: true}, nil
 }
