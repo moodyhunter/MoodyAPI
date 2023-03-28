@@ -7,7 +7,7 @@ require (
 	github.com/miekg/dns v1.1.51
 	github.com/uptrace/bun v1.1.12
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.30.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
