@@ -51,13 +51,10 @@ func DeleteDNSRecord(hostname string, dnstype string) error {
 		return err
 	}
 
-	clientORM := dns.DNSRecordORM{
-		Name: hostname,
-		Type: dnstype,
-	}
-
 	_, err = database.NewDelete().
-		Model(&clientORM).
+		Model(&dns.DNSRecordORM{}).
+		Where("hostname = ?", hostname).
+		Where("type = ?", dnstype).
 		Exec(context.Background())
 
 	return err
