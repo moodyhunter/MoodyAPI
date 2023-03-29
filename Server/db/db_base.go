@@ -80,6 +80,10 @@ func UpdateClientLastSeen(ctx context.Context, client *common.APIClient) (*commo
 	}
 
 	newClient, err := GetClientByID(ctx, client.Id)
+	if err != nil {
+		return client, err
+	}
+
 	newClient.LastSeen = timestamppb.Now()
 
 	err = UpdateClient(ctx, newClient)

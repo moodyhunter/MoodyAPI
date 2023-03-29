@@ -124,7 +124,7 @@ func DeleteNotificationChannel(ctx context.Context, channelId int64) (*notificat
 	channelORM := &notifications.NotificationChannelORM{}
 
 	result, err := database.NewDelete().
-		Model(&channelORM).
+		Model(channelORM).
 		Where("id = ?", channelId).
 		Exec(ctx)
 

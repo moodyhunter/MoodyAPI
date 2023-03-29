@@ -150,6 +150,10 @@ func DeleteClient(ctx context.Context, client *common.APIClient) error {
 		WherePK().
 		Exec(ctx)
 
+	if err != nil {
+		return err
+	}
+
 	r, err := result.RowsAffected()
 	if err != nil {
 		return err
