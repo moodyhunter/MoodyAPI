@@ -30,8 +30,12 @@ func (s *MoodyAPIServer) DeleteNotificationChannel(ctx context.Context, request 
 	}
 
 	common.LogClientOperation(ctx, client, `deletes notification channel`)
-	db.DeleteNotificationChannel(ctx, request.ChannelID)
-	return &notifications.DeleteChannelResponse{}, nil
+	channel, err := db.DeleteNotificationChannel(ctx, request.ChannelID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &notifications.DeleteChannelResponse{ChannelID: channel.Id}, nil
 }
 
 func (s *MoodyAPIServer) ListNotificationChannel(ctx context.Context, request *notifications.ListChannelRequest) (*notifications.ListChannelResponse, error) {
