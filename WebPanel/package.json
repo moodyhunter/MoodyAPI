@@ -18,7 +18,7 @@
         "@mui/icons-material": "5.11.11",
         "@mui/material": "5.11.15",
         "@mui/system": "5.11.15",
-        "@mui/x-data-grid": "6.0.3",
+        "@mui/x-data-grid": "6.0.4",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
         "dayjs": "1.11.7",
@@ -42,6 +42,6 @@
         "eslint-config-next": "13.2.4",
         "grpc-tools": "1.12.4",
         "ts-proto": "1.145.0",
-        "typescript": "5.0.2"
+        "typescript": "5.0.3"
     }
 }
