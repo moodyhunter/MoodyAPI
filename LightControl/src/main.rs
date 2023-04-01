@@ -43,8 +43,8 @@ async fn handle_light_event(
                 fastcon::BroadcastType::TimerUploadResponse => {
                     println!("Timer upload response");
                 }
-                fastcon::BroadcastType::DeviceAnnouncement => {
-                    println!("Device announcement");
+                fastcon::BroadcastType::DeviceAnnouncement(device) => {
+                    println!("Device announcement: {:?}", device);
                 }
             }
 
