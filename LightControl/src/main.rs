@@ -1,7 +1,10 @@
 mod fastcon;
 
 use bluer::{Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
+use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
 use futures::{stream::SelectAll, StreamExt};
+
+use crate::fastcon::command_wrapper::single_on_off_command;
 
 const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
 const MY_MANUFACTURER_DATA_KEY: u16 = 0xfff0;
@@ -31,19 +34,20 @@ async fn handle_light_event(
             };
 
             // parse the data
-            let Some(x) = fastcon::parse_ble_broadcast(data, &DEFAULT_PHONE_KEY) else {
+            let Some(x) = parse_ble_broadcast(data, &DEFAULT_PHONE_KEY) else {
                 println!("Invalid light bulb manufacturer data");
                 return Ok(());
             };
 
             match x {
-                fastcon::BroadcastType::HeartBeat(heartbeat) => {
+                BroadcastType::HeartBeat(heartbeat) => {
                     println!("Heartbeat: {:?}", heartbeat);
+                    single_on_off_command(heartbeat.short_addr, true);
                 }
-                fastcon::BroadcastType::TimerUploadResponse => {
+                BroadcastType::TimerUploadResponse => {
                     println!("Timer upload response");
                 }
-                fastcon::BroadcastType::DeviceAnnouncement(device) => {
+                BroadcastType::DeviceAnnouncement(device) => {
                     println!("Device announcement: {:?}", device);
                 }
             }
