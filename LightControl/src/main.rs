@@ -1,180 +1,112 @@
-mod models;
+mod fastcon;
 
-use btleplug::{
-    api::{
-        Central, CharPropFlags, Characteristic, Manager as _, Peripheral as _, ScanFilter,
-        WriteType,
-    },
-    platform::{Adapter, Manager, Peripheral},
-};
-use core::panic;
-use ini::Ini;
-use models::{
-    light::{light_state::Mode, LightState},
-    moody_api::moody_api_service_client::MoodyApiServiceClient,
-};
-use platform_dirs::AppDirs;
-use std::{error::Error, str::FromStr, time::Duration};
-use tokio::time::sleep;
-use tonic::{transport::Channel, Request};
-use uuid::Uuid;
+use bluer::{Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
+use futures::{stream::SelectAll, StreamExt};
 
-use crate::models::{common::Auth, light::SubscribeLightRequest};
+const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
+const MY_MANUFACTURER_DATA_KEY: u16 = 0xfff0;
+const DEFAULT_PHONE_KEY: [u8; 4] = [0xA1, 0xA2, 0xA3, 0xA4];
 
-const FFD5: &str = "0000ffd5-0000-1000-8000-00805f9b34fb";
-const FFD9: &str = "0000ffd9-0000-1000-8000-00805f9b34fb";
+async fn query_all_device_properties(adapter: &Adapter, addr: Address) -> bluer::Result<()> {
+    let device = adapter.device(addr)?;
+    let props = device.all_properties().await?;
+    for prop in props {
+        println!("    {:?}", &prop);
+    }
+    Ok(())
+}
 
-async fn get_light(central: &Adapter) -> Peripheral {
-    for p in central.peripherals().await.unwrap() {
-        if p.properties()
-            .await
-            .unwrap()
-            .unwrap()
-            .local_name
-            .iter()
-            .any(|name| name.contains("Trione"))
-        {
-            return p;
+async fn handle_light_event(
+    _adapter: &Adapter,
+    ev: DeviceEvent,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let DeviceEvent::PropertyChanged(prop) = ev;
+
+    match prop {
+        DeviceProperty::Rssi(_) => Ok(()), // ignore RSSI, we don't care
+        DeviceProperty::ManufacturerData(dmap) => {
+            let Some(data) = dmap.get(&MY_MANUFACTURER_DATA_KEY) else {
+                println!("Invalid light bulb manufacturer data");
+                return Ok(());
+            };
+
+            // parse the data
+            let Some(x) = fastcon::parse_ble_broadcast(data, &DEFAULT_PHONE_KEY) else {
+                println!("Invalid light bulb manufacturer data");
+                return Ok(());
+            };
+
+            match x {
+                fastcon::BroadcastType::HeartBeat(heartbeat) => {
+                    println!("Heartbeat: {:?}", heartbeat);
+                }
+                fastcon::BroadcastType::TimerUploadResponse => {
+                    println!("Timer upload response");
+                }
+                fastcon::BroadcastType::DeviceAnnouncement => {
+                    println!("Device announcement");
+                }
+            }
+
+            Ok(())
+        }
+        other => {
+            println!("    Unhandled property: {:?}", other);
+            Ok(())
         }
     }
-    panic!("Could not find light");
 }
 
-async fn send_command(peripheral: &Peripheral, data: &Vec<u8>) -> Result<(), btleplug::Error> {
-    let cc = Characteristic {
-        service_uuid: Uuid::from_str(&FFD5).unwrap(),
-        uuid: Uuid::from_str(&FFD9).unwrap(),
-        properties: CharPropFlags::WRITE_WITHOUT_RESPONSE,
-    };
-    return peripheral
-        .write(&cc, &data, WriteType::WithoutResponse)
-        .await;
-}
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let session = bluer::Session::new().await?;
+    let adapter = session.default_adapter().await?;
+    println!(
+        "Discovering devices using Bluetooth adapter {}",
+        adapter.name()
+    );
+    adapter.set_powered(true).await?;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let adapter = Manager::new()
-        .await
-        .unwrap()
-        .adapters()
-        .await
-        .expect("NO ADAPTERS FOUND")
-        .into_iter()
-        .nth(0)
-        .expect("NO ADAPTERS FOUND");
-
-    adapter.start_scan(ScanFilter::default()).await?;
-    sleep(Duration::from_secs(5)).await;
-
-    let light = get_light(&adapter).await;
-    light.connect().await?;
-    light.discover_services().await?;
-    light.characteristics().iter().for_each(|c| {
-        println!(
-            "Found characteristic: {} {} {:?}",
-            c.service_uuid, c.uuid, c.properties
-        )
-    });
-
-    let dirs = AppDirs::new(Some("moodyapi"), false).unwrap();
-    let ini_path = dirs.config_dir.as_path().join("LightDaemon.ini");
-
-    let conf = if let Ok(ini_file) = Ini::load_from_file(ini_path.as_path()) {
-        ini_file
-    } else if let Ok(ini_file) = Ini::load_from_file("/etc/moodyapi/LightDaemon.ini") {
-        ini_file
-    } else {
-        panic!("Failed to locate configurations.");
-    };
-
-    let api_host = conf.general_section().get("Server").unwrap().to_string();
-    let client_id = conf.general_section().get("ClientID").unwrap().to_string();
-
-    let grpc_channel = Channel::from_shared(api_host.clone())?
-        .connect()
-        .await
-        .expect("Can't create a channel");
-
-    println!("Starting in notification client mode, listening for new notifications...");
+    let mut device_events = adapter.discover_devices().await?;
+    let mut light_change_events = SelectAll::new();
 
     loop {
-        let mut client = MoodyApiServiceClient::new(grpc_channel.clone());
-
-        let request = Request::new(SubscribeLightRequest {
-            auth: Some(Auth {
-                client_uuid: client_id.clone(),
-            }),
-            ..Default::default()
-        });
-
-        match client.subscribe_light_state_change(request).await {
-            Ok(stream) => {
-                let mut resp_stream = stream.into_inner();
-                loop {
-                    match resp_stream.message().await {
-                        Ok(Some(l)) => {
-                            println!("Received LightState: {:?}", l);
-                            match send_light_command(&light, l).await {
-                                Ok(_) => {}
-                                Err(e) => println!("Failed to send light command: {}", e),
-                            }
+        tokio::select! {
+            Some(de) = device_events.next() => {
+                match de {
+                    AdapterEvent::DeviceAdded(addr) => {
+                        if addr != MY_ADDRESS {
+                            continue;
                         }
-                        e => {
-                            println!("something went wrong: {:?}", e);
-                            sleep(Duration::from_secs(1)).await;
-                            break;
+
+                        println!("Device added: {addr}");
+                        let res = query_all_device_properties(&adapter, addr).await;
+                        if let Err(err) = res {
+                            println!("    Error: {}", &err);
                         }
+
+                        let device = adapter.device(MY_ADDRESS).expect("Error getting device");
+                        light_change_events.push(device.events().await?);
                     }
-                }
-            }
-            e => {
-                println!("something went wrong: {:?}", e);
-                sleep(Duration::from_secs(1)).await;
-            }
-        }
-
-        sleep(Duration::from_secs(10)).await;
-    }
-}
-
-async fn send_light_command(
-    light_dev: &Peripheral,
-    lightstate: LightState,
-) -> Result<(), btleplug::Error> {
-    let on_command = vec![0xcc, 0x23, 0x33];
-    let off_command = vec![0xcc, 0x24, 0x33];
-
-    if lightstate.on {
-        send_command(&light_dev, &on_command).await?;
-        let brightness = lightstate.brightness as u8;
-        match lightstate.mode {
-            Some(m) => match m {
-                Mode::Colored(color) => {
-                    let command = vec![
-                        0x56,
-                        color.red as u8,
-                        color.green as u8,
-                        color.blue as u8,
-                        brightness,
-                        0xf0,
-                        0xaa,
-                    ];
-                    send_command(&light_dev, &command).await?
-                }
-                Mode::Warmwhite(_) => {
-                    let command = vec![0x56, 0x00, 0x00, 0x00, brightness, 0x0F, 0xaa];
-                    send_command(&light_dev, &command).await?
+                    AdapterEvent::DeviceRemoved(addr) => {
+                        if addr != MY_ADDRESS {
+                            continue;
+                        }
+                        device_events = adapter.discover_devices().await?;
+                        println!("Light {addr} fell off the bus");
+                    }
+                    _ => (),
                 }
             },
-            None => {
-                // No mode set, default to warm white
-                let command = vec![0x56, 0x00, 0x00, 0x00, brightness, 0x0F, 0xaa];
-                send_command(&light_dev, &command).await?
+            Some(le) = light_change_events.next() => handle_light_event(&adapter, le).await.expect("Error handling light event"),
+            else => {
+                println!("No more events");
+                break;
             }
         }
-    } else {
-        send_command(&light_dev, &off_command).await?
     }
+
+    println!("Done");
 
     Ok(())
 }
