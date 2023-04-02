@@ -1,7 +1,7 @@
 #[derive(Debug, Clone)]
 pub struct HeartBeat {
     pub version: String,
-    pub short_addr: u32,
+    pub short_addr: i32,
     pub group_addr: u8,
 }
 
@@ -88,7 +88,7 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
                     // const int addr = (uint32_t) data_buf[5] | (*data_buf & 0xf) << 8;
                     // const int group_addr = data_buf[6];
 
-                    let addr = (content[1] as u32) | (high as u32) << 8;
+                    let addr = (content[1] as i32) | (high as i32) << 8;
                     let group_addr = content[2];
 
                     Some(BroadcastType::HeartBeat(HeartBeat {

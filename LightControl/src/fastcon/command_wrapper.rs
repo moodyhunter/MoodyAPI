@@ -1,3 +1,8 @@
+pub const DEFAULT_PHONE_KEY: [u8; 4] = [0xA1, 0xA2, 0xA3, 0xA4];
+
+const BLE_CMD_RETRY_CNT: i32 = 1;
+const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for a command
+
 enum SingleLightCommand {
     MaybeRGB,
     MaybeSetWhite,
@@ -146,11 +151,143 @@ fn generate_on_off_command(on: bool) -> Vec<u8> {
     )
 }
 
-fn send_single_control(addr: u32, data: Vec<u8>) {
-    todo!("send_single_control")
+/*
+void package_device_control(char device_id, char const *src_buf, uint64_t src_len, char *result)
+{
+    result[0] = (2 | ((int8_t) ((0xfffffff & (src_len + 1)) << 4)));
+    result[1] = device_id;
+    memcpy(&result[2], src_buf, src_len);
+}
+*/
+
+fn package_device_control(device_id: u8, src_buf: &[u8], src_len: usize, result: &mut [u8]) {
+    result[0] = (2 | ((0xfffffff & (src_len + 1)) << 4)) as u8;
+    result[1] = device_id;
+    result[2..src_len + 2].copy_from_slice(src_buf);
 }
 
-pub fn single_on_off_command(short_addr: u32, on: bool) {
+/*
+
+   public boolean sendCommand(int i, byte[] bArr, byte[] bArr2, int i2, int i3, boolean z, boolean z2, boolean z3, int i4)
+   {
+       return sendCommand(i, bArr, bArr2, i2, i3, z, bArr2 != null, 0, z2, z3, i4);
+   }
+
+   public boolean sendCommand(int i, byte[] bArr, byte[] bArr2, int i2, int i3, boolean z, int i4, boolean z2, boolean z3, int i5)
+   {
+       return sendCommand(i, bArr, bArr2, i2, i3, z, bArr2 != null, i4, z2, z3, i5);
+   }
+*/
+fn send_command_with_no_delay(
+    n: i32,
+    data: &[u8],
+    key: &[u8],
+    i2: i32,
+    i3: i32,
+    z: bool,
+    z2: bool,
+    z3: bool,
+    i4: i32,
+) -> bool {
+    send_command_with_delay_impl(n, data, key, i2, i3, z, key != &[], 0, z2, z3, i4)
+}
+
+fn send_command_with_delay(
+    n: i32,
+    data: &[u8],
+    key: &[u8],
+    retry_cnt: i32,
+    send_time: i32,
+    z: bool,
+    i4: i32,
+    z2: bool,
+    z3: bool,
+    i5: i32,
+) -> bool {
+    send_command_with_delay_impl(
+        n,
+        data,
+        key,
+        retry_cnt,
+        send_time,
+        z,
+        key != &[],
+        i4,
+        z2,
+        z3,
+        i5,
+    )
+}
+
+// public boolean sendCommand(int i, byte[] bArr, byte[] bArr2, int i2, int i3, boolean z, boolean z2, int i4, boolean z3, boolean z4, int i5)
+fn send_command_with_delay_impl(
+    n: i32,
+    data: &[u8],
+    key: &[u8],
+    i2: i32,
+    i3: i32,
+    z: bool,
+    has_key: bool,
+    delay: i32,
+    z3: bool,
+    z4: bool,
+    i5: i32,
+) -> bool {
+    if delay <= 0 {
+        // return do_send_command(n, data, key, i2, i3, z, has_key, z3, z4, i5);
+    }
+    false
+    /*
+    if (this.mEnable || System.currentTimeMillis() - this.mEnableWatchDog > 2000)
+    {
+        this.mEnable = false;
+        if (!doSendCommand(n, data, key, i2, i3, z, has_key, z3, z4, i5))
+        {
+            return false;
+        }
+        new Timer().schedule(new TimerTask() {
+            public void run()
+            {
+                boolean unused = BLEFastconHelper.this.mEnable = true;
+                long unused2 = BLEFastconHelper.this.mEnableWatchDog = System.currentTimeMillis();
+            }
+        }, (long) i4);
+        return true;
+    }
+    ELogUtils.m22w("jyq_music", "sendCommand throttle throw out.");
+    return false;
+    */
+}
+
+fn control_with_device(addr: i32, data: Vec<u8>, i2: i32) {
+    /*
+       byte[] parseStringToByte = data;
+       byte[] bArr = new byte[12];
+       BLEUtil.package_device_control(i, parseStringToByte, parseStringToByte.length, bArr);
+       return sendCommand(5, bArr, this.mPhoneKey, BLE_CMD_RETRY_CNT, BLE_CMD_SEND_TIME, true, i2, true, i > 256, i / 256);
+    */
+
+    let mut result_data = vec![0; 12];
+    package_device_control(addr as u8, &data, data.len(), &mut result_data);
+    send_command_with_delay(
+        5,
+        &result_data,
+        &DEFAULT_PHONE_KEY,
+        BLE_CMD_RETRY_CNT,
+        BLE_CMD_ADVERTISE_LENGTH,
+        true,
+        i2,
+        true,
+        addr > 256,
+        addr / 256,
+    );
+}
+
+fn send_single_control(addr: i32, data: Vec<u8>) {
+    control_with_device(addr, data, 0);
+}
+
+pub fn single_on_off_command(short_addr: i32, on: bool) {
     println!(
         "single_on_off_command: short_addr: {:04x}, on: {}",
         short_addr, on

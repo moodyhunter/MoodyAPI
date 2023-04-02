@@ -1,14 +1,22 @@
 mod fastcon;
 
-use bluer::{Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
-use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
+use std::{collections::BTreeMap, time::Duration};
+use tokio::{
+    io::{AsyncBufReadExt, BufReader},
+    time::{sleep, Interval},
+};
+
+use bluer::{adv::Advertisement, Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
+use fastcon::{
+    broadcast_parser::{parse_ble_broadcast, BroadcastType},
+    command_wrapper::DEFAULT_PHONE_KEY,
+};
 use futures::{stream::SelectAll, StreamExt};
 
 use crate::fastcon::command_wrapper::single_on_off_command;
 
 const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
 const MY_MANUFACTURER_DATA_KEY: u16 = 0xfff0;
-const DEFAULT_PHONE_KEY: [u8; 4] = [0xA1, 0xA2, 0xA3, 0xA4];
 
 async fn query_all_device_properties(adapter: &Adapter, addr: Address) -> bluer::Result<()> {
     let device = adapter.device(addr)?;
@@ -70,6 +78,46 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         adapter.name()
     );
     adapter.set_powered(true).await?;
+
+    println!(
+        "Advertising on Bluetooth adapter {} with address {}",
+        adapter.name(),
+        adapter.address().await?
+    );
+
+    let mut my_data: BTreeMap<u16, Vec<u8>> = BTreeMap::new();
+    my_data.insert(
+        0xFFF0,
+        vec![
+            0x6d, 0xb6, 0x43, 0x68, 0x93, 0x1d, 0x5d, 0x13, 0x07, 0x05, 0xa8, 0xaa, 0x87, 0x83,
+            0x91, 0xaf, 0xdd, 0x07, 0xbc, 0xf7, 0xcb, 0x6b, 0x67, 0x06,
+        ],
+    );
+
+    let le_advertisement = Advertisement {
+        advertisement_type: bluer::adv::Type::Peripheral,
+        manufacturer_data: my_data,
+        // advertisting_data: my_data,
+        min_interval: Some(Duration::from_millis(100)),
+        max_interval: Some(Duration::from_millis(200)),
+        // duration: Some(Duration::from_secs(100)),
+        discoverable: Some(true),
+        // local_name: Some("SlowCon".to_string()),
+        ..Default::default()
+    };
+    println!("{:?}", &le_advertisement);
+    let handle = adapter.advertise(le_advertisement).await?;
+
+    println!("Press enter to quit");
+    let stdin = BufReader::new(tokio::io::stdin());
+    let mut lines = stdin.lines();
+    let _ = lines.next_line().await;
+
+    println!("Removing advertisement");
+    drop(handle);
+    sleep(Duration::from_secs(1)).await;
+
+    return Ok(());
 
     let mut device_events = adapter.discover_devices().await?;
     let mut light_change_events = SelectAll::new();
