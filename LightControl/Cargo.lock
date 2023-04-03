@@ -715,6 +715,8 @@ dependencies = [
  "bluer",
  "chrono",
  "futures",
+ "num-derive",
+ "num-traits",
  "platform-dirs",
  "prost",
  "prost-types",
