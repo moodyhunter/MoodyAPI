@@ -97,8 +97,8 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
                         group_addr,
                     }))
                 }
-                content_type => {
-                    println!("Unknown content type: {}", content_type);
+                unknown => {
+                    println!("Unknown content type: {}", unknown);
                     None
                 }
             }
@@ -109,9 +109,9 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
             // key: 5e367bc4
             // type: 43169 (0xa8a1)
 
-            let key_buffer = source[4..10].to_vec(); // 6 bytes
+            let did_buffer = source[4..10].to_vec(); // 6 bytes
             let type_buffer = source[10..12].to_vec(); // 2 bytes
-            let did_buffer = source[12..16].to_vec(); // 4 bytes
+            let key_buffer = source[12..16].to_vec(); // 4 bytes
 
             Some(BroadcastType::DeviceAnnouncement(DeviceInfo {
                 cnt: 1, // seems to be hardcoded to 1
