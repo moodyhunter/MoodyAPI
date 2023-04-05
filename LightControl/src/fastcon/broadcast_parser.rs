@@ -1,6 +1,8 @@
 use num_traits::FromPrimitive;
 
-use super::device_type::DeviceType;
+use crate::{fastcon_ble_encrypt, fastcon_ble_header_encrypt};
+
+use super::{common::bytes_to_string, device_type::DeviceType};
 
 #[derive(Debug, Clone)]
 pub struct HeartBeat {
@@ -24,39 +26,9 @@ pub enum BroadcastType {
     DeviceAnnouncement(DeviceInfo),
 }
 
-fn bytes_to_string(bytes: &[u8]) -> String {
-    let mut s = String::new();
-    for byte in bytes {
-        s.push_str(&format!("{:02x}", byte));
-    }
-    s
-}
-
-pub fn bl_ble_fastcon_header_encrty(src: &[u8], dst: &mut [u8], arg3: usize) {
-    if arg3 == 0 {
-        return;
-    }
-
-    let k = b"^6{\0"; // mysterious key reversed from the binary
-
-    for i in 0..arg3 {
-        dst[i] = k[i & 3] ^ src[i];
-    }
-}
-
-pub fn bl_ble_fastcon_encrty(src: &[u8], dst: &mut [u8], arg3: usize, key: &[u8]) {
-    if arg3 == 0 {
-        return;
-    }
-
-    for i in 0..arg3 {
-        dst[i] = key[i & 3] ^ src[i];
-    }
-}
-
 pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<BroadcastType> {
     let mut header = source[0..4].to_vec();
-    bl_ble_fastcon_header_encrty(&source, &mut header, 4);
+    fastcon_ble_header_encrypt!(source, header, 4);
 
     let high = header[0] & 0xf; // some strange high bits
 
@@ -64,7 +36,7 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
     match (header[0] >> 4) & 7 {
         3 => {
             let mut content = source[4..].to_vec(); // skip 4 bytes of header
-            bl_ble_fastcon_encrty(&source[4..], &mut content, source.len() - 4, phone_key);
+            fastcon_ble_encrypt!(&source[4..], content, source.len() - 4, phone_key);
 
             match content[0] & 0xf {
                 0xb => {
@@ -123,7 +95,7 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
                 key: bytes_to_string(&key_buffer),
                 did: bytes_to_string(&did_buffer),
                 device_type: (FromPrimitive::from_u16(dev_type) as Option<DeviceType>)
-                    .unwrap_or(DeviceType::DeviceType_Unknown),
+                    .unwrap_or(DeviceType::Unknown),
                 high,
             }))
         }
