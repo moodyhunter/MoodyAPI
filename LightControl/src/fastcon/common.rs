@@ -5,3 +5,7 @@ pub fn bytes_to_string(bytes: &[u8]) -> String {
     }
     s
 }
+
+pub fn print_bytes(name: &str, bytes: &[u8]) {
+    println!("{}: {}", name, bytes_to_string(bytes));
+}

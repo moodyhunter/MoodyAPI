@@ -1,10 +1,16 @@
 mod fastcon;
 
-use bluer::{Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
+use std::{collections::BTreeMap, time::Duration};
+
+use tokio::time::sleep;
+
+use bluer::{adv::Advertisement, Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
 use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
 use futures::{stream::SelectAll, StreamExt};
 
-use crate::fastcon::{command_wrapper::single_on_off_command, DEFAULT_PHONE_KEY};
+use crate::fastcon::{
+    command_wrapper::single_on_off_command, common::print_bytes, DEFAULT_PHONE_KEY,
+};
 
 const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
 const MY_MANUFACTURER_DATA_KEY: u16 = 0xfff0;
@@ -44,7 +50,7 @@ async fn handle_light_event(
             match x {
                 BroadcastType::HeartBeat(heartbeat) => {
                     println!("Heartbeat: {:?}", heartbeat);
-                    single_on_off_command(heartbeat.short_addr, true);
+                    // single_on_off_command(heartbeat.short_addr, true);
                 }
                 BroadcastType::TimerUploadResponse => {
                     println!("Timer upload response");
@@ -63,57 +69,33 @@ async fn handle_light_event(
     }
 }
 
-#[tokio::main(flavor = "current_thread")]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let session = bluer::Session::new().await?;
-    let adapter = session.default_adapter().await?;
-    println!(
-        "Discovering devices using Bluetooth adapter {}",
-        adapter.name()
-    );
+async fn do_advertise(adapter: &Adapter, data: &Vec<u8>) -> Result<(), Box<dyn std::error::Error>> {
+    print_bytes("Advertisement Data", data);
+    let mut my_data: BTreeMap<u16, Vec<u8>> = BTreeMap::new();
+    my_data.insert(MY_MANUFACTURER_DATA_KEY, data.clone());
 
-    adapter.set_powered(true).await?;
+    let le_advertisement = Advertisement {
+        advertisement_type: bluer::adv::Type::Peripheral,
+        manufacturer_data: my_data,
+        min_interval: Some(Duration::from_millis(100)),
+        max_interval: Some(Duration::from_millis(200)),
+        duration: Some(Duration::from_secs(100)),
+        discoverable: Some(true),
+        tx_power: Some(20),
+        ..Default::default()
+    };
+    println!("{:?}", &le_advertisement);
+    let handle = adapter.advertise(le_advertisement).await?;
 
-    // println!(
-    //     "Advertising on Bluetooth adapter {} with address {}",
-    //     adapter.name(),
-    //     adapter.address().await?
-    // );
+    println!("Press enter to quit");
+    println!("Removing advertisement");
+    drop(handle);
+    sleep(Duration::from_secs(1)).await;
 
-    // let mut my_data: BTreeMap<u16, Vec<u8>> = BTreeMap::new();
-    // my_data.insert(
-    //     0xFFF0,
-    //     // 6D B6 43 68 93 1D DD D0 A4 B1 83 2E B7 CC 02 DB E2 A4 CD 72 FB C8 F0 E7
-    //     vec![
-    //         0x6d, 0xb6, 0x43, 0x68, 0x93, 0x1d, 0xdd, 0xd0, 0xa4, 0xb1, 0x83, 0x2e, 0xb7, 0xcc,
-    //         0x02, 0xdb, 0xe2, 0xa4, 0xcd, 0x72, 0xfb, 0xc8, 0xf0, 0xe7,
-    //     ],
-    // );
+    Ok(())
+}
 
-    // let le_advertisement = Advertisement {
-    //     advertisement_type: bluer::adv::Type::Peripheral,
-    //     manufacturer_data: my_data,
-    //     min_interval: Some(Duration::from_millis(100)),
-    //     max_interval: Some(Duration::from_millis(200)),
-    //     duration: Some(Duration::from_secs(100)),
-    //     discoverable: Some(true),
-    //     tx_power: Some(20),
-    //     ..Default::default()
-    // };
-    // println!("{:?}", &le_advertisement);
-    // let handle = adapter.advertise(le_advertisement).await?;
-
-    // println!("Press enter to quit");
-    // let stdin = BufReader::new(tokio::io::stdin());
-    // let mut lines = stdin.lines();
-    // let _ = lines.next_line().await;
-
-    // println!("Removing advertisement");
-    // drop(handle);
-    // sleep(Duration::from_secs(1)).await;
-
-    // return Ok(());
-
+async fn do_poll_device_events(adapter: &Adapter) -> Result<(), Box<dyn std::error::Error>> {
     let mut device_events = adapter.discover_devices().await?;
     let mut light_change_events = SelectAll::new();
 
@@ -153,12 +135,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Some(le) = light_change_events.next() => handle_light_event(&adapter, le).await.expect("Error handling light event"),
             else => {
                 println!("No more events");
-                break;
+                std::process::exit(1);
             }
         }
     }
+}
 
-    println!("Done");
+#[tokio::main(flavor = "current_thread")]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let session = bluer::Session::new().await?;
+    let adapter = session.default_adapter().await?;
+    println!(
+        "Discovering devices using Bluetooth adapter {}",
+        adapter.name()
+    );
+
+    adapter.set_powered(true).await?;
+
+    // TODO listen for events
+    if false {
+        do_poll_device_events(&adapter).await?;
+    }
+
+    let data = single_on_off_command(Some(&vec![0x38, 0x35, 0x36, 0x30]), 1, false);
+
+    do_advertise(&adapter, &data).await?;
 
     Ok(())
 }

@@ -3,6 +3,7 @@
 
 pub const DEFAULT_PHONE_KEY: [u8; 4] = [0xA1, 0xA2, 0xA3, 0xA4];
 pub const DEFAULT_ENCRYPT_KEY: [u8; 4] = [0x5e, 0x36, 0x7b, 0xc4];
+pub const DEFAULT_BLE_FASTCON_ADDRESS: [u8; 3] = [0xC1, 0xC2, 0xC3];
 
 #[macro_export]
 macro_rules! fastcon_ble_header_encrypt {
