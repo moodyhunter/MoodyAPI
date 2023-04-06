@@ -9,7 +9,9 @@ use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
 use futures::{stream::SelectAll, StreamExt};
 
 use crate::fastcon::{
-    command_wrapper::{single_brightness_command, single_on_off_command, single_rgb_command},
+    command_wrapper::{
+        single_brightness_command, single_on_off_command, single_rgb_command, single_warmwhite,
+    },
     common::print_bytes,
     DEFAULT_PHONE_KEY,
 };
@@ -146,19 +148,25 @@ async fn do_poll_device_events(adapter: &Adapter) -> Result<(), Box<dyn std::err
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let session = bluer::Session::new().await?;
     let adapter = session.default_adapter().await?;
-    println!(
-        "Discovering devices using Bluetooth adapter {}",
-        adapter.name()
-    );
-
     adapter.set_powered(true).await?;
 
+    let phone_key = vec![0x38, 0x35, 0x36, 0x30];
+
     let argc = std::env::args().count();
+    if argc == 2 {
+        println!("AAAA");
+        let data = single_warmwhite(Some(&phone_key), 1, true, 127);
+        do_advertise(&adapter, &data).await?;
+    } else {
+        println!("BBBB");
+        let data = single_rgb_command(Some(&phone_key), 1, true, 127, 1, 1, 1, false);
+        do_advertise(&adapter, &data).await?;
+    }
+
     if argc == 1 {
         println!("listening for events");
         do_poll_device_events(&adapter).await?;
     } else {
-        let phone_key = vec![0x38, 0x35, 0x36, 0x30];
         let argv1 = std::env::args().nth(1).unwrap();
         let data;
         if argv1 == "on" {

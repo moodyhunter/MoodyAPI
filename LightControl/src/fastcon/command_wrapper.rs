@@ -16,8 +16,8 @@ const BLE_CMD_RETRY_CNT: i32 = 1;
 const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for a command
 
 #[allow(unused)]
-enum SingleLightCommand {
-    MaybeRGB(
+enum LightCommand {
+    RGB(
         bool, /*on*/
         u8,   /*brightness*/
         u8,
@@ -25,37 +25,37 @@ enum SingleLightCommand {
         u8,   /*RGB*/
         bool, /*absolute (do not normalize)*/
     ),
-    MaybeSetWhite(
+    WarmWhite(
         bool, /* on */
         u8,   /* brightness */
-        u8,   /* i5 */
-        u8,   /* i6 */
+        u8,   /* warm val */
+        u8,   /* cold val */
     ),
     Brightness(bool /* on */, u8 /* brightness */),
     OnOff(bool /* on */, u8 /* brightness */),
-    Some5,
-    Some6,
-    Some7,
-    Some8,
-    Some9,
+    // Some5(bool /* z2 */),
+    // Some6,
+    // Some7,
+    // Some8,
+    // Some9,
 }
 
-fn generate_single_light_command(
-    on_off: bool,
-    brightness: u8,
-    g: i32,
-    b: i32,
-    r: i32,
-    i5: i32,
-    i6: i32,
-    z2: bool,
-    i7: i32,
-    command: SingleLightCommand,
-    z3: bool,
-    relative_color: bool,
+fn single_light_command(
+    // on_off: bool,
+    // brightness: u8,
+    // g: i32,
+    // b: i32,
+    // r: i32,
+    // i5: i32,
+    // i6: i32,
+    // z2: bool,
+    // i7: i32,
+    command: LightCommand,
+    // maybe_batch: bool,
+    // relative_color: bool,
 ) -> Vec<u8> {
     match command {
-        SingleLightCommand::MaybeRGB(on, brightness, r, g, b, abs) => {
+        LightCommand::RGB(on, brightness, r, g, b, abs) => {
             let mut arr = vec![0; 6];
             let color_normalisation = if abs {
                 1.0
@@ -70,7 +70,7 @@ fn generate_single_light_command(
             arr[5] = 0;
             arr
         }
-        SingleLightCommand::MaybeSetWhite(on, brightness, i5, i6) => {
+        LightCommand::WarmWhite(on, brightness, i5, i6) => {
             let mut arr = vec![0; 6];
             arr[0] = ((if on { 128 } else { 0 }) + (brightness & 127)) as u8;
             arr[1] = 0;
@@ -80,100 +80,98 @@ fn generate_single_light_command(
             arr[5] = i6 as u8;
             arr
         }
-        SingleLightCommand::Brightness(on, val) => {
-            // wtf does z3 mean?
-            if z3 {
-                let mut arr = vec![0; 6];
-                arr[0] = (if on { val & 127 } else { 0 }) as u8;
-                arr[1] = 0;
-                arr[2] = 0;
-                arr[3] = 0;
-                arr[4] = 0;
-                arr[5] = 0;
-                arr
-            } else {
-                vec![if on { val & 127 } else { 0 } as u8]
-            }
+        LightCommand::Brightness(on, val) => {
+            // if maybe_batch {
+            //     let mut arr = vec![0; 6];
+            //     arr[0] = (if on { val & 127 } else { 0 }) as u8;
+            //     arr[1] = 0;
+            //     arr[2] = 0;
+            //     arr[3] = 0;
+            //     arr[4] = 0;
+            //     arr[5] = 0;
+            //     return arr;
+            // }
+            vec![if on { val & 127 } else { 0 } as u8]
         }
-        SingleLightCommand::OnOff(on, brightness) => {
-            if z3 {
-                let mut arr = vec![0; 6];
-                arr[0] = (if on { 128 } else { 0 } + (brightness & 127)) as u8;
-                arr[1] = 0;
-                arr[2] = 0;
-                arr[3] = 0;
-                arr[4] = 0;
-                arr[5] = 0;
-                arr
-            } else {
-                vec![if on { 128 } else { 0 } as u8]
-            }
-        }
-        SingleLightCommand::Some5 => {
-            let mut arr = vec![0; 7];
-            arr[0] = 0;
-            arr[1] = 0;
-            arr[2] = 0;
-            arr[3] = 0;
-            arr[4] = u8::MAX;
-            arr[5] = u8::MAX;
-            arr[6] = if z2 { 128 } else { 0 } as u8;
-            arr
-        }
-        SingleLightCommand::Some6 => {
-            let mut arr = vec![0; 7];
-            arr[0] = 0;
-            arr[1] = 0;
-            arr[2] = 0;
-            arr[3] = 0;
-            arr[4] = u8::MAX;
-            arr[5] = u8::MAX;
-            arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
-            arr
-        }
-        SingleLightCommand::Some7 => {
-            let color_normalisation = if relative_color {
-                255.0 / (r + g + b) as f32
-            } else {
-                1.0
-            };
-            let mut arr = vec![0; 7];
-            arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
-            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
-            arr[4] = i5 as u8;
-            arr[5] = i6 as u8;
-            arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
-            arr
-        }
-        SingleLightCommand::Some8 => {
-            let mut arr = vec![0; 7];
-            arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
-            arr[1] = u8::MAX;
-            arr[2] = u8::MAX;
-            arr[3] = u8::MAX;
-            arr[4] = u8::MAX;
-            arr[5] = u8::MAX;
-            arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
-            arr
-        }
-        SingleLightCommand::Some9 => {
-            let color_normalisation = if relative_color {
-                255.0 / (r + g + b) as f32
-            } else {
-                1.0
-            };
-            let mut arr = vec![0; 7];
-            arr[0] = u8::MAX;
-            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
-            arr[4] = u8::MAX;
-            arr[5] = u8::MAX;
-            arr[6] = u8::MIN;
-            arr
-        }
+        LightCommand::OnOff(on, brightness) => {
+            // if maybe_batch {
+            //     let mut arr = vec![0; 6];
+            //     arr[0] = (if on { 128 } else { 0 } + (brightness & 127)) as u8;
+            //     arr[1] = 0;
+            //     arr[2] = 0;
+            //     arr[3] = 0;
+            //     arr[4] = 0;
+            //     arr[5] = 0;
+            //     return arr;
+            // }
+
+            vec![if on { 128 } else { 0 } + (brightness & 127) as u8]
+        } //
+          // SingleLightCommand::Some5(z) => {
+          //     let mut arr = vec![0; 7];
+          //     arr[0] = 0;
+          //     arr[1] = 0;
+          //     arr[2] = 0;
+          //     arr[3] = 0;
+          //     arr[4] = u8::MAX;
+          //     arr[5] = u8::MAX;
+          //     arr[6] = if z { 128 } else { 0 } as u8;
+          //     arr
+          // }
+          // SingleLightCommand::Some6 => {
+          //     let mut arr = vec![0; 7];
+          //     arr[0] = 0;
+          //     arr[1] = 0;
+          //     arr[2] = 0;
+          //     arr[3] = 0;
+          //     arr[4] = u8::MAX;
+          //     arr[5] = u8::MAX;
+          //     arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
+          //     arr
+          // }
+          // SingleLightCommand::Some7 => {
+          //     let color_normalisation = if relative_color {
+          //         255.0 / (r + g + b) as f32
+          //     } else {
+          //         1.0
+          //     };
+          //     let mut arr = vec![0; 7];
+          //     arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
+          //     arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
+          //     arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
+          //     arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
+          //     arr[4] = i5 as u8;
+          //     arr[5] = i6 as u8;
+          //     arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
+          //     arr
+          // }
+          // SingleLightCommand::Some8 => {
+          //     let mut arr = vec![0; 7];
+          //     arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
+          //     arr[1] = u8::MAX;
+          //     arr[2] = u8::MAX;
+          //     arr[3] = u8::MAX;
+          //     arr[4] = u8::MAX;
+          //     arr[5] = u8::MAX;
+          //     arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
+          //     arr
+          // }
+          // SingleLightCommand::Some9 => {
+          //     let color_normalisation = if relative_color {
+          //         255.0 / (r + g + b) as f32
+          //     } else {
+          //         1.0
+          //     };
+          //     let mut arr = vec![0; 7];
+          //     arr[0] = u8::MAX;
+          //     arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
+          //     arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
+          //     arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
+          //     arr[4] = u8::MAX;
+          //     arr[5] = u8::MAX;
+          //     arr[6] = u8::MIN;
+          //     arr
+          // }
     }
 }
 
@@ -474,20 +472,7 @@ pub fn single_on_off_command(key: Option<&[u8]>, short_addr: i32, on: bool) -> V
         short_addr, on
     );
 
-    let command = generate_single_light_command(
-        on,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        0,
-        SingleLightCommand::OnOff(on, if on { 255 } else { 0 }),
-        false,
-        false,
-    );
+    let command = single_light_command(LightCommand::OnOff(on, if on { 255 } else { 0 }));
 
     single_control(short_addr, command, key)
 }
@@ -498,21 +483,13 @@ pub fn single_brightness_command(key: Option<&[u8]>, short_addr: i32, brightness
         short_addr, brightness
     );
 
-    let command = generate_single_light_command(
-        brightness > 0,
-        brightness,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        0,
-        SingleLightCommand::Brightness(brightness > 0, brightness),
-        false,
-        false,
-    );
+    let command = single_light_command(LightCommand::Brightness(brightness > 0, brightness));
 
+    single_control(short_addr, command, key)
+}
+
+pub fn single_warmwhite(key: Option<&[u8]>, short_addr: i32, on: bool, brightness: u8) -> Vec<u8> {
+    let command = single_light_command(LightCommand::WarmWhite(on, brightness, 127, 127));
     single_control(short_addr, command, key)
 }
 
@@ -531,20 +508,7 @@ pub fn single_rgb_command(
         short_addr, r, g, b
     );
 
-    let command = generate_single_light_command(
-        false,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        0,
-        SingleLightCommand::MaybeRGB(on, brightness, r, g, b, absoulte),
-        false,
-        false,
-    );
+    let command = single_light_command(LightCommand::RGB(on, brightness, r, g, b, absoulte));
 
     single_control(short_addr, command, key)
 }
