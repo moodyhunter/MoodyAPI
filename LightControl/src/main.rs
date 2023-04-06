@@ -9,7 +9,7 @@ use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
 use futures::{stream::SelectAll, StreamExt};
 
 use crate::fastcon::{
-    command_wrapper::{single_brightness_command, single_on_off_command},
+    command_wrapper::{single_brightness_command, single_on_off_command, single_rgb_command},
     common::print_bytes,
     DEFAULT_PHONE_KEY,
 };
@@ -91,7 +91,7 @@ async fn do_advertise(adapter: &Adapter, data: &Vec<u8>) -> Result<(), Box<dyn s
 
     println!("Removing advertisement");
     drop(handle);
-    sleep(Duration::from_millis(300)).await;
+    sleep(Duration::from_millis(500)).await;
 
     Ok(())
 }
@@ -168,10 +168,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("turning off");
             data = single_on_off_command(Some(&phone_key), 1, false);
         } else {
-            // try to parse as a number
-            let num = argv1.parse::<u8>().unwrap() & 0x7f; // remove the top bit
-            println!("setting brightness to {}", num);
-            data = single_brightness_command(Some(&phone_key), 1, num);
+            if argc == 2 {
+                // try to parse as a number
+                let num = argv1.parse::<u8>().unwrap() & 0x7f; // remove the top bit
+                println!("setting brightness to {}", num);
+                data = single_brightness_command(Some(&phone_key), 1, num);
+            } else if argc == 4 {
+                let r = argv1.parse::<u8>().unwrap(); // remove the top bit
+                let g = std::env::args().nth(2).unwrap().parse::<u8>().unwrap(); // remove the top bit
+                let b = std::env::args().nth(3).unwrap().parse::<u8>().unwrap(); // remove the top bit
+
+                println!("setting color to ({}, {}, {})", r, g, b);
+                data = single_rgb_command(Some(&phone_key), 1, true, 127, r, g, b, false);
+            } else {
+                println!(
+                    "usage: {} [on|off|<brightness 0-127>|<r> <g> <b>]",
+                    std::env::args().nth(0).unwrap()
+                );
+                return Ok(());
+            }
         }
         do_advertise(&adapter, &data).await?;
     }

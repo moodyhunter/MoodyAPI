@@ -17,7 +17,14 @@ const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for
 
 #[allow(unused)]
 enum SingleLightCommand {
-    MaybeRGB(bool /*on*/, u8, u8, u8 /*RGB*/),
+    MaybeRGB(
+        bool, /*on*/
+        u8,   /*brightness*/
+        u8,
+        u8,
+        u8,   /*RGB*/
+        bool, /*absolute (do not normalize)*/
+    ),
     MaybeSetWhite(
         bool, /* on */
         u8,   /* brightness */
@@ -45,17 +52,20 @@ fn generate_single_light_command(
     i7: i32,
     command: SingleLightCommand,
     z3: bool,
-    z4: bool,
+    relative_color: bool,
 ) -> Vec<u8> {
-    let color_normalisation = if z4 { 255.0 / (r + g + b) as f32 } else { 1.0 };
-
     match command {
-        SingleLightCommand::MaybeRGB(_on, _r, _g, _b) => {
+        SingleLightCommand::MaybeRGB(on, brightness, r, g, b, abs) => {
             let mut arr = vec![0; 6];
-            arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
-            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
+            let color_normalisation = if abs {
+                1.0
+            } else {
+                255.0 / (r as u32 + g as u32 + b as u32) as f32
+            };
+            arr[0] = (if on { 128 } else { 0 } + (brightness & 127)) as u8;
+            arr[1] = ((b as f32) * color_normalisation) as u32 as u8;
+            arr[2] = ((r as f32) * color_normalisation) as u32 as u8;
+            arr[3] = ((g as f32) * color_normalisation) as u32 as u8;
             arr[4] = 0;
             arr[5] = 0;
             arr
@@ -122,6 +132,11 @@ fn generate_single_light_command(
             arr
         }
         SingleLightCommand::Some7 => {
+            let color_normalisation = if relative_color {
+                255.0 / (r + g + b) as f32
+            } else {
+                1.0
+            };
             let mut arr = vec![0; 7];
             arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
             arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
@@ -144,6 +159,11 @@ fn generate_single_light_command(
             arr
         }
         SingleLightCommand::Some9 => {
+            let color_normalisation = if relative_color {
+                255.0 / (r + g + b) as f32
+            } else {
+                1.0
+            };
             let mut arr = vec![0; 7];
             arr[0] = u8::MAX;
             arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
@@ -489,6 +509,39 @@ pub fn single_brightness_command(key: Option<&[u8]>, short_addr: i32, brightness
         false,
         0,
         SingleLightCommand::Brightness(brightness > 0, brightness),
+        false,
+        false,
+    );
+
+    single_control(short_addr, command, key)
+}
+
+pub fn single_rgb_command(
+    key: Option<&[u8]>,
+    short_addr: i32,
+    on: bool,
+    brightness: u8,
+    r: u8,
+    g: u8,
+    b: u8,
+    absoulte: bool,
+) -> Vec<u8> {
+    println!(
+        "single_rgb_command: short_addr: {:04x}, r: {}, g: {}, b: {}",
+        short_addr, r, g, b
+    );
+
+    let command = generate_single_light_command(
+        false,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        SingleLightCommand::MaybeRGB(on, brightness, r, g, b, absoulte),
         false,
         false,
     );
