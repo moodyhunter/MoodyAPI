@@ -4,10 +4,13 @@ use std::{
     vec,
 };
 
-use num_traits::WrappingAdd;
-
-use super::{DEFAULT_BLE_FASTCON_ADDRESS, DEFAULT_ENCRYPT_KEY};
+use super::{
+    utils::{whitening_encode, whitening_init, WhiteningContext},
+    DEFAULT_BLE_FASTCON_ADDRESS, DEFAULT_ENCRYPT_KEY,
+};
 use crate::fastcon::common::print_bytes;
+use crate::fastcon::utils::{crc16, reverse_8};
+use num_traits::WrappingAdd;
 
 const BLE_CMD_RETRY_CNT: i32 = 1;
 const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for a command
@@ -154,40 +157,6 @@ fn generate_single_light_command(
     }
 }
 
-fn generate_on_off_command(on: bool) -> Vec<u8> {
-    generate_single_light_command(
-        on,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        0,
-        SingleLightCommand::OnOff(on, if on { 255 } else { 0 }),
-        false,
-        false,
-    )
-}
-
-fn generate_brightness_command(brightness: u8) -> Vec<u8> {
-    generate_single_light_command(
-        brightness > 0,
-        brightness,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        0,
-        SingleLightCommand::Brightness(brightness > 0, brightness),
-        false,
-        false,
-    )
-}
-
 fn package_ble_fastcon_body(
     i: u8,
     i2: u8,
@@ -239,7 +208,7 @@ fn get_payload_with_inner_retry(
     data: &[u8],
     i2: u8,
     key: Option<&[u8]>,
-    maybe_forward: bool,
+    forward: bool,
     use_22_data: bool,
 ) -> Vec<u8> {
     static mut SEND_SEQ: u32 = 0;
@@ -283,7 +252,7 @@ fn get_payload_with_inner_retry(
             i2,
             some_sequence,
             safe_key,
-            maybe_forward,
+            forward,
             data,
             data.len(),
             key,
@@ -291,66 +260,7 @@ fn get_payload_with_inner_retry(
     }
 }
 
-fn reverse_8(d: u8) -> u8 {
-    let mut result = 0;
-    for i in 0..8 {
-        result |= ((d >> i) & 1) << (7 - i);
-    }
-    result
-}
-
-fn reverse_16(d: u16) -> u16 {
-    let mut result = 0;
-    for i in 0..16 {
-        result |= ((d >> i) & 1) << (15 - i);
-    }
-    result
-}
-
-fn crc16(addr: &[u8], data: &[u8]) -> u16 {
-    let mut crc = 0xffff;
-
-    // iterate over address in reverse
-    for i in addr.iter().rev() {
-        crc ^= (*i as u16) << 8;
-        for _ in 0..4 {
-            let mut tmp = crc << 1;
-
-            if crc & 0x8000 != 0 {
-                tmp ^= 0x1021;
-            }
-
-            crc = tmp << 1;
-            if tmp & 0x8000 != 0 {
-                crc ^= 0x1021;
-            }
-        }
-    }
-
-    for i in 0..data.len() {
-        crc ^= (reverse_8(data[i]) as u16) << 8;
-        for _ in 0..4 {
-            let mut tmp = crc << 1;
-
-            if crc & 0x8000 != 0 {
-                tmp ^= 0x1021;
-            }
-
-            crc = tmp << 1;
-            if tmp & 0x8000 != 0 {
-                crc ^= 0x1021;
-            }
-        }
-    }
-
-    crc = !reverse_16(crc);
-    crc
-}
-
 fn get_rf_payload(addr: &[u8], data: &[u8]) -> Vec<u8> {
-    print_bytes("GetRFPayload Address", addr);
-    print_bytes("GetRFPayload Data", data);
-
     let data_offset = 0x12;
     let inverse_offset = 0x0f;
     let result_data_size = data_offset + addr.len() + data.len(); // yes, the first 0x12 bytes are garbage
@@ -376,147 +286,38 @@ fn get_rf_payload(addr: &[u8], data: &[u8]) -> Vec<u8> {
     let crc = crc16(addr, data);
     resultbuf[result_data_size] = crc as u8;
     resultbuf[result_data_size + 1] = (crc >> 8) as u8;
-
-    print_bytes("Result", &resultbuf);
-
     resultbuf
 }
 
-#[derive(Debug, Clone, Copy, Default)]
-struct WhiteningContext {
-    f_0x0: u32,
-    f_0x4: u32,
-    f_0x8: u32,
-    f_0xc: u32,
-    f_0x10: u32,
-    f_0x14: u32,
-    f_0x18: u32,
-}
-
-fn whitening_init(val: u32, ctx: &mut WhiteningContext) {
-    let v0 = [(val >> 5), (val >> 4), (val >> 3), (val >> 2)];
-
-    ctx.f_0x0 = 1;
-    ctx.f_0x4 = v0[0] & 1;
-    ctx.f_0x8 = v0[1] & 1;
-    ctx.f_0xc = v0[2] & 1;
-    ctx.f_0x10 = v0[3] & 1;
-    ctx.f_0x14 = (val >> 1) & 1;
-    ctx.f_0x18 = val & 1;
-}
-
-fn whitening_encode(data: &mut Vec<u8>, ctx: &mut WhiteningContext) {
-    print_bytes("whiten-in:", &data);
-    for i in 0..data.len() {
-        /*  const uint32_t varC = ctx->unkC;
-        const uint32_t var14 = ctx->unk14;
-        const uint32_t var18 = ctx->unk18;
-        const uint32_t var10 = ctx->unk10;
-        const uint32_t var8 = var14 ^ ctx->unk8;
-        const uint32_t var4 = var10 ^ ctx->unk4;
-        const uint32_t _var = var18 ^ varC;
-        const uint32_t var0 = _var ^ ctx->unk0;
-
-        const uint8_t c = data[i];
-        data[i] = ((c & 0x80) ^ (uint8_t) ((var8 ^ var18) << 7)) + //
-                  ((c & 0x40) ^ (uint8_t) (var0 << 6)) +           //
-                  ((c & 0x20) ^ (uint8_t) (var4 << 5)) +           //
-                  ((c & 0x10) ^ (uint8_t) (var8 << 4)) +           //
-                  ((c & 0x08) ^ (uint8_t) (_var << 3)) +           //
-                  ((c & 0x04) ^ (uint8_t) (var10 << 2)) +          //
-                  ((c & 0x02) ^ (uint8_t) (var14 << 1)) +          //
-                  ((c & 0x01) ^ (uint8_t) (var18 << 0));
-
-        ctx->unk8 = var4;
-        ctx->unkC = var8;
-        ctx->unk10 = var8 ^ varC;
-        ctx->unk14 = var0 ^ var10;
-        ctx->unk18 = var4 ^ var14;
-        ctx->unk0 = var8 ^ var18;
-        ctx->unk4 = var0; */
-
-        let varC = ctx.f_0xc;
-        let var14 = ctx.f_0x14;
-        let var18 = ctx.f_0x18;
-        let var10 = ctx.f_0x10;
-        let var8 = var14 ^ ctx.f_0x8;
-        let var4 = var10 ^ ctx.f_0x4;
-        let _var = var18 ^ varC;
-        let var0 = _var ^ ctx.f_0x0;
-
-        let c = data[i];
-        data[i] = ((c & 0x80) ^ ((var8 ^ var18) << 7) as u8)
-            + ((c & 0x40) ^ (var0 << 6) as u8)
-            + ((c & 0x20) ^ (var4 << 5) as u8)
-            + ((c & 0x10) ^ (var8 << 4) as u8)
-            + ((c & 0x08) ^ (_var << 3) as u8)
-            + ((c & 0x04) ^ (var10 << 2) as u8)
-            + ((c & 0x02) ^ (var14 << 1) as u8)
-            + ((c & 0x01) ^ (var18 << 0) as u8);
-
-        ctx.f_0x8 = var4;
-        ctx.f_0xc = var8;
-        ctx.f_0x10 = var8 ^ varC;
-        ctx.f_0x14 = var0 ^ var10;
-        ctx.f_0x18 = var4 ^ var14;
-        ctx.f_0x0 = var8 ^ var18;
-        ctx.f_0x4 = var0;
-    }
-
-    print_bytes("whiten-out:", &data);
-}
-
-fn x_get_real_payload(
-    data: Vec<u8>,
-    _send_time: u32, // how long does the advertising packet last?
-    use_default_adapter: bool,
-    something: bool,
-    _originally_i4: u8,
-) -> Vec<u8> {
-    if something {
-        todo!("what is something?")
-    } else {
-        let mut rf_payload = get_rf_payload(&DEFAULT_BLE_FASTCON_ADDRESS, &data);
-        print_bytes("rf payload", &rf_payload);
-
-        if !use_default_adapter {
-            todo!("use specific adapter")
-        }
-
-        let mut ctx = WhiteningContext {
-            ..Default::default()
-        };
-
-        whitening_init(0x25, &mut ctx);
-
-        whitening_encode(&mut rf_payload, &mut ctx);
-
-        rf_payload[0xf..].to_vec()
-    }
-}
-
 fn do_generate_command(
-    i: u8,
+    n: u8,
     data: &[u8],
     key: Option<&[u8]>,
     _retry_count: i32,
     _send_interval: i32,
-    maybe_forward: bool,
+    forward: bool,
     use_default_adapter: bool,
     use_22_data: bool,
     i4: u8,
 ) -> Vec<u8> {
-    let payload = get_payload_with_inner_retry(
-        i,
-        data,
-        std::cmp::max(i4, 0),
-        key,
-        maybe_forward,
-        use_22_data,
-    );
-
     // TODO: handle retry_count and send_interval
-    x_get_real_payload(payload, 0, use_default_adapter, use_22_data, i4)
+    if use_22_data {
+        todo!("what is something?")
+    }
+
+    if !use_default_adapter {
+        todo!("use specific adapter")
+    }
+
+    let mut payload =
+        get_payload_with_inner_retry(n, data, std::cmp::max(i4, 0), key, forward, use_22_data);
+
+    payload = get_rf_payload(&DEFAULT_BLE_FASTCON_ADDRESS, &payload);
+
+    let mut context = WhiteningContext::new();
+    whitening_init(0x25, &mut context);
+    whitening_encode(&mut payload, &mut context);
+    payload[0xf..].to_vec() // drop the first 0xf bytes
 }
 
 fn package_device_control(device_id: u8, src_buf: &[u8], src_len: usize, result: &mut [u8]) {
@@ -529,14 +330,25 @@ fn command_with_no_delay(
     n: u8,
     data: &[u8],
     key: Option<&[u8]>,
-    i2: i32,
-    i3: i32,
+    retry_count: i32,
+    send_time: i32,
     z: bool,
-    z2: bool,
+    use_default_adapter: bool,
     use_22_data: bool,
-    i4: u8,
+    some_i: u8,
 ) -> Vec<u8> {
-    command_with_delay_impl(n, data, key, i2, i3, z, 0, z2, use_22_data, i4)
+    command_with_delay_impl(
+        n,
+        data,
+        key,
+        retry_count,
+        send_time,
+        z,
+        0,
+        use_default_adapter,
+        use_22_data,
+        some_i,
+    )
 }
 
 fn command_with_delay(
@@ -546,10 +358,10 @@ fn command_with_delay(
     retry_cnt: i32,
     send_time: i32,
     z: bool,
-    i4: i32,
+    delay: i32,
     use_default_adapter: bool,
     use_22_data: bool,
-    i5: u8,
+    some_i: u8,
 ) -> Vec<u8> {
     command_with_delay_impl(
         n,
@@ -558,10 +370,10 @@ fn command_with_delay(
         retry_cnt,
         send_time,
         z,
-        i4,
+        delay,
         use_default_adapter,
         use_22_data,
-        i5,
+        some_i,
     )
 }
 
@@ -614,7 +426,7 @@ fn command_with_delay_impl(
     */
 }
 
-fn control_with_device(addr: i32, data: Vec<u8>, key: Option<&[u8]>, i2: i32) -> Vec<u8> {
+fn control_device_with_delay(addr: i32, data: Vec<u8>, key: Option<&[u8]>, delay: i32) -> Vec<u8> {
     print_bytes("Control with device Data", &data);
     let mut result_data = vec![0; 12];
     package_device_control(addr as u8, &data, data.len(), &mut result_data);
@@ -625,15 +437,15 @@ fn control_with_device(addr: i32, data: Vec<u8>, key: Option<&[u8]>, i2: i32) ->
         BLE_CMD_RETRY_CNT,
         BLE_CMD_ADVERTISE_LENGTH,
         true,
-        i2,
+        delay,
         true,
         addr > 256,
         (addr / 256).try_into().expect("addr / 256 beyond u8"),
     )
 }
 
-fn send_single_control(addr: i32, data: Vec<u8>, key: Option<&[u8]>) -> Vec<u8> {
-    control_with_device(addr, data, key, 0)
+fn single_control(addr: i32, data: Vec<u8>, key: Option<&[u8]>) -> Vec<u8> {
+    control_device_with_delay(addr, data, key, 0)
 }
 
 pub fn single_on_off_command(key: Option<&[u8]>, short_addr: i32, on: bool) -> Vec<u8> {
@@ -642,7 +454,22 @@ pub fn single_on_off_command(key: Option<&[u8]>, short_addr: i32, on: bool) -> V
         short_addr, on
     );
 
-    send_single_control(short_addr, generate_on_off_command(on), key)
+    let command = generate_single_light_command(
+        on,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        SingleLightCommand::OnOff(on, if on { 255 } else { 0 }),
+        false,
+        false,
+    );
+
+    single_control(short_addr, command, key)
 }
 
 pub fn single_brightness_command(key: Option<&[u8]>, short_addr: i32, brightness: u8) -> Vec<u8> {
@@ -651,14 +478,28 @@ pub fn single_brightness_command(key: Option<&[u8]>, short_addr: i32, brightness
         short_addr, brightness
     );
 
-    send_single_control(short_addr, generate_brightness_command(brightness), key)
+    let command = generate_single_light_command(
+        brightness > 0,
+        brightness,
+        0,
+        0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        SingleLightCommand::Brightness(brightness > 0, brightness),
+        false,
+        false,
+    );
+
+    single_control(short_addr, command, key)
 }
 
 pub fn command_start_scan() -> Vec<u8> {
-    let packet = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     command_with_no_delay(
         0,
-        &packet,
+        &vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         None,
         BLE_CMD_RETRY_CNT,
         -1,

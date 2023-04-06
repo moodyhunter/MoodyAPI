@@ -34,3 +34,6 @@ pub mod command_wrapper;
 
 // device type enum
 pub mod device_type;
+
+// utils for the protocol
+pub mod utils;
