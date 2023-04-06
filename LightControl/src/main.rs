@@ -5,27 +5,23 @@ use std::{collections::BTreeMap, time::Duration};
 use tokio::time::sleep;
 
 use bluer::{adv::Advertisement, Adapter, AdapterEvent, Address, DeviceEvent, DeviceProperty};
-use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
+use fastcon::{
+    broadcast_parser::{parse_ble_broadcast, BroadcastType},
+    light::{BLELight, LightState},
+};
 use futures::{stream::SelectAll, StreamExt};
 
-use crate::fastcon::{
-    command_wrapper::{
-        single_brightness_command, single_on_off_command, single_rgb_command, single_warmwhite,
-    },
-    common::print_bytes,
-    DEFAULT_PHONE_KEY,
-};
+use crate::fastcon::DEFAULT_PHONE_KEY;
 
 const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
 const MY_MANUFACTURER_DATA_KEY: u16 = 0xfff0;
 
-async fn query_all_device_properties(adapter: &Adapter, addr: Address) -> bluer::Result<()> {
-    let device = adapter.device(addr)?;
-    let props = device.all_properties().await?;
-    for prop in props {
-        println!("    {:?}", &prop);
+fn print_bytes(name: &str, bytes: &[u8]) {
+    print!("{}: ", name);
+    for b in bytes {
+        print!("{:02x} ", b);
     }
-    Ok(())
+    println!();
 }
 
 async fn handle_light_event(
@@ -112,11 +108,6 @@ async fn do_poll_device_events(adapter: &Adapter) -> Result<(), Box<dyn std::err
                         }
 
                         println!("Device added: {addr}");
-                        let res = query_all_device_properties(&adapter, addr).await;
-                        if let Err(err) = res {
-                            println!("    Error: {}", &err);
-                        }
-
                         let device = adapter.device(MY_ADDRESS).expect("Error getting device");
                         let current_data = device.manufacturer_data().await?;
                         if let Some(data) = current_data {
@@ -152,52 +143,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let phone_key = vec![0x38, 0x35, 0x36, 0x30];
 
-    let argc = std::env::args().count();
-    if argc == 2 {
-        println!("AAAA");
-        let data = single_warmwhite(Some(&phone_key), 1, true, 127);
-        do_advertise(&adapter, &data).await?;
-    } else {
-        println!("BBBB");
-        let data = single_rgb_command(Some(&phone_key), 1, true, 127, 1, 1, 1, false);
-        do_advertise(&adapter, &data).await?;
-    }
+    let mut light = BLELight::new(1, &phone_key);
+    light.set_state(LightState::WarmWhite);
+    light.set_brightness(127);
+    let data = light.get_advertisement();
 
-    if argc == 1 {
-        println!("listening for events");
-        do_poll_device_events(&adapter).await?;
-    } else {
-        let argv1 = std::env::args().nth(1).unwrap();
-        let data;
-        if argv1 == "on" {
-            println!("turning on");
-            data = single_on_off_command(Some(&phone_key), 1, true);
-        } else if argv1 == "off" {
-            println!("turning off");
-            data = single_on_off_command(Some(&phone_key), 1, false);
-        } else {
-            if argc == 2 {
-                // try to parse as a number
-                let num = argv1.parse::<u8>().unwrap() & 0x7f; // remove the top bit
-                println!("setting brightness to {}", num);
-                data = single_brightness_command(Some(&phone_key), 1, num);
-            } else if argc == 4 {
-                let r = argv1.parse::<u8>().unwrap(); // remove the top bit
-                let g = std::env::args().nth(2).unwrap().parse::<u8>().unwrap(); // remove the top bit
-                let b = std::env::args().nth(3).unwrap().parse::<u8>().unwrap(); // remove the top bit
+    do_advertise(&adapter, &data).await?;
 
-                println!("setting color to ({}, {}, {})", r, g, b);
-                data = single_rgb_command(Some(&phone_key), 1, true, 127, r, g, b, false);
-            } else {
-                println!(
-                    "usage: {} [on|off|<brightness 0-127>|<r> <g> <b>]",
-                    std::env::args().nth(0).unwrap()
-                );
-                return Ok(());
-            }
-        }
-        do_advertise(&adapter, &data).await?;
-    }
+    do_poll_device_events(&adapter).await?;
 
     Ok(())
 }

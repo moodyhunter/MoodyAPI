@@ -2,7 +2,7 @@ use num_traits::FromPrimitive;
 
 use crate::{fastcon_ble_encrypt, fastcon_ble_header_encrypt};
 
-use super::{common::bytes_to_string, device_type::DeviceType};
+use super::DeviceType;
 
 #[derive(Debug, Clone)]
 pub struct HeartBeat {
@@ -13,8 +13,8 @@ pub struct HeartBeat {
 
 #[derive(Debug, Clone)]
 pub struct DeviceInfo {
-    pub did: String,
-    pub key: String,
+    pub did: Vec<u8>,
+    pub key: Vec<u8>,
     pub device_type: DeviceType,
     pub high: u8,
     pub cnt: u8,
@@ -92,8 +92,8 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
 
             Some(BroadcastType::DeviceAnnouncement(DeviceInfo {
                 cnt: 1, // seems to be hardcoded to 1
-                key: bytes_to_string(&key_buffer),
-                did: bytes_to_string(&did_buffer),
+                key: key_buffer,
+                did: did_buffer,
                 device_type: (FromPrimitive::from_u16(dev_type) as Option<DeviceType>)
                     .unwrap_or(DeviceType::Unknown),
                 high,
