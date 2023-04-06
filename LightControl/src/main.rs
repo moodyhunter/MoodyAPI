@@ -87,10 +87,9 @@ async fn do_advertise(adapter: &Adapter, data: &Vec<u8>) -> Result<(), Box<dyn s
     println!("{:?}", &le_advertisement);
     let handle = adapter.advertise(le_advertisement).await?;
 
-    println!("Press enter to quit");
     println!("Removing advertisement");
     drop(handle);
-    sleep(Duration::from_secs(1)).await;
+    sleep(Duration::from_millis(300)).await;
 
     Ok(())
 }
@@ -152,14 +151,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     adapter.set_powered(true).await?;
 
-    // TODO listen for events
-    if false {
+    let argc = std::env::args().count();
+    if argc == 1 {
+        println!("listening for events");
         do_poll_device_events(&adapter).await?;
+    } else {
+        let phone_key = vec![0x38, 0x35, 0x36, 0x30];
+        let argv1 = std::env::args().nth(1).unwrap();
+        let data;
+        if argv1 == "on" {
+            println!("turning on");
+            data = single_on_off_command(Some(&phone_key), 1, true);
+        } else if argv1 == "off" {
+            println!("turning off");
+            data = single_on_off_command(Some(&phone_key), 1, false);
+        } else {
+            println!("usage: {} [on|off]", std::env::args().nth(0).unwrap());
+            std::process::exit(1);
+        }
+        do_advertise(&adapter, &data).await?;
     }
-
-    let data = single_on_off_command(Some(&vec![0x38, 0x35, 0x36, 0x30]), 1, false);
-
-    do_advertise(&adapter, &data).await?;
 
     Ok(())
 }
