@@ -40,7 +40,7 @@ impl BLELight {
     }
 
     pub fn set_brightness(&mut self, brightness: u8) {
-        self.brightness = brightness.min(0).max(127);
+        self.brightness = brightness.max(0).min(127);
     }
 
     pub fn set_state(&mut self, state: LightState) {
