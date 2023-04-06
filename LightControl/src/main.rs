@@ -9,7 +9,9 @@ use fastcon::broadcast_parser::{parse_ble_broadcast, BroadcastType};
 use futures::{stream::SelectAll, StreamExt};
 
 use crate::fastcon::{
-    command_wrapper::single_on_off_command, common::print_bytes, DEFAULT_PHONE_KEY,
+    command_wrapper::{single_brightness_command, single_on_off_command},
+    common::print_bytes,
+    DEFAULT_PHONE_KEY,
 };
 
 const MY_ADDRESS: Address = Address::new([0x11, 0x22, 0x33, 0x44, 0x55, 0x66]);
@@ -166,8 +168,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("turning off");
             data = single_on_off_command(Some(&phone_key), 1, false);
         } else {
-            println!("usage: {} [on|off]", std::env::args().nth(0).unwrap());
-            std::process::exit(1);
+            // try to parse as a number
+            let num = argv1.parse::<u8>().unwrap() & 0x7f; // remove the top bit
+            println!("setting brightness to {}", num);
+            data = single_brightness_command(Some(&phone_key), 1, num);
         }
         do_advertise(&adapter, &data).await?;
     }

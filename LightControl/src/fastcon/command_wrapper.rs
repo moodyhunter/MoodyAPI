@@ -6,18 +6,23 @@ use std::{
 
 use num_traits::WrappingAdd;
 
-use super::{DEFAULT_BLE_FASTCON_ADDRESS, DEFAULT_ENCRYPT_KEY, DEFAULT_PHONE_KEY};
-use crate::{fastcon::common::print_bytes, fastcon_ble_encrypt, fastcon_ble_header_encrypt};
+use super::{DEFAULT_BLE_FASTCON_ADDRESS, DEFAULT_ENCRYPT_KEY};
+use crate::fastcon::common::print_bytes;
 
 const BLE_CMD_RETRY_CNT: i32 = 1;
 const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for a command
 
 #[allow(unused)]
 enum SingleLightCommand {
-    MaybeRGB,
-    MaybeSetWhite,
-    Brightness,
-    OnOff,
+    MaybeRGB(bool /*on*/, u8, u8, u8 /*RGB*/),
+    MaybeSetWhite(
+        bool, /* on */
+        u8,   /* brightness */
+        u8,   /* i5 */
+        u8,   /* i6 */
+    ),
+    Brightness(bool /* on */, u8 /* brightness */),
+    OnOff(bool /* on */, u8 /* brightness */),
     Some5,
     Some6,
     Some7,
@@ -27,7 +32,7 @@ enum SingleLightCommand {
 
 fn generate_single_light_command(
     on_off: bool,
-    brightness: i32,
+    brightness: u8,
     g: i32,
     b: i32,
     r: i32,
@@ -39,55 +44,56 @@ fn generate_single_light_command(
     z3: bool,
     z4: bool,
 ) -> Vec<u8> {
-    let i9 = i5;
-    let i10 = i6;
-    let maybe_r = r & 255;
-    let maybe_g = g & 255;
-    let maybe_b = b & 255;
-    let color_normalisation = if z4 {
-        255.0 / ((maybe_r + maybe_g) + maybe_b) as f32
-    } else {
-        1.0
-    };
+    let color_normalisation = if z4 { 255.0 / (r + g + b) as f32 } else { 1.0 };
 
     match command {
-        SingleLightCommand::MaybeRGB => {
+        SingleLightCommand::MaybeRGB(_on, _r, _g, _b) => {
             let mut arr = vec![0; 6];
             arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
-            arr[1] = ((maybe_r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((maybe_g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((maybe_b as f32) * color_normalisation) as u32 as u8;
+            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
+            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
+            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
             arr[4] = 0;
             arr[5] = 0;
             arr
         }
-        SingleLightCommand::MaybeSetWhite => {
+        SingleLightCommand::MaybeSetWhite(on, brightness, i5, i6) => {
             let mut arr = vec![0; 6];
-            arr[0] = ((if on_off { 128 } else { 0 }) + (brightness & 127)) as u8;
+            arr[0] = ((if on { 128 } else { 0 }) + (brightness & 127)) as u8;
             arr[1] = 0;
             arr[2] = 0;
             arr[3] = 0;
-            arr[4] = i9 as u8;
-            arr[5] = i10 as u8;
+            arr[4] = i5 as u8;
+            arr[5] = i6 as u8;
             arr
         }
-        SingleLightCommand::Brightness => {
-            let mut arr = vec![0; if z3 { 6 } else { 1 }];
-            arr[0] = (if on_off { brightness & 127 } else { 0 }) as u8;
-            arr
-        }
-        SingleLightCommand::OnOff => {
-            if !z3 {
-                vec![if on_off { 128 } else { 0 } as u8]
-            } else {
+        SingleLightCommand::Brightness(on, val) => {
+            // wtf does z3 mean?
+            if z3 {
                 let mut arr = vec![0; 6];
-                arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
+                arr[0] = (if on { val & 127 } else { 0 }) as u8;
                 arr[1] = 0;
                 arr[2] = 0;
                 arr[3] = 0;
                 arr[4] = 0;
                 arr[5] = 0;
                 arr
+            } else {
+                vec![if on { val & 127 } else { 0 } as u8]
+            }
+        }
+        SingleLightCommand::OnOff(on, brightness) => {
+            if z3 {
+                let mut arr = vec![0; 6];
+                arr[0] = (if on { 128 } else { 0 } + (brightness & 127)) as u8;
+                arr[1] = 0;
+                arr[2] = 0;
+                arr[3] = 0;
+                arr[4] = 0;
+                arr[5] = 0;
+                arr
+            } else {
+                vec![if on { 128 } else { 0 } as u8]
             }
         }
         SingleLightCommand::Some5 => {
@@ -115,11 +121,11 @@ fn generate_single_light_command(
         SingleLightCommand::Some7 => {
             let mut arr = vec![0; 7];
             arr[0] = (if on_off { 128 } else { 0 } + (brightness & 127)) as u8;
-            arr[1] = ((maybe_r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((maybe_g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((maybe_b as f32) * color_normalisation) as u32 as u8;
-            arr[4] = i9 as u8;
-            arr[5] = i10 as u8;
+            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
+            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
+            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
+            arr[4] = i5 as u8;
+            arr[5] = i6 as u8;
             arr[6] = if z2 { 128 } else { 0 } + (i7 & 127) as u8;
             arr
         }
@@ -137,9 +143,9 @@ fn generate_single_light_command(
         SingleLightCommand::Some9 => {
             let mut arr = vec![0; 7];
             arr[0] = u8::MAX;
-            arr[1] = ((maybe_r as f32) * color_normalisation) as u32 as u8;
-            arr[2] = ((maybe_g as f32) * color_normalisation) as u32 as u8;
-            arr[3] = ((maybe_b as f32) * color_normalisation) as u32 as u8;
+            arr[1] = ((r as f32) * color_normalisation) as u32 as u8;
+            arr[2] = ((g as f32) * color_normalisation) as u32 as u8;
+            arr[3] = ((b as f32) * color_normalisation) as u32 as u8;
             arr[4] = u8::MAX;
             arr[5] = u8::MAX;
             arr[6] = u8::MIN;
@@ -159,7 +165,24 @@ fn generate_on_off_command(on: bool) -> Vec<u8> {
         0,
         false,
         0,
-        SingleLightCommand::OnOff,
+        SingleLightCommand::OnOff(on, if on { 255 } else { 0 }),
+        false,
+        false,
+    )
+}
+
+fn generate_brightness_command(brightness: u8) -> Vec<u8> {
+    generate_single_light_command(
+        brightness > 0,
+        brightness,
+        0,
+        0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        SingleLightCommand::Brightness(brightness > 0, brightness),
         false,
         false,
     )
@@ -332,24 +355,6 @@ fn get_rf_payload(addr: &[u8], data: &[u8]) -> Vec<u8> {
     let inverse_offset = 0x0f;
     let result_data_size = data_offset + addr.len() + data.len(); // yes, the first 0x12 bytes are garbage
     let mut resultbuf = vec![0; result_data_size + 2]; // with 2 byte checksum
-
-    // stub data begin
-    resultbuf[0x0] = 0x4c;
-    resultbuf[0x1] = 0x63;
-    resultbuf[0x2] = 0x6e;
-    resultbuf[0x3] = 0x2f;
-    resultbuf[0x4] = 0x63;
-    resultbuf[0x5] = 0x6f;
-    resultbuf[0x6] = 0x6d;
-    resultbuf[0x7] = 0x2f;
-    resultbuf[0x8] = 0x62;
-    resultbuf[0x9] = 0x72;
-    resultbuf[0xa] = 0x6f;
-    resultbuf[0xb] = 0x61;
-    resultbuf[0xc] = 0x64;
-    resultbuf[0xd] = 0x6c;
-    resultbuf[0xe] = 0x69;
-    // stub data end
 
     // some hardcoded values
     resultbuf[0x0f] = 0x71;
@@ -638,6 +643,15 @@ pub fn single_on_off_command(key: Option<&[u8]>, short_addr: i32, on: bool) -> V
     );
 
     send_single_control(short_addr, generate_on_off_command(on), key)
+}
+
+pub fn single_brightness_command(key: Option<&[u8]>, short_addr: i32, brightness: u8) -> Vec<u8> {
+    println!(
+        "single_brightness_command: short_addr: {:04x}, brightness: {}",
+        short_addr, brightness
+    );
+
+    send_single_control(short_addr, generate_brightness_command(brightness), key)
 }
 
 pub fn command_start_scan() -> Vec<u8> {
