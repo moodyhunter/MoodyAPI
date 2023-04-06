@@ -1,5 +1,8 @@
 use core::panic;
-use std::vec;
+use std::{
+    time::{SystemTime, UNIX_EPOCH},
+    vec,
+};
 
 use num_traits::WrappingAdd;
 
@@ -165,7 +168,7 @@ fn generate_on_off_command(on: bool) -> Vec<u8> {
 fn package_ble_fastcon_body(
     i: u8,
     i2: u8,
-    sequence: i32,
+    sequence: u32,
     safe_key: u8,
     forward: bool,
     data: &[u8],
@@ -216,8 +219,18 @@ fn get_payload_with_inner_retry(
     maybe_forward: bool,
     use_22_data: bool,
 ) -> Vec<u8> {
+    static mut SEND_SEQ: u32 = 0;
     static mut SEND_COUNT: i32 = 0;
-    static mut SEND_SEQ: i32 = 0; // static variables so they persist between calls
+
+    unsafe {
+        if SEND_SEQ == 0 {
+            SEND_SEQ = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis() as u32
+                % 256;
+        }
+    }
 
     let send_cnt = unsafe { SEND_COUNT };
     let some_sequence;
@@ -235,7 +248,8 @@ fn get_payload_with_inner_retry(
         }
     }
 
-    // let result_len = if use_22_data { 22 } else { 16 };
+    println!("send seq: {}, send count: {}", some_sequence, send_cnt);
+
     let safe_key: u8 = if key.is_some() { key.unwrap()[3] } else { 255 };
 
     if use_22_data {
