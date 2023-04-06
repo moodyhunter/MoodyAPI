@@ -1,5 +1,7 @@
 #include "source.hpp"
 
+#include <ctime>
+
 namespace PiScreen::datasource
 {
     DateTimeDateSource::DateTimeDateSource()
