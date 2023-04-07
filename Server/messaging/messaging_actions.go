@@ -136,5 +136,5 @@ func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
 		}
 	}
 
-	api.APIServer.BroadcastLightState(api.APIServer.LastLightState)
+	api.APIServer.BroadcastLightState(&new_state)
 }
