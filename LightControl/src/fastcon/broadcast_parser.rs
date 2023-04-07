@@ -64,12 +64,12 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
                     // const int addr = (uint32_t) data_buf[5] | (*data_buf & 0xf) << 8;
                     // const int group_addr = data_buf[6];
 
-                    let addr = (content[1] as i32) | (high as i32) << 8;
+                    let short_addr = (content[1] as i32) | (high as i32) << 8;
                     let group_addr = content[2];
 
                     Some(BroadcastType::HeartBeat(HeartBeat {
                         version,
-                        short_addr: addr,
+                        short_addr,
                         group_addr,
                     }))
                 }
@@ -85,15 +85,15 @@ pub fn parse_ble_broadcast(source: &[u8], phone_key: &[u8; 4]) -> Option<Broadca
             // key: 5e367bc4
             // type: 43169 (0xa8a1)
 
-            let did_buffer = source[4..10].to_vec(); // 6 bytes
+            let did = source[4..10].to_vec(); // 6 bytes
             let type_buffer = source[10..12].to_vec(); // 2 bytes
-            let key_buffer = source[12..16].to_vec(); // 4 bytes
+            let key = source[12..16].to_vec(); // 4 bytes
             let dev_type = type_buffer[0] as u16 | (type_buffer[1] as u16) << 8;
 
             Some(BroadcastType::DeviceAnnouncement(DeviceInfo {
                 cnt: 1, // seems to be hardcoded to 1
-                key: key_buffer,
-                did: did_buffer,
+                key,
+                did,
                 device_type: (FromPrimitive::from_u16(dev_type) as Option<DeviceType>)
                     .unwrap_or(DeviceType::Unknown),
                 high,

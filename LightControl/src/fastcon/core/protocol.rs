@@ -1,7 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::fastcon::{DEFAULT_BLE_FASTCON_ADDRESS, DEFAULT_ENCRYPT_KEY};
-use num_traits::WrappingAdd;
 
 use super::utils::{crc16, reverse_8, whitening_encode, whitening_init, WhiteningContext};
 
@@ -41,39 +40,37 @@ fn package_ble_fastcon_body(
     safe_key: u8,
     forward: bool,
     data: &[u8],
-    data_size: usize,
     key: Option<&[u8]>,
 ) -> Vec<u8> {
     // bit 7 is forward
     // bit 6-4 is i2
     // bit 3-0 is i
     let mut body = vec![0; data.len() + 4];
-    body[0] = ((i2 & 0b1111) << 0) | ((i & 0b111) << 4) | (u8::from(forward) << 7);
+    body[0] = (i2 & 0b1111) << 0 | (i & 0b111) << 4 | u8::from(forward) << 7;
     body[1] = sequence as u8;
     body[2] = safe_key;
     body[3] = 0; // checksum
 
     body[4..].copy_from_slice(data);
 
-    let mut checksum = 0;
+    let mut checksum: u8 = 0;
     for i in 0..body.len() {
         if i == 3 {
             continue; // skip checksum itself
         }
 
         // allow overflow
-        checksum = checksum.wrapping_add(&body[i]);
+        checksum = checksum.wrapping_add(body[i]);
     }
 
     body[3] = checksum;
-
-    let real_key = key.unwrap_or(&DEFAULT_ENCRYPT_KEY);
 
     for i in 0..4 {
         body[i] = DEFAULT_ENCRYPT_KEY[i & 3] ^ body[i];
     }
 
-    for i in 0..data_size {
+    let real_key = key.unwrap_or(&DEFAULT_ENCRYPT_KEY);
+    for i in 0..data.len() {
         body[4 + i] = real_key[i & 3] ^ body[4 + i];
     }
 
@@ -122,16 +119,7 @@ fn get_payload_with_inner_retry(
     if use_22_data {
         panic!("22 data not implemented");
     } else {
-        package_ble_fastcon_body(
-            i,
-            i2,
-            some_sequence,
-            safe_key,
-            forward,
-            data,
-            data.len(),
-            key,
-        )
+        package_ble_fastcon_body(i, i2, some_sequence, safe_key, forward, data, key)
     }
 }
 
