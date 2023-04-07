@@ -64,7 +64,10 @@ func onGetLightAction(msg *tgbotapi.MessageConfig) {
 }
 
 func onColorAction(msg *tgbotapi.MessageConfig, color []string) {
-	new_state := light.LightState{}
+	new_state := light.LightState{
+		On:         true,
+		Brightness: 255,
+	}
 	msg.Text = "嗯"
 
 	if len(color) == 1 {
