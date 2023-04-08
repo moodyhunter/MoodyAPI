@@ -124,7 +124,7 @@ fn get_payload_with_inner_retry(
 }
 
 pub(crate) fn do_generate_command(
-    n: u8,
+    i: u8,
     data: &[u8],
     key: Option<&[u8]>,
     _retry_count: i32,
@@ -132,7 +132,7 @@ pub(crate) fn do_generate_command(
     forward: bool,
     use_default_adapter: bool,
     use_22_data: bool,
-    i4: u8,
+    i2: u8,
 ) -> Vec<u8> {
     // TODO: handle retry_count and send_interval
     if use_22_data {
@@ -143,8 +143,8 @@ pub(crate) fn do_generate_command(
         todo!("use specific adapter")
     }
 
-    let i4 = std::cmp::max(i4, 0);
-    let mut payload = get_payload_with_inner_retry(n, data, i4, key, forward, use_22_data);
+    let i2 = std::cmp::max(i2, 0);
+    let mut payload = get_payload_with_inner_retry(i, data, i2, key, forward, use_22_data);
 
     payload = get_rf_payload(&DEFAULT_BLE_FASTCON_ADDRESS, &payload);
 

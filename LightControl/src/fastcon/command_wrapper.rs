@@ -6,7 +6,7 @@ const BLE_CMD_RETRY_CNT: i32 = 1;
 const BLE_CMD_ADVERTISE_LENGTH: i32 = 3000; // how long, in ms, to advertise for a command
 
 fn command_with_no_delay(
-    n: u8,
+    i: u8,
     data: &[u8],
     key: Option<&[u8]>,
     retry_count: i32,
@@ -14,10 +14,10 @@ fn command_with_no_delay(
     z: bool,
     use_default_adapter: bool,
     use_22_data: bool,
-    some_i: u8,
+    i2: u8,
 ) -> Vec<u8> {
     command_with_delay_impl(
-        n,
+        i,
         data,
         key,
         retry_count,
@@ -26,12 +26,12 @@ fn command_with_no_delay(
         0,
         use_default_adapter,
         use_22_data,
-        some_i,
+        i2,
     )
 }
 
 fn command_with_delay(
-    n: u8,
+    i: u8,
     data: &[u8],
     key: Option<&[u8]>,
     retry_cnt: i32,
@@ -40,10 +40,10 @@ fn command_with_delay(
     delay: i32,
     use_default_adapter: bool,
     use_22_data: bool,
-    some_i: u8,
+    i2: u8,
 ) -> Vec<u8> {
     command_with_delay_impl(
-        n,
+        i,
         data,
         key,
         retry_cnt,
@@ -52,7 +52,7 @@ fn command_with_delay(
         delay,
         use_default_adapter,
         use_22_data,
-        some_i,
+        i2,
     )
 }
 
@@ -60,25 +60,25 @@ fn command_with_delay_impl(
     n: u8,
     data: &[u8],
     key: Option<&[u8]>,
-    i2: i32,
-    i3: i32,
+    retry_count: i32,
+    send_interval: i32,
     z: bool,
     delay: i32,
     use_default_adapter: bool,
     use_22_data: bool,
-    i5: u8,
+    i2: u8,
 ) -> Vec<u8> {
     if delay <= 0 {
         do_generate_command(
             n,
             data,
             key,
-            i2,
-            i3,
+            retry_count,
+            send_interval,
             z,
             use_default_adapter,
             use_22_data,
-            i5,
+            i2,
         )
     } else {
         panic!("delay not implemented");
@@ -113,7 +113,7 @@ pub fn single_control(addr: u32, key: Option<&[u8]>, data: Vec<u8>, delay: i32) 
     result_data[2..data.len() + 2].copy_from_slice(&data);
 
     command_with_delay(
-        5,
+        5, // unknown value
         &result_data,
         key,
         BLE_CMD_RETRY_CNT,

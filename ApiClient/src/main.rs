@@ -5,6 +5,7 @@ use models::{
         CreateDnsRecordRequest, DeleteDnsRecordRequest, DnsRecord, ListDnsRecordsRequest,
         UpdateDnsRecordRequest,
     },
+    light::{light_state::Mode, LightColor, LightState, SetLightRequest},
     moody_api::{
         moody_api_service_client::MoodyApiServiceClient, CameraState, UpdateCameraStateRequest,
     },
@@ -147,6 +148,41 @@ static COMMANDS: &[Command] = &[
                 nargs: 3,
                 usage: "<domain> <type> <ip/host>",
                 op: |a, b, c| Box::pin(dns_create(a, b, c)),
+            },
+        ],
+    },
+    Command {
+        command: "light",
+        short: "l",
+        description: "Light operations.",
+        subcommands: &[
+            SubCommand {
+                subcommand: "on",
+                description: "Turn on the light.",
+                nargs: 0,
+                usage: "",
+                op: |a, b, c| Box::pin(light_on(a, b, c)),
+            },
+            SubCommand {
+                subcommand: "off",
+                description: "Turn off the light.",
+                nargs: 0,
+                usage: "",
+                op: |a, b, c| Box::pin(light_off(a, b, c)),
+            },
+            SubCommand {
+                subcommand: "ww",
+                description: "Set the light to warm white.",
+                nargs: 0,
+                usage: "",
+                op: |a, b, c| Box::pin(light_ww(a, b, c)),
+            },
+            SubCommand {
+                subcommand: "color",
+                description: "Set the light to a color.",
+                nargs: 3,
+                usage: "<r> <g> <b>",
+                op: |a, b, c| Box::pin(light_color(a, b, c)),
             },
         ],
     },
@@ -484,6 +520,88 @@ async fn dns_create(chan: Channel, uuid: String, args: Vec<String>) -> Result<()
 
     client.create_dns_record(request).await.and_then(|_| {
         println!("DNS created");
+        Ok(())
+    })
+}
+
+async fn light_on(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
+    let mut client = MoodyApiServiceClient::new(chan);
+
+    let request = Request::new(SetLightRequest {
+        auth: Some(Auth {
+            client_uuid: uuid.to_owned(),
+        }),
+        state: Some(LightState {
+            on: true,
+            ..Default::default()
+        }),
+    });
+
+    client.set_light_state(request).await.and_then(|_| {
+        println!("Light is now on");
+        Ok(())
+    })
+}
+
+async fn light_off(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
+    let mut client = MoodyApiServiceClient::new(chan);
+
+    let request = Request::new(SetLightRequest {
+        auth: Some(Auth {
+            client_uuid: uuid.to_owned(),
+        }),
+        state: Some(LightState {
+            on: false,
+            ..Default::default()
+        }),
+    });
+
+    client.set_light_state(request).await.and_then(|_| {
+        println!("Light is now off");
+        Ok(())
+    })
+}
+
+async fn light_color(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
+    let mut client = MoodyApiServiceClient::new(chan);
+
+    let request = Request::new(SetLightRequest {
+        auth: Some(Auth {
+            client_uuid: uuid.to_owned(),
+        }),
+        state: Some(LightState {
+            on: true,
+            brightness: 255,
+            mode: Some(Mode::Colored(LightColor {
+                red: args[0].parse().unwrap(),
+                green: args[1].parse().unwrap(),
+                blue: args[2].parse().unwrap(),
+            })),
+        }),
+    });
+
+    client.set_light_state(request).await.and_then(|_| {
+        println!("Light color set");
+        Ok(())
+    })
+}
+
+async fn light_ww(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
+    let mut client = MoodyApiServiceClient::new(chan);
+
+    let request = Request::new(SetLightRequest {
+        auth: Some(Auth {
+            client_uuid: uuid.to_owned(),
+        }),
+        state: Some(LightState {
+            on: true,
+            brightness: 255,
+            mode: Some(Mode::Warmwhite(true)),
+        }),
+    });
+
+    client.set_light_state(request).await.and_then(|_| {
+        println!("Light color set");
         Ok(())
     })
 }
