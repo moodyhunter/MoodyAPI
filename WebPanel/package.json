@@ -38,10 +38,10 @@
         "@types/react": "18.0.33",
         "@typescript-eslint/eslint-plugin": "5.57.1",
         "@typescript-eslint/parser": "5.57.1",
-        "eslint": "8.37.0",
+        "eslint": "8.38.0",
         "eslint-config-next": "13.3.0",
         "grpc-tools": "1.12.4",
         "ts-proto": "1.146.0",
-        "typescript": "5.0.3"
+        "typescript": "5.0.4"
     }
 }
