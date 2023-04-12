@@ -23,7 +23,7 @@ impl From<&BLELight> for light_impl::LightCommand {
                 light_impl::LightCommand::WarmWhite(true, light.brightness, 127, 127)
             }
             LightState::RGB(r, g, b) => {
-                light_impl::LightCommand::Colored(true, light.brightness, r, g, b, false)
+                light_impl::LightCommand::Colored(true, light.brightness, r, g, b, true)
             }
         }
     }
