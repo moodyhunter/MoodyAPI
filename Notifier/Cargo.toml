@@ -5,15 +5,15 @@ name = "notify_client"
 version = "0.1.0"
 
 [dependencies]
-chrono = "0.4.23"
-notify-rust = "4"
+chrono = "0.4.24"
+notify-rust = "4.8.0"
 platform-dirs = "0.3.0"
 prost = "0.11.8"
 prost-types = "0.11.8"
 rust-ini = "0.18.0"
-tokio = {version = "1.26.0", features = ["rt-multi-thread"]}
-tonic = {version = "0.8.3", features = ["transport", "tls", "tls-roots"]}
+tokio = {version = "1.27.0", features = ["rt-multi-thread"]}
+tonic = {version = "0.9.1", features = ["transport", "tls", "tls-roots"]}
 
 [build-dependencies]
 protoc-rust-grpc = "0.8.3"
-tonic-build = {version = "0.8.4" }
+tonic-build = {version = "0.9.1"}
