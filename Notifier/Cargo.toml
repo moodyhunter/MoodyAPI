@@ -11,7 +11,7 @@ platform-dirs = "0.3.0"
 prost = "0.11.8"
 prost-types = "0.11.8"
 rust-ini = "0.18.0"
-tokio = {version = "1.26.0", features = ["rt-multi-thread"]}
+tokio = {version = "1.27.0", features = ["rt-multi-thread"]}
 tonic = {version = "0.8.3", features = ["transport", "tls", "tls-roots"]}
 
 [build-dependencies]
