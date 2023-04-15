@@ -184,6 +184,13 @@ static COMMANDS: &[Command] = &[
                 usage: "<r> <g> <b>",
                 op: |a, b, c| Box::pin(light_color(a, b, c)),
             },
+            SubCommand {
+                subcommand: "brightness",
+                description: "Set the light brightness.",
+                nargs: 1,
+                usage: "<brightness>",
+                op: |a, b, c| Box::pin(light_brightness(a, b, c)),
+            },
         ],
     },
 ];
@@ -602,6 +609,26 @@ async fn light_ww(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(),
 
     client.set_light_state(request).await.and_then(|_| {
         println!("Light color set");
+        Ok(())
+    })
+}
+
+async fn light_brightness(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
+    let mut client = MoodyApiServiceClient::new(chan);
+
+    let request = Request::new(SetLightRequest {
+        auth: Some(Auth {
+            client_uuid: uuid.to_owned(),
+        }),
+        state: Some(LightState {
+            on: true,
+            brightness: args[0].parse().unwrap(),
+            ..Default::default()
+        }),
+    });
+
+    client.set_light_state(request).await.and_then(|_| {
+        println!("Light brightness set");
         Ok(())
     })
 }
