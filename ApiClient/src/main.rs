@@ -616,13 +616,21 @@ async fn light_ww(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(),
 async fn light_brightness(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
     let mut client = MoodyApiServiceClient::new(chan);
 
+    let brightness: u32 = if args[0] == "max" {
+        127
+    } else if args[0] == "min" {
+        5
+    } else {
+        args[0].parse::<u32>().unwrap().min(127)
+    };
+
     let request = Request::new(SetLightRequest {
         auth: Some(Auth {
             client_uuid: uuid.to_owned(),
         }),
         state: Some(LightState {
             on: true,
-            brightness: args[0].parse().unwrap(),
+            brightness,
             ..Default::default()
         }),
     });
