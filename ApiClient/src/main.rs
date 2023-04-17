@@ -621,7 +621,7 @@ async fn light_brightness(chan: Channel, uuid: String, args: Vec<String>) -> Res
     } else if args[0] == "min" {
         5
     } else {
-        args[0].parse::<u32>().unwrap().min(127)
+        args[0].parse::<u32>().unwrap().min(127).max(5)
     };
 
     let request = Request::new(SetLightRequest {
