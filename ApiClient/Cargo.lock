@@ -452,15 +452,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dirs"
-version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca3aa72a6f96ea37bbc5aa912f6788242832f75369bdfdadcb0e38423f100059"
-dependencies = [
- "dirs-sys",
-]
-
-[[package]]
 name = "dirs-next"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -478,17 +469,6 @@ checksum = "b98cf8ebf19c3d1b223e151f99a4f9f0690dca41414773390fc824184ac833e1"
 dependencies = [
  "cfg-if",
  "dirs-sys-next",
-]
-
-[[package]]
-name = "dirs-sys"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b1d1d91c932ef41c0f2663aa8b0ca0342d444d842c06914aa0a7e352d0bada6"
-dependencies = [
- "libc",
- "redox_users",
- "winapi",
 ]
 
 [[package]]
@@ -516,9 +496,9 @@ checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
 
 [[package]]
 name = "enumflags2"
-version = "0.7.6"
+version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0044ebdf7fbb2a772e0c0233a9d3173c5cd8af8ae7078d4c5188af44ffffaa4b"
+checksum = "c041f5090df68b32bcd905365fd51769c8b9d553fe87fde0b683534f10c01bd2"
 dependencies = [
  "enumflags2_derive",
  "serde",
@@ -526,9 +506,9 @@ dependencies = [
 
 [[package]]
 name = "enumflags2_derive"
-version = "0.7.6"
+version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d2c772ccdbdfd1967b4f5d79d17c98ebf92009fdcc838db7aa434462f600c26"
+checksum = "5e9a1f9f7d83e59740248a6e14ecf93929ade55027844dfcea78beafccc15745"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -686,9 +666,9 @@ dependencies = [
 
 [[package]]
 name = "h2"
-version = "0.3.17"
+version = "0.3.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66b91535aa35fea1523ad1b86cb6b53c28e0ae566ba4a460f4457e936cad7c6f"
+checksum = "17f8a914c2987b688368b5138aa05321db91f4090cf26118185672ad588bce21"
 dependencies = [
  "bytes",
  "fnv",
@@ -1009,7 +989,6 @@ dependencies = [
  "cfg-if",
  "libc",
  "memoffset",
- "pin-utils",
  "static_assertions",
 ]
 
@@ -1914,9 +1893,9 @@ dependencies = [
 
 [[package]]
 name = "tonic"
-version = "0.9.1"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38bd8e87955eb13c1986671838177d6792cdc52af9bffced0d2c8a9a7f741ab3"
+checksum = "3082666a3a6433f7f511c7192923fa1fe07c69332d3c6a2e6bb040b569199d5a"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1946,9 +1925,9 @@ dependencies = [
 
 [[package]]
 name = "tonic-build"
-version = "0.9.1"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f60a933bbea70c95d633c04c951197ddf084958abaa2ed502a3743bdd8d8dd7"
+checksum = "a6fdaae4c2c638bb70fe42803a26fbd6fc6ac8c72f5c59f67ecc2a2dcabf4b07"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -2416,10 +2395,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "zbus"
-version = "3.11.1"
+name = "xdg-home"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3dc29e76f558b2cb94190e8605ecfe77dd40f5df8c072951714b4b71a97f5848"
+checksum = "2769203cd13a0c6015d515be729c526d041e9cf2c0cc478d57faee85f40c6dcd"
+dependencies = [
+ "nix",
+ "winapi",
+]
+
+[[package]]
+name = "zbus"
+version = "3.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "29242fa5ec5693629ae74d6eb1f69622a9511f600986d6d9779bccf36ac316e3"
 dependencies = [
  "async-broadcast",
  "async-executor",
@@ -2431,7 +2420,6 @@ dependencies = [
  "async-trait",
  "byteorder",
  "derivative",
- "dirs",
  "enumflags2",
  "event-listener",
  "futures-core",
@@ -2449,6 +2437,7 @@ dependencies = [
  "tracing",
  "uds_windows",
  "winapi",
+ "xdg-home",
  "zbus_macros",
  "zbus_names",
  "zvariant",
@@ -2456,9 +2445,9 @@ dependencies = [
 
 [[package]]
 name = "zbus_macros"
-version = "3.11.1"
+version = "3.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62a80fd82c011cd08459eaaf1fd83d3090c1b61e6d5284360074a7475af3a85d"
+checksum = "537793e26e9af85f774801dc52c6f6292352b2b517c5cf0449ffd3735732a53a"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
