@@ -165,6 +165,7 @@ func (m *TelegramBot) ServeBotCommand() {
 					ChatID: update.Message.Chat.ID,
 					Title:  strings.Join(args, " "),
 				})
+				msg.Text = "好"
 			case "pin":
 				if update.Message.ReplyToMessage != nil {
 					_, err := m.botApi.Request(tgbotapi.PinChatMessageConfig{
