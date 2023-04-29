@@ -11,14 +11,14 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "7.21.4",
-        "@emotion/react": "11.10.6",
-        "@emotion/styled": "11.10.6",
+        "@babel/core": "7.21.5",
+        "@emotion/react": "11.10.8",
+        "@emotion/styled": "11.10.8",
         "@hello-pangea/color-picker": "^3.2.2",
         "@mui/icons-material": "5.11.16",
         "@mui/material": "5.12.2",
         "@mui/system": "5.12.1",
-        "@mui/x-data-grid": "6.2.1",
+        "@mui/x-data-grid": "6.3.0",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
         "dayjs": "1.11.7",
