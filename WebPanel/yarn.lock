@@ -1123,14 +1123,14 @@ callsites@^3.0.0:
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
 caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001449:
-  version "1.0.30001485"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001485.tgz#026bb7319f1e483391872dc303a973d4f513f619"
-  integrity sha512-8aUpZ7sjhlOyiNsg+pgcrTTPUXKh+rg544QYHSvQErljVEKJzvkYkCR/hUFeeVoEfTToUtY9cUKNRC7+c45YkA==
+  version "1.0.30001486"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001486.tgz#56a08885228edf62cbe1ac8980f2b5dae159997e"
+  integrity sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg==
 
 case-anything@^2.1.10:
-  version "2.1.10"
-  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.10.tgz#d18a6ca968d54ec3421df71e3e190f3bced23410"
-  integrity sha512-JczJwVrCP0jPKh05McyVsuOg6AYosrB9XWZKbQzXeDAm2ClE/PJE/BcrrQrVyGYH7Jg8V/LDupmyL4kFlVsVFQ==
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.11.tgz#39a00ff733f26e48729f5c6c7f23763ac8fa0467"
+  integrity sha512-uzKDXzdM/x914cepWPzElU3y50NRKYhjkO4ittOHLq+rF6M0AgRLF/+yPR1tvwLNAh8WHEPTfhuciZGPfX+oyg==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -3416,10 +3416,10 @@ ts-proto-descriptors@1.9.0:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@1.147.1:
-  version "1.147.1"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.147.1.tgz#457fa7d2cce7e4b27ecc59396e1155b04ba9f890"
-  integrity sha512-34G8jf+56gZkHrxVFMN3t8BJDWF7mCU4h8b4octjoFScojf4QTPCrFeXDhiidFuOixd//5AQVsF5LcVdxDCJzw==
+ts-proto@1.147.2:
+  version "1.147.2"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.147.2.tgz#57cbc520b5ffc9dfa0283a0233edddcad948976e"
+  integrity sha512-9JR8O6vNYwPwemln1bqY8ldyTfkA3V1LEe8uEpliyu96skNNs/t8Fkjk0jVBxQ30SuJq88HHZlqQulmFPwR90Q==
   dependencies:
     "@types/object-hash" "^1.3.0"
     case-anything "^2.1.10"
