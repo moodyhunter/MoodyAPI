@@ -34,14 +34,14 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "20.1.4",
+        "@types/node": "20.1.7",
         "@types/react": "18.2.6",
         "@typescript-eslint/eslint-plugin": "5.59.6",
         "@typescript-eslint/parser": "5.59.6",
         "eslint": "8.40.0",
         "eslint-config-next": "13.4.2",
         "grpc-tools": "1.12.4",
-        "ts-proto": "1.147.2",
+        "ts-proto": "1.147.3",
         "typescript": "5.0.4"
     }
 }
