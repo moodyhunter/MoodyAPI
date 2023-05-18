@@ -16,8 +16,8 @@
         "@emotion/styled": "11.11.0",
         "@hello-pangea/color-picker": "^3.2.2",
         "@mui/icons-material": "5.11.16",
-        "@mui/material": "5.13.0",
-        "@mui/system": "5.12.3",
+        "@mui/material": "5.13.1",
+        "@mui/system": "5.13.1",
         "@mui/x-data-grid": "6.4.0",
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
@@ -34,7 +34,7 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "20.1.7",
+        "@types/node": "20.2.0",
         "@types/react": "18.2.6",
         "@typescript-eslint/eslint-plugin": "5.59.6",
         "@typescript-eslint/parser": "5.59.6",
