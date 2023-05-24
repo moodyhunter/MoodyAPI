@@ -1119,9 +1119,9 @@ caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001449:
   integrity sha512-x1mgZEXK8jHIfAxm+xgdpHpk50IN3z3q3zP261/WS+uvePxW8izXuCu6AHz0lkuYTlATDehiZ/tNyYBdSQsOUQ==
 
 case-anything@^2.1.10:
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.11.tgz#39a00ff733f26e48729f5c6c7f23763ac8fa0467"
-  integrity sha512-uzKDXzdM/x914cepWPzElU3y50NRKYhjkO4ittOHLq+rF6M0AgRLF/+yPR1tvwLNAh8WHEPTfhuciZGPfX+oyg==
+  version "2.1.12"
+  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.12.tgz#836628abf6d33c4587f5f53387433d6b24a88eaf"
+  integrity sha512-EKzcjF1KmtgL2aqW4Xi/aTAXBaQhbTL6StFmjzdm75cW9z6Cq0WU6DiejhbETlxY4SS3Dll5GYVxwDWc0BqEDg==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -1379,9 +1379,9 @@ dprint-node@^1.0.7:
     detect-libc "^1.0.3"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.403"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.403.tgz#8b4666d1ea6cf97e03c1ed39ded1f25212865ecc"
-  integrity sha512-evCMqXJWmbQHdlh307peXNguqVIMmcLGrQwXiR+Qc98js8jPDeT9rse1+EF2YRjWgueuzj1r4WWLAe4/U+xjMg==
+  version "1.4.405"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.405.tgz#487bdba2d82a59b092d6b6e4602bf733cec6a7ef"
+  integrity sha512-JdDgnwU69FMZURoesf9gNOej2Cms1XJFfLk24y1IBtnAdhTcJY/mXnokmpmxHN59PcykBP4bgUU98vLY44Lhuw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3407,10 +3407,10 @@ ts-proto-descriptors@1.9.0:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@1.147.3:
-  version "1.147.3"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.147.3.tgz#38b8641d84afa1506b7a4a5302b47fe66c7663cd"
-  integrity sha512-379/IfSY1MmX+7ohEREAOPO3Pw3AIiBO2WSZr58pnVaeMHZipyAa8jj6j7rjcHmqIx8l0sgelFumWhB8yA5k9w==
+ts-proto@1.148.0:
+  version "1.148.0"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.148.0.tgz#e5bec6d0db9065e92ec230b660994e4f41ee0283"
+  integrity sha512-zeo2iae+67e7Ji/DxIIqIUHWWrjZwMEcu9uzloKYJqb5ElDUjdLFeKf9rKkdptYoCu+Fokb71SRoTA7k3VStXw==
   dependencies:
     "@types/object-hash" "^1.3.0"
     case-anything "^2.1.10"

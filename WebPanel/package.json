@@ -41,7 +41,7 @@
         "eslint": "8.41.0",
         "eslint-config-next": "13.4.3",
         "grpc-tools": "1.12.4",
-        "ts-proto": "1.147.3",
+        "ts-proto": "1.148.0",
         "typescript": "5.0.4"
     }
 }
