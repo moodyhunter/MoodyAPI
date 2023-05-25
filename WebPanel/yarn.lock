@@ -624,9 +624,9 @@
   integrity sha512-dhPeilub1NuIG0X5Kvhh9lH4iW3ZsHlnzwgwbOlgwQ2wG1IqFzsgHqmKPk3WzsdWAeaxKJxgM0+W433RmN45GA==
 
 "@pkgr/utils@^2.3.1":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.4.0.tgz#b6373d2504aedaf2fc7cdf2d13ab1f48fa5f12d5"
-  integrity sha512-2OCURAmRtdlL8iUDTypMrrxfwe8frXTeXaxGsVOaYtc/wrUyk8Z/0OBetM7cdlsy7ZFWlMX72VogKeh+A4Xcjw==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.4.1.tgz#adf291d0357834c410ce80af16e711b56c7b1cd3"
+  integrity sha512-JOqwkgFEyi+OROIyq7l4Jy28h/WwhDnG/cPkXG2Z1iFbubB6jsHW1NDvmyOzTBxHr3yg68YGirmh1JUgMqa+9w==
   dependencies:
     cross-spawn "^7.0.3"
     fast-glob "^3.2.12"
@@ -766,10 +766,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@18.2.6":
-  version "18.2.6"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.6.tgz#5cd53ee0d30ffc193b159d3516c8c8ad2f19d571"
-  integrity sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==
+"@types/react@*", "@types/react@18.2.7":
+  version "18.2.7"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.7.tgz#dfb4518042a3117a045b8c222316f83414a783b3"
+  integrity sha512-ojrXpSH2XFCmHm7Jy3q44nXDyN54+EYKP2lBhJ2bqfyPj6cIUW/FZW/Csdia34NQgq7KYcAlHi5184m4X88+yw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -875,9 +875,9 @@ abbrev@1:
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
 abort-controller-x@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.1.tgz#b2eefab8503897e0bbdf3dd7a4d33e05ea1ffce9"
-  integrity sha512-lJ2ssrl3FoTK3cX/g15lRCkXFWKiwRTRtBjfwounO2EM/Q65rI/MEZsfsch1juWU2pH2aLSaq0HGowlDP/imrw==
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.2.tgz#66dae3c510706b407915af6ecc420ded1e616f08"
+  integrity sha512-5bgqvgogTIxTkQpkgDoFZHt2YS8uireyOkC4snQG2kaEKs7DI7Tgsu5xysjp9MxG+6OLICBOAL8TtKHzxQrlqw==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -1119,9 +1119,9 @@ caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001449:
   integrity sha512-x1mgZEXK8jHIfAxm+xgdpHpk50IN3z3q3zP261/WS+uvePxW8izXuCu6AHz0lkuYTlATDehiZ/tNyYBdSQsOUQ==
 
 case-anything@^2.1.10:
-  version "2.1.12"
-  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.12.tgz#836628abf6d33c4587f5f53387433d6b24a88eaf"
-  integrity sha512-EKzcjF1KmtgL2aqW4Xi/aTAXBaQhbTL6StFmjzdm75cW9z6Cq0WU6DiejhbETlxY4SS3Dll5GYVxwDWc0BqEDg==
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.13.tgz#0cdc16278cb29a7fcdeb072400da3f342ba329e9"
+  integrity sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -1379,9 +1379,9 @@ dprint-node@^1.0.7:
     detect-libc "^1.0.3"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.405"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.405.tgz#487bdba2d82a59b092d6b6e4602bf733cec6a7ef"
-  integrity sha512-JdDgnwU69FMZURoesf9gNOej2Cms1XJFfLk24y1IBtnAdhTcJY/mXnokmpmxHN59PcykBP4bgUU98vLY44Lhuw==
+  version "1.4.406"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.406.tgz#6388f92a0443d0f0ffcda890489edbe2012488f2"
+  integrity sha512-NXlDDH8Z4tK5ZX7w9dW/lRUsZ0TwL1rg3Sw1e5HKbk3+LCAh3SyUjYyGoxOf9xNxyg+DtaofkFpHS4T5Z2Q26w==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -1394,9 +1394,9 @@ emoji-regex@^9.2.2:
   integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
 
 enhanced-resolve@^5.12.0:
-  version "5.14.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.14.0.tgz#0b6c676c8a3266c99fa281e4433a706f5c0c61c4"
-  integrity sha512-+DCows0XNwLDcUhbFJPdlQEVnT2zXlCv7hPxemTz86/O+B/hCQ+mb7ydkPKiflpVraqLPCAfu7lDy+hBXueojw==
+  version "5.14.1"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.14.1.tgz#de684b6803724477a4af5d74ccae5de52c25f6b3"
+  integrity sha512-Vklwq2vDKtl0y/vtwjSesgJ5MYS7Etuk5txS8VdKL4AOS1aUlD96zqIfsOSLQsdv3xgMRbtkWM8eG9XDfKUPow==
   dependencies:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
@@ -2663,9 +2663,9 @@ node-fetch@^2.6.7:
     whatwg-url "^5.0.0"
 
 node-releases@^2.0.8:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.11.tgz#59d7cef999d13f908e43b5a70001cf3129542f0f"
-  integrity sha512-+M0PwXeU80kRohZ3aT4J/OnR+l9/KD2nVLNNoRgFtnf+umQVFdGBAO2N8+nCnEi0xlh/Wk3zOGC+vNNx+uM79Q==
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.12.tgz#35627cc224a23bfb06fb3380f2b3afaaa7eb1039"
+  integrity sha512-QzsYKWhXTWx8h1kIvqfnC++o0pEmpRQA/aenALsL2F4pqNVr7YzcdMlDij5WBnwftRbJCNJL/O7zdKaxKPHqgQ==
 
 nopt@^5.0.0:
   version "5.0.0"
