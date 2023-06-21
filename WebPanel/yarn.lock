@@ -338,9 +338,9 @@
   integrity sha512-s2UHCoiXfxMvmfzqoN+vrQ84ahUSYde9qNO1MdxmoEhyHWsfmwOpFlwYV+ePJEVc7gFnATGUi376WowX1N7tFg==
 
 "@grpc/grpc-js@^1.7.3":
-  version "1.8.15"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.8.15.tgz#17829cbc9f2bc8b3b0e22a4da59d72db2a34df5c"
-  integrity sha512-H2Bu/w6+oQ58DsRbQol66ERBk3V5ZIak/z/MDx0T4EgDnJWps807I6BvTjq0v6UvZtOcLO+ur+Q9wvniqu3OJA==
+  version "1.8.16"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.8.16.tgz#9a1b93703c065fde20b90d854126aadb89f4f0bd"
+  integrity sha512-Nvlq4V7XQmdRVDGgecR8ZPPCeY+uH1LhzbC+QxklwAahpQlq8YLsiOQgfkub9FiakRiohaDy361xqlTLkq9EHw==
   dependencies:
     "@grpc/proto-loader" "^0.7.0"
     "@types/node" ">=12.12.47"
@@ -1114,9 +1114,9 @@ callsites@^3.0.0:
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
 caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001503:
-  version "1.0.30001504"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001504.tgz#eaf77e5c852dfa5f82c4924468c30602ac53744a"
-  integrity sha512-5uo7eoOp2mKbWyfMXnGO9rJWOGU8duvzEiYITW+wivukL7yHH4gX9yuRaobu6El4jPxo6jKZfG+N6fB621GD/Q==
+  version "1.0.30001505"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001505.tgz#10a343e49d31cbbfdae298ef73cb0a9f46670dc5"
+  integrity sha512-jaAOR5zVtxHfL0NjZyflVTtXm3D3J9P15zSJ7HmQF8dSKGA6tqzQq+0ZI3xkjyQj46I4/M0K2GbMpcAFOcbr3A==
 
 case-anything@^2.1.10:
   version "2.1.13"
@@ -1360,9 +1360,9 @@ dprint-node@^1.0.7:
     detect-libc "^1.0.3"
 
 electron-to-chromium@^1.4.431:
-  version "1.4.434"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.434.tgz#4bdef7b5b18d8dac177ec0d31dab9f92eebf22a1"
-  integrity sha512-5Gvm09UZTQRaWrimRtWRO5rvaX6Kpk5WHAPKDa7A4Gj6NIPuJ8w8WNpnxCXdd+CJJt6RBU6tUw0KyULoW6XuHw==
+  version "1.4.435"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.435.tgz#761c34300603b9f1234f0b6155870d3002435db6"
+  integrity sha512-B0CBWVFhvoQCW/XtjRzgrmqcgVWg6RXOEM/dK59+wFV93BFGR6AeNKc4OyhM+T3IhJaOOG8o/V+33Y2mwJWtzw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3335,10 +3335,10 @@ ts-proto-descriptors@1.9.0:
     long "^4.0.0"
     protobufjs "^6.8.8"
 
-ts-proto@1.149.0:
-  version "1.149.0"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.149.0.tgz#cacd276c7f17c1d0c9ad471c56bfc7ff9d51ab4e"
-  integrity sha512-+KK+diaqj86XHdq+fkbFWeTLVE6s69jApyQF34cwL1M3h+gS1sjDy/lf0rUgeQtgMQ/K3qxQElbVTusV7Z3otQ==
+ts-proto@1.150.0:
+  version "1.150.0"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.150.0.tgz#41b9a737caa5bc242274eda01749e4ecfc1a4fa2"
+  integrity sha512-EYnKWkNkWRmnK2nG5D9J1zN959YD/gff+e8/nqpOw7kdrfsnCe1dr/+EYxiRhPnq/umVpBLwI/KaSDg9G+9KPA==
   dependencies:
     "@types/object-hash" "^3.0.2"
     case-anything "^2.1.10"
