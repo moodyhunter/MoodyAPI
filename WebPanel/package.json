@@ -25,7 +25,7 @@
         "jotai": "2.2.1",
         "long": "5.2.3",
         "minimist": "1.2.8",
-        "next": "13.4.7",
+        "next": "13.4.8",
         "next-auth": "4.22.1",
         "nextjs-progressbar": "0.0.16",
         "nice-grpc": "2.1.4",
@@ -36,10 +36,10 @@
     "devDependencies": {
         "@types/node": "20.3.3",
         "@types/react": "18.2.14",
-        "@typescript-eslint/eslint-plugin": "5.60.1",
-        "@typescript-eslint/parser": "5.60.1",
+        "@typescript-eslint/eslint-plugin": "5.61.0",
+        "@typescript-eslint/parser": "5.61.0",
         "eslint": "8.44.0",
-        "eslint-config-next": "13.4.7",
+        "eslint-config-next": "13.4.8",
         "grpc-tools": "1.12.4",
         "ts-proto": "1.150.1",
         "typescript": "5.1.6"
