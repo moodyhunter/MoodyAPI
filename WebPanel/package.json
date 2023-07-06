@@ -22,7 +22,7 @@
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.0",
         "dayjs": "1.11.9",
-        "jotai": "2.2.1",
+        "jotai": "2.2.2",
         "long": "5.2.3",
         "minimist": "1.2.8",
         "next": "13.4.8",
@@ -34,14 +34,14 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "20.3.3",
+        "@types/node": "20.4.0",
         "@types/react": "18.2.14",
         "@typescript-eslint/eslint-plugin": "5.61.0",
         "@typescript-eslint/parser": "5.61.0",
         "eslint": "8.44.0",
         "eslint-config-next": "13.4.8",
         "grpc-tools": "1.12.4",
-        "ts-proto": "1.151.0",
+        "ts-proto": "1.151.1",
         "typescript": "5.1.6"
     }
 }
