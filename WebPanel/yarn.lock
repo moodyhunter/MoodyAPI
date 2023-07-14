@@ -340,9 +340,9 @@
   integrity sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==
 
 "@grpc/grpc-js@^1.7.3":
-  version "1.8.17"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.8.17.tgz#a3a2f826fc033eae7d2f5ee41e0ab39cee948838"
-  integrity sha512-DGuSbtMFbaRsyffMf+VEkVu8HkSXEUfO3UyGJNtqxW9ABdtTIA+2UXAJpwbJS+xfQxuwqLUeELmL6FuZkOqPxw==
+  version "1.8.18"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.8.18.tgz#fdbf2728064fd3db7e72e970372db28bd0f6fafb"
+  integrity sha512-2uWPtxhsXmVgd8WzDhfamSjHpZDXfMjMDciY6VRTq4Sn7rFzazyf0LLDa0oav+61UHIoEZb4KKaAV6S7NuJFbQ==
   dependencies:
     "@grpc/proto-loader" "^0.7.0"
     "@types/node" ">=12.12.47"
@@ -531,10 +531,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/x-data-grid@6.9.2":
-  version "6.9.2"
-  resolved "https://registry.yarnpkg.com/@mui/x-data-grid/-/x-data-grid-6.9.2.tgz#530497b7592bc8242d591fbdedea771eb130d1c3"
-  integrity sha512-hrjVq3FrbUpioi2GYSWJtU4NR3V4bPwLbXngw07+I21TGOWV1TKeTslkPI+FGVYU3gMjGSSJRFN8gehPlh5Evw==
+"@mui/x-data-grid@6.10.0":
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-data-grid/-/x-data-grid-6.10.0.tgz#0eb49e98d1ba79c46cd559b5cf8f8637f15bca11"
+  integrity sha512-x9h+Z4B2vu+ZKKwClBVs30Y9eZYdhqyV3toHH2E0zat7FIZxwiVfk6qz4Q98V1fV0Fe1nczPj9i0siUmduMEXg==
   dependencies:
     "@babel/runtime" "^7.22.5"
     "@mui/utils" "^5.13.6"
@@ -763,10 +763,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@18.2.14":
-  version "18.2.14"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.14.tgz#fa7a6fecf1ce35ca94e74874f70c56ce88f7a127"
-  integrity sha512-A0zjq+QN/O0Kpe30hA1GidzyFjatVvrpIvWLxD+xv67Vt91TWWgco9IvrJBkeyHm1trGaFS/FSGqPlhyeZRm0g==
+"@types/react@*", "@types/react@18.2.15":
+  version "18.2.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.15.tgz#14792b35df676c20ec3cf595b262f8c615a73066"
+  integrity sha512-oEjE7TQt1fFTFSbf8kkNuc798ahTUzn3Le67/PWjE8MAfYAD/qB7O8hSTcromLFqHCt9bcdOg5GXMokzTjJ5SA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -1163,7 +1163,7 @@ caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001503:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001515.tgz#418aefeed9d024cd3129bfae0ccc782d4cb8f12b"
   integrity sha512-eEFDwUOZbE24sb+Ecsx3+OvNETqjWIdabMy52oOkIgcUtAsQifjUG9q4U9dgTHJM2mfk4uEPxc0+xuFdJ629QA==
 
-case-anything@^2.1.10:
+case-anything@^2.1.13:
   version "2.1.13"
   resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.13.tgz#0cdc16278cb29a7fcdeb072400da3f342ba329e9"
   integrity sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng==
@@ -1400,9 +1400,9 @@ dprint-node@^1.0.7:
     detect-libc "^1.0.3"
 
 electron-to-chromium@^1.4.431:
-  version "1.4.458"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.458.tgz#e171c03e6b15e44f6d27c0e1a27a3a3f828117c8"
-  integrity sha512-fYaH2f9dlJ/W3EV7wpRgzAoE85UwCUFeJIiL24PCRtvzdXJNy3AZdS/0zLqw5Omnp9GSR/hApMUQjacW2nfgsw==
+  version "1.4.460"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.460.tgz#f360a5059c039c4a5fb4dfa99680ad8129dd9f84"
+  integrity sha512-kKiHnbrHME7z8E6AYaw0ehyxY5+hdaRmeUbjBO22LZMdqTYCO29EvF0T1cQ3pJ1RN5fyMcHl1Lmcsdt9WWJpJQ==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3351,22 +3351,23 @@ ts-poet@^6.4.1:
   dependencies:
     dprint-node "^1.0.7"
 
-ts-proto-descriptors@1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-1.11.0.tgz#632f540855a167179268705dc41b82414f62c2e8"
-  integrity sha512-mOBVD9CW77x35eftRFVFQ5bhRl+UpzItDITxQQtJq3vJ/0rjHJOiI/BekkJIwUyWtJjlmO8f9LnN02MDpuZ/hQ==
+ts-proto-descriptors@1.12.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-1.12.0.tgz#2075c6b281b70ce1fb2ba304a41f48f0007b403e"
+  integrity sha512-0ip8cAig6/IB23lqZ7YzhjzufGtOKPu/noVMcCj4zoUaUtml6UmyTmJ/BeFsqe/3ILBPG97KoilpUzSg1UjpDw==
   dependencies:
+    long "^4.0.0"
     protobufjs "^7.2.4"
 
-ts-proto@1.153.2:
-  version "1.153.2"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.153.2.tgz#0692b30e144d71c306aca519bfbb40f6e72fcec2"
-  integrity sha512-gunIpanSurlIHPQUwB2J/jpj2VUwtdBrW5rOBrSiP2+borI3wWyzPRLoiuA6e4XwmTgKYlpfo7m461ooRp1joQ==
+ts-proto@1.153.3:
+  version "1.153.3"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.153.3.tgz#7d8f5dea6a735a19867ab6561ce40293a7783555"
+  integrity sha512-TvIfPn3eZ9ZF07fvWTjYz7DZLKLesVmW6Zsj7Eu3vUCZO5d/qrz5VS+TMPGTAIkha3W3ZatH0UE4N841PPLVLg==
   dependencies:
-    case-anything "^2.1.10"
+    case-anything "^2.1.13"
     protobufjs "^7.2.4"
     ts-poet "^6.4.1"
-    ts-proto-descriptors "1.11.0"
+    ts-proto-descriptors "1.12.0"
 
 tsconfig-paths@^3.14.1:
   version "3.14.2"
