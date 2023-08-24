@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
-
-	"slices"
 
 	"api.mooody.me/common"
 	"api.mooody.me/db"
@@ -129,6 +128,13 @@ func (m *TelegramBot) ServeBotCommand() {
 
 		if update.Message.IsCommand() {
 			command = update.Message.Command()
+		} else if update.Message.Sticker != nil {
+			if slices.Contains(six, update.Message.Sticker.Emoji) {
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
+				msg.ReplyToMessageID = update.Message.MessageID
+				msg.Text = "单走一个 6，傻逼。"
+				m.botApi.Send(msg)
+			}
 		} else {
 			tmp_args := strings.Split(update.Message.Text, " ")
 			if len(tmp_args) <= 0 {
