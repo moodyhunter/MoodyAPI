@@ -117,6 +117,12 @@ func (m *TelegramBot) ServeBotCommand() {
 			tmp_command := tmp_args[0]
 
 			if !strings.HasPrefix(tmp_command, "/") {
+				if tmp_command == "6" {
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
+					msg.ReplyToMessageID = update.Message.MessageID
+					msg.Text = "单走一个 6，傻逼。"
+					m.botApi.Send(msg)
+				}
 				continue
 			}
 
