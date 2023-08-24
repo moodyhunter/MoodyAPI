@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"slices"
+
 	"api.mooody.me/common"
 	"api.mooody.me/db"
 	"api.mooody.me/models/notifications"
@@ -25,6 +27,24 @@ var NonCommandVerbs = []string{
 	"开灯",
 	"关灯",
 	"色", "color",
+}
+
+var six = []string{
+	"6",
+	"６",
+	"6️⃣",
+	"六",
+	"陆",
+	"陸",
+	"⁶",
+	"₆",
+	"⑥", "❻", "➅", "➏",
+	"⑹",
+	"Ƅ",
+	"㊅",
+	"𐄞", "𐄧", "𐄰", "𐄌", "𒐨",
+	"𝟔", "𝟞", "𝟨", "𝟲", "𝟼", "🀕",
+	"🃖", "🂶", "🂦", "🃆", "🯶",
 }
 
 func NewTelegramBot(token string, safeChatId int64, safeUserId int64) *TelegramBot {
@@ -117,7 +137,7 @@ func (m *TelegramBot) ServeBotCommand() {
 			tmp_command := tmp_args[0]
 
 			if !strings.HasPrefix(tmp_command, "/") {
-				if tmp_command == "6" {
+				if slices.Contains(six, tmp_command) {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 					msg.ReplyToMessageID = update.Message.MessageID
 					msg.Text = "单走一个 6，傻逼。"
