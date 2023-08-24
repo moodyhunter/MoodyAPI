@@ -22,7 +22,7 @@
         "@types/bcrypt": "5.0.0",
         "bcrypt": "5.1.1",
         "dayjs": "1.11.9",
-        "jotai": "2.3.1",
+        "jotai": "2.4.0",
         "long": "5.2.3",
         "minimist": "1.2.8",
         "next": "13.4.19",
@@ -34,7 +34,7 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
-        "@types/node": "20.5.3",
+        "@types/node": "20.5.4",
         "@types/react": "18.2.21",
         "@typescript-eslint/eslint-plugin": "6.4.1",
         "@typescript-eslint/parser": "6.4.1",
