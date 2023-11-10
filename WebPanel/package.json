@@ -11,21 +11,21 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@babel/core": "7.23.2",
+        "@babel/core": "7.23.3",
         "@emotion/react": "11.11.1",
         "@emotion/styled": "11.11.0",
         "@hello-pangea/color-picker": "^3.2.2",
         "@mui/icons-material": "5.14.16",
         "@mui/material": "5.14.17",
         "@mui/system": "5.14.17",
-        "@mui/x-data-grid": "6.18.0",
+        "@mui/x-data-grid": "6.18.1",
         "@types/bcrypt": "5.0.2",
         "bcrypt": "5.1.1",
         "dayjs": "1.11.10",
         "jotai": "2.5.1",
         "long": "5.2.3",
         "minimist": "1.2.8",
-        "next": "14.0.1",
+        "next": "14.0.2",
         "next-auth": "4.24.4",
         "nextjs-progressbar": "0.0.16",
         "nice-grpc": "2.1.7",
@@ -39,9 +39,9 @@
         "@typescript-eslint/eslint-plugin": "6.10.0",
         "@typescript-eslint/parser": "6.10.0",
         "eslint": "8.53.0",
-        "eslint-config-next": "14.0.1",
+        "eslint-config-next": "14.0.2",
         "grpc-tools": "1.12.4",
-        "ts-proto": "1.163.0",
+        "ts-proto": "1.164.0",
         "typescript": "5.2.2"
     }
 }
