@@ -26,7 +26,7 @@
         "long": "5.2.3",
         "minimist": "1.2.8",
         "next": "14.0.2",
-        "next-auth": "4.24.4",
+        "next-auth": "4.24.5",
         "nextjs-progressbar": "0.0.16",
         "nice-grpc": "2.1.7",
         "protobufjs": "7.2.5",
