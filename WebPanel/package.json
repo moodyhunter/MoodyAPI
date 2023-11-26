@@ -22,7 +22,7 @@
         "@types/bcrypt": "5.0.2",
         "bcrypt": "5.1.1",
         "dayjs": "1.11.10",
-        "jotai": "2.5.1",
+        "jotai": "2.6.0",
         "long": "5.2.3",
         "minimist": "1.2.8",
         "next": "14.0.3",
