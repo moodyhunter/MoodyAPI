@@ -15,9 +15,9 @@
         "@emotion/react": "11.11.3",
         "@emotion/styled": "11.11.0",
         "@hello-pangea/color-picker": "^3.2.2",
-        "@mui/icons-material": "5.15.5",
-        "@mui/material": "5.15.5",
-        "@mui/system": "5.15.5",
+        "@mui/icons-material": "5.15.6",
+        "@mui/material": "5.15.6",
+        "@mui/system": "5.15.6",
         "@mui/x-data-grid": "6.19.1",
         "@types/bcrypt": "5.0.2",
         "bcrypt": "5.1.1",
@@ -36,12 +36,12 @@
     "devDependencies": {
         "@types/node": "20.11.5",
         "@types/react": "18.2.48",
-        "@typescript-eslint/eslint-plugin": "6.19.0",
-        "@typescript-eslint/parser": "6.19.0",
+        "@typescript-eslint/eslint-plugin": "6.19.1",
+        "@typescript-eslint/parser": "6.19.1",
         "eslint": "8.56.0",
         "eslint-config-next": "14.1.0",
         "grpc-tools": "1.12.4",
-        "ts-proto": "1.166.4",
+        "ts-proto": "1.167.0",
         "typescript": "5.3.3"
     }
 }
