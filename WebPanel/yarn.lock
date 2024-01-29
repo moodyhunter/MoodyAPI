@@ -347,20 +347,20 @@
   dependencies:
     "@floating-ui/utils" "^0.2.1"
 
-"@floating-ui/dom@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.0.tgz#282f31c5c7d2aaef3999e09f2c06280a020364d1"
-  integrity sha512-SZ0BEXzsaaS6THZfZJUcAobbZTD+MvfGM42bxgeg0Tnkp4/an/avqwAXiVLsFtIBZtfsx3Ymvwx0+KnnhdA/9g==
+"@floating-ui/dom@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.1.tgz#d552e8444f77f2d88534372369b3771dc3a2fa5d"
+  integrity sha512-iA8qE43/H5iGozC3W0YSnVSW42Vh522yyM1gj+BqRwVsTNOyr231PsXDaV04yT39PsO0QL2QpbI/M0ZaLUQgRQ==
   dependencies:
     "@floating-ui/core" "^1.6.0"
     "@floating-ui/utils" "^0.2.1"
 
 "@floating-ui/react-dom@^2.0.6":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.0.7.tgz#873e0a55a25d8ddbbccd159d6ab4a4b98eb05494"
-  integrity sha512-B5GJxKUyPcGsvE1vua+Abvw0t6zVMyTbtG+Jk7BoI4hfc5Ahv50dstRIAn0nS0274kR9gnKwxIXyGA8EzBZJrA==
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.0.8.tgz#afc24f9756d1b433e1fe0d047c24bd4d9cefaa5d"
+  integrity sha512-HOdqOt3R3OGeTKidaLvJKcgg75S6tibQ3Tif4eyd91QnIJWr0NLvoXFpJA/j8HqkFSL68GDca9AuyWEHlhyClw==
   dependencies:
-    "@floating-ui/dom" "^1.6.0"
+    "@floating-ui/dom" "^1.6.1"
 
 "@floating-ui/utils@^0.2.1":
   version "0.2.1"
@@ -749,10 +749,10 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/node@*", "@types/node@20.11.8", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
-  version "20.11.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.8.tgz#bdb6de1048613c3c6ab6c341c37e8fd1a7860308"
-  integrity sha512-i7omyekpPTNdv4Jb/Rgqg0RU8YqLcNsI12quKSDkRXNfx7Wxdm6HhK1awT3xTgEkgxPn3bvnSpiEAc7a7Lpyow==
+"@types/node@*", "@types/node@20.11.10", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
+  version "20.11.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.10.tgz#6c3de8974d65c362f82ee29db6b5adf4205462f9"
+  integrity sha512-rZEfe/hJSGYmdfX9tvcPMYeYPW2sNl50nsw4jZmRcaG0HIAb0WYEpsB05GOb53vjqpyE9GUhlDQ4jLSoB5q9kg==
   dependencies:
     undici-types "~5.26.4"
 
@@ -1163,9 +1163,9 @@ callsites@^3.0.0:
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
 caniuse-lite@^1.0.30001579, caniuse-lite@^1.0.30001580:
-  version "1.0.30001580"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001580.tgz#e3c76bc6fe020d9007647044278954ff8cd17d1e"
-  integrity sha512-mtj5ur2FFPZcCEpXFy8ADXbDACuNFXg6mxVDqp7tqooX6l3zwm+d8EPoeOSIFRDvHs8qu7/SLFOGniULkcH2iA==
+  version "1.0.30001581"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001581.tgz#0dfd4db9e94edbdca67d57348ebc070dece279f4"
+  integrity sha512-whlTkwhqV2tUmP3oYhtNfaWGYHDdS3JYFQBKXxcUR9qqPWsRhFHhoISO2Xnl/g0xyKzht9mI1LZpiNWfMzHixQ==
 
 case-anything@^2.1.13:
   version "2.1.13"
@@ -3352,10 +3352,10 @@ ts-proto-descriptors@1.15.0:
     long "^5.2.3"
     protobufjs "^7.2.4"
 
-ts-proto@1.167.1:
-  version "1.167.1"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.167.1.tgz#e04d8f1e5c7993da584962d3b99cf903a92168c1"
-  integrity sha512-xsEPKtT0kswVOLbLDwMavf4OZKP8fBasVeX8AozAJ8IxrGC/QgZOMITtEGnryQg0celCbNNzx8qtwpXjvV7AIA==
+ts-proto@1.167.2:
+  version "1.167.2"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.167.2.tgz#1dae6c1befb9a2da4aa90dbfb3721d34c644ce94"
+  integrity sha512-7y/BLjiUZphgCe+SZBEG20DP94VK7BHpHcl5fkeN8lRCeABNIsiI54FkUQ8pe7PsHLVpFKqMO5aRLx74FX+4iA==
   dependencies:
     case-anything "^2.1.13"
     protobufjs "^7.2.4"
