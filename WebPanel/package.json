@@ -35,9 +35,9 @@
     },
     "devDependencies": {
         "@types/node": "20.11.16",
-        "@types/react": "18.2.52",
-        "@typescript-eslint/eslint-plugin": "6.20.0",
-        "@typescript-eslint/parser": "6.20.0",
+        "@types/react": "18.2.54",
+        "@typescript-eslint/eslint-plugin": "6.21.0",
+        "@typescript-eslint/parser": "6.21.0",
         "eslint": "8.56.0",
         "eslint-config-next": "14.1.0",
         "grpc-tools": "1.12.4",
