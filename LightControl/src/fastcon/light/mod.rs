@@ -2,6 +2,7 @@ use super::command_wrapper::single_control_nodelay;
 
 mod light_impl;
 
+#[derive(Debug, Clone)]
 pub enum LightState {
     Off,
     WarmWhite,       // brightness
@@ -45,6 +46,10 @@ impl BLELight {
 
     pub fn set_state(&mut self, state: LightState) {
         self.state = state;
+    }
+
+    pub fn get_state(&self) -> LightState {
+        self.state.clone()
     }
 
     fn get_command(&self) -> light_impl::LightCommand {
