@@ -182,8 +182,10 @@ func (m *TelegramBot) ServeBotCommand() {
 				msg.Text += fmt.Sprintf("`%d` 分钟了", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
-			case "light_off", "关灯", "light_on", "开灯", "get_light", "灯", "色", "color":
+			case "light_off", "关灯", "light_on", "开灯", "get_light", "灯":
 				msg.Text = "没有灯了捏"
+			case "色", "color":
+				msg.Text = "不能色了喔"
 			case "pin":
 				if update.Message.ReplyToMessage != nil {
 					_, err := m.botApi.Request(tgbotapi.PinChatMessageConfig{
