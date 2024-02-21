@@ -124,7 +124,6 @@ func (m *TelegramBot) ServeBotCommand() {
 		}
 
 		command := ""
-		args := []string{} // only supported for NonCommandVerbs
 
 		if update.Message.IsCommand() {
 			command = update.Message.Command()
@@ -158,7 +157,6 @@ func (m *TelegramBot) ServeBotCommand() {
 			for _, verb := range NonCommandVerbs {
 				if tmp_command == verb {
 					command = tmp_command
-					args = tmp_args[1:]
 					break
 				}
 			}
@@ -184,14 +182,8 @@ func (m *TelegramBot) ServeBotCommand() {
 				msg.Text += fmt.Sprintf("`%d` 分钟了", int(time.Since(common.StartTime).Minutes()))
 			case "channels":
 				onChannelsAction(&msg)
-			case "light_off", "关灯":
-				onLightOffAction(&msg)
-			case "light_on", "开灯":
-				onLightOnAction(&msg)
-			case "get_light", "灯":
-				onGetLightAction(&msg)
-			case "色", "color":
-				onColorAction(&msg, args)
+			case "light_off", "关灯", "light_on", "开灯", "get_light", "灯", "色", "color":
+				msg.Text = "没有灯了捏"
 			case "pin":
 				if update.Message.ReplyToMessage != nil {
 					_, err := m.botApi.Request(tgbotapi.PinChatMessageConfig{

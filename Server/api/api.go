@@ -7,7 +7,6 @@ import (
 
 	"api.mooody.me/broadcaster"
 	"api.mooody.me/models"
-	"api.mooody.me/models/light"
 	"api.mooody.me/models/notifications"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
@@ -31,10 +30,6 @@ type MoodyAPIServer struct {
 	LastCameraControlSignal   *models.CameraState                          // the last state of the camera control signal sent by the controllers
 	cameraControlSignalStream *broadcaster.Broadcaster[models.CameraState] // stream of control signals [controllers => agent]
 
-	// to be used by the light APIs
-	LastLightState     *light.LightState                          // the last state of the light reported by the agent
-	lightControlStream *broadcaster.Broadcaster[light.LightState] // stream of light control signals [controllers => agent]
-
 	gRPCServer    *grpc.Server
 	listenAddress string
 }
@@ -44,13 +39,10 @@ func CreateServer(listenAddress string) *MoodyAPIServer {
 
 	APIServer.LastCameraState = new(models.CameraState)
 	APIServer.LastCameraControlSignal = new(models.CameraState)
-	APIServer.LastLightState = new(light.LightState)
-	APIServer.LastLightState.Brightness = 255
 	APIServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
 	APIServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
 	APIServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
 	APIServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
-	APIServer.lightControlStream = broadcaster.NewBroadcaster[light.LightState]()
 
 	APIServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)

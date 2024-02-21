@@ -7,7 +7,6 @@ import "common/common.proto";
 import "privileged/privileged.proto";
 import "notifications/notifications.proto";
 import "dns/dns.proto";
-import "light/light.proto";
 
 package MoodyAPI;
 
@@ -79,9 +78,4 @@ service MoodyAPIService
     // Remote Vibrator Control
     rpc StartVibrator(google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc StopVibrator(google.protobuf.Empty) returns (google.protobuf.Empty);
-
-    // Light Control
-    rpc SetLightState(light.SetLightRequest) returns (light.SetLightResponse);
-    rpc GetLightState(light.GetLightRequest) returns (light.GetLightResponse);
-    rpc SubscribeLightStateChange(light.SubscribeLightRequest) returns (stream light.LightState);
 }
