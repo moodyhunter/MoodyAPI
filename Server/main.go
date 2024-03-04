@@ -11,13 +11,11 @@ import (
 
 	"api.mooody.me/api"
 	"api.mooody.me/db"
-	"api.mooody.me/dns_server"
 	"api.mooody.me/messaging"
 )
 
 var (
-	tgBot     *messaging.TelegramBot
-	dnsServer *dns_server.DnsServer
+	tgBot *messaging.TelegramBot
 )
 
 func main() {
@@ -70,28 +68,6 @@ func main() {
 		go tgBot.ServeBotCommand()
 	}
 
-	// Setup DNS Server
-	dnsSection := config.Section("DNS")
-	dnsServerIsEnabled := dnsSection.Key("Enabled").MustBool(false)
-	dnsServerAddress := dnsSection.Key("ListenAddress").MustString("127.0.0.1:53")
-	dnsServerBaseDomain := dnsSection.Key("BaseDomain").MustString("local.mooody.me.")
-	dnsServerTtl := (uint32)(dnsSection.Key("TTL").MustInt(60))
-
-	if dnsServerIsEnabled {
-		dnsServer = dns_server.NewDnsServer(dnsServerAddress, "udp", dnsServerBaseDomain, dnsServerTtl)
-		go func() {
-
-			log.Println("starting DNS server")
-			err := dnsServer.Server.ListenAndServe()
-			if err != nil {
-				if TgBotIsEnabled {
-					tgBot.SendMessage("我起不来 (DNS)")
-				}
-				log.Fatal(err)
-			}
-		}()
-	}
-
 	log.Printf("MoodyAPI is now ready")
 
 	sigCh := make(chan os.Signal, 1)
@@ -101,10 +77,6 @@ func main() {
 	log.Printf("signal %d received, shutting down...", sig)
 
 	api.APIServer.Stop()
-
-	if dnsServerIsEnabled {
-		dnsServer.Close()
-	}
 
 	if TgBotIsEnabled {
 		tgBot.SendMessage("我走了")

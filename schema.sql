@@ -30,13 +30,6 @@ CREATE TABLE notifications (
     icon        VARCHAR
 );
 
-CREATE TABLE dns (
-    hostname    VARCHAR     NOT NULL,
-    type        VARCHAR     NOT NULL,
-    ip          VARCHAR     NOT NULL,
-    PRIMARY KEY (hostname, type)
-);
-
 CREATE TABLE operation_logs (
     id          SERIAL      NOT NULL    UNIQUE  PRIMARY KEY,
     client_id   NUMERIC     NOT NULL,

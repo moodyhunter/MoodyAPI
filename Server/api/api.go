@@ -11,7 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var APIServer *MoodyAPIServer
@@ -20,15 +19,6 @@ type MoodyAPIServer struct {
 	models.UnsafeMoodyAPIServiceServer
 
 	notificationStream *broadcaster.Broadcaster[notifications.Notification]
-	keepAliveStream    *broadcaster.Broadcaster[models.KeepAliveMessage]
-
-	// to be used by the agent APIs
-	LastCameraState         *models.CameraState                          // the last state of the camera reported by the agent
-	cameraStateReportStream *broadcaster.Broadcaster[models.CameraState] // stream of camera state changes [agent => controllers]
-
-	// to be used by the controllers APIs
-	LastCameraControlSignal   *models.CameraState                          // the last state of the camera control signal sent by the controllers
-	cameraControlSignalStream *broadcaster.Broadcaster[models.CameraState] // stream of control signals [controllers => agent]
 
 	gRPCServer    *grpc.Server
 	listenAddress string
@@ -37,12 +27,7 @@ type MoodyAPIServer struct {
 func CreateServer(listenAddress string) *MoodyAPIServer {
 	APIServer = &MoodyAPIServer{}
 
-	APIServer.LastCameraState = new(models.CameraState)
-	APIServer.LastCameraControlSignal = new(models.CameraState)
-	APIServer.cameraStateReportStream = broadcaster.NewBroadcaster[models.CameraState]()
-	APIServer.cameraControlSignalStream = broadcaster.NewBroadcaster[models.CameraState]()
 	APIServer.notificationStream = broadcaster.NewBroadcaster[notifications.Notification]()
-	APIServer.keepAliveStream = broadcaster.NewBroadcaster[models.KeepAliveMessage]()
 
 	APIServer.listenAddress = listenAddress
 	log.Printf("Creating API Server on %s", listenAddress)
@@ -66,15 +51,6 @@ func (apiServer *MoodyAPIServer) Serve() {
 	if err != nil {
 		log.Fatalf("Failed to start API Server, %s", err)
 	}
-
-	go func() {
-		for {
-			time.Sleep(30 * time.Second)
-			apiServer.keepAliveStream.Broadcast(&models.KeepAliveMessage{Time: timestamppb.Now()})
-			apiServer.cameraControlSignalStream.Broadcast(apiServer.LastCameraControlSignal)
-			apiServer.cameraStateReportStream.Broadcast(apiServer.LastCameraState)
-		}
-	}()
 
 	log.Printf("API Server started on %s", apiServer.listenAddress)
 	apiServer.gRPCServer.Serve(listener)
