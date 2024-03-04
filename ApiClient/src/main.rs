@@ -1,13 +1,7 @@
 mod models;
 use models::{
     common::Auth,
-    dns::{
-        CreateDnsRecordRequest, DeleteDnsRecordRequest, DnsRecord, ListDnsRecordsRequest,
-        UpdateDnsRecordRequest,
-    },
-    moody_api::{
-        moody_api_service_client::MoodyApiServiceClient, CameraState, UpdateCameraStateRequest,
-    },
+    moody_api::moody_api_service_client::MoodyApiServiceClient,
     notifications::{
         CreateChannelRequest, DeleteChannelRequest, ListChannelRequest, Notification,
         NotificationChannel, SendRequest,
@@ -67,27 +61,6 @@ static COMMANDS: &[Command] = &[
         ],
     },
     Command {
-        command: "camera",
-        short: "cam",
-        description: "Camera operations.",
-        subcommands: &[
-            SubCommand {
-                subcommand: "start",
-                description: "Start a camera stream.",
-                nargs: 0,
-                usage: "",
-                op: |a, b, c| Box::pin(camera_start(a, b, c)),
-            },
-            SubCommand {
-                subcommand: "stop",
-                description: "Stop a camera stream.",
-                nargs: 0,
-                usage: "",
-                op: |a, b, c| Box::pin(camera_stop(a, b, c)),
-            },
-        ],
-    },
-    Command {
         command: "channel",
         short: "chan",
         description: "Create, or delete a notification channel.",
@@ -112,41 +85,6 @@ static COMMANDS: &[Command] = &[
                 nargs: 0,
                 usage: "",
                 op: |a, b, c| Box::pin(channel_list(a, b, c)),
-            },
-        ],
-    },
-    Command {
-        command: "dns",
-        short: "dns",
-        description: "DNS operations.",
-        subcommands: &[
-            SubCommand {
-                subcommand: "update",
-                description: "Update the IP address of a DNS record with given domain and type.",
-                nargs: 3,
-                usage: "<domain> <type> <ip/host>",
-                op: |a, b, c| Box::pin(dns_update(a, b, c)),
-            },
-            SubCommand {
-                subcommand: "delete",
-                description: "Delete a DNS record with given domain and type.",
-                nargs: 2,
-                usage: "<domain> <type>",
-                op: |a, b, c| Box::pin(dns_delete(a, b, c)),
-            },
-            SubCommand {
-                subcommand: "list",
-                description: "List all DNS records.",
-                nargs: 0,
-                usage: "",
-                op: |a, b, c| Box::pin(dns_list(a, b, c)),
-            },
-            SubCommand {
-                subcommand: "create",
-                description: "Create a DNS record with given domain and type.",
-                nargs: 3,
-                usage: "<domain> <type> <ip/host>",
-                op: |a, b, c| Box::pin(dns_create(a, b, c)),
             },
         ],
     },
@@ -386,104 +324,4 @@ async fn channel_list(chan: Channel, uuid: String, _args: Vec<String>) -> Result
             }
             Ok(())
         })
-}
-
-async fn _do_camera_state(chan: Channel, uuid: String, state: bool) -> Result<(), Status> {
-    let mut client = MoodyApiServiceClient::new(chan);
-
-    let request = Request::new(UpdateCameraStateRequest {
-        auth: Some(Auth {
-            client_uuid: uuid.to_owned(),
-        }),
-        state: Some(CameraState { state }),
-    });
-
-    client.set_camera_state(request).await.and_then(|_| {
-        println!("Camera is now {}", if state { "on" } else { "off" });
-        Ok(())
-    })
-}
-
-async fn camera_start(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
-    _do_camera_state(chan, uuid, true).await
-}
-
-async fn camera_stop(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
-    _do_camera_state(chan, uuid, false).await
-}
-
-async fn dns_update(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
-    let mut client = MoodyApiServiceClient::new(chan);
-
-    let request = Request::new(UpdateDnsRecordRequest {
-        auth: Some(Auth {
-            client_uuid: uuid.to_owned(),
-        }),
-        record: Some(DnsRecord {
-            name: args[0].to_owned(),
-            r#type: args[1].to_owned(),
-            ip: args[2].to_owned(),
-        }),
-    });
-
-    client.update_dns_record(request).await.and_then(|_| {
-        println!("DNS updated");
-        Ok(())
-    })
-}
-
-async fn dns_delete(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
-    let mut client = MoodyApiServiceClient::new(chan);
-
-    let request = Request::new(DeleteDnsRecordRequest {
-        auth: Some(Auth {
-            client_uuid: uuid.to_owned(),
-        }),
-        name: args[0].to_owned(),
-        r#type: args[1].to_owned(),
-    });
-
-    client.delete_dns_record(request).await.and_then(|_| {
-        println!("DNS deleted");
-        Ok(())
-    })
-}
-
-async fn dns_list(chan: Channel, uuid: String, _args: Vec<String>) -> Result<(), Status> {
-    let mut client = MoodyApiServiceClient::new(chan);
-
-    let request = Request::new(ListDnsRecordsRequest {
-        auth: Some(Auth {
-            client_uuid: uuid.to_owned(),
-        }),
-        ..Default::default()
-    });
-
-    client.list_dns_records(request).await.and_then(|resp| {
-        let resp = resp.into_inner();
-        for record in resp.entries {
-            println!("{} {} {}", record.name, record.r#type, record.ip);
-        }
-        Ok(())
-    })
-}
-
-async fn dns_create(chan: Channel, uuid: String, args: Vec<String>) -> Result<(), Status> {
-    let mut client = MoodyApiServiceClient::new(chan);
-
-    let request = Request::new(CreateDnsRecordRequest {
-        auth: Some(Auth {
-            client_uuid: uuid.to_owned(),
-        }),
-        record: Some(DnsRecord {
-            name: args[0].to_owned(),
-            r#type: args[1].to_owned(),
-            ip: args[2].to_owned(),
-        }),
-    });
-
-    client.create_dns_record(request).await.and_then(|_| {
-        println!("DNS created");
-        Ok(())
-    })
 }
