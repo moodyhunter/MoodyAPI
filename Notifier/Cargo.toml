@@ -16,4 +16,4 @@ tonic = {version = "0.9.1", features = ["transport", "tls", "tls-roots"]}
 
 [build-dependencies]
 protoc-rust-grpc = "0.8.3"
-tonic-build = {version = "0.9.1"}
+tonic-build = {version = "0.11.0"}
