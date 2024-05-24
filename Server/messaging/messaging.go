@@ -99,7 +99,7 @@ func (m *TelegramBot) SendNotification(event *notifications.Notification) {
 	event.Content = tgbotapi.EscapeText(tgbotapi.ModeMarkdown, event.Content)
 
 	msg := tgbotapi.NewMessage(0, fmt.Sprintf("*<%s>* - %s\n%s", channelName, event.Title, event.Content))
-	msg.ParseMode = "markdown"
+	msg.ParseMode = tgbotapi.ModeMarkdownV2
 
 	if event.Private {
 		msg.ChatID = m.safeUserId
@@ -169,7 +169,7 @@ func (m *TelegramBot) ServeBotCommand() {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		msg.ReplyToMessageID = update.Message.MessageID
 		msg.Text = "不认识 `" + command + "`"
-		msg.ParseMode = "markdownv2"
+		msg.ParseMode = tgbotapi.ModeMarkdownV2
 
 		if update.Message.Chat.ID != m.safeChatId && update.Message.Chat.ID != m.safeUserId {
 			msg.Text = "This bot is only for Moody's chat group."
