@@ -6,7 +6,7 @@ version = "0.1.0"
 
 [dependencies]
 chrono = "0.4.24"
-notify-rust = "4.8.0"
+notify-rust = "4.10.0"
 platform-dirs = "0.3.0"
 prost = "0.12.3"
 prost-types = "0.12.3"
