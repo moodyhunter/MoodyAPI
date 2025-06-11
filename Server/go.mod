@@ -6,7 +6,7 @@ toolchain go1.24.0
 
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/uptrace/bun v1.2.11
+	github.com/uptrace/bun v1.2.12
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/ini.v1 v1.67.0
@@ -26,8 +26,8 @@ require (
 )
 
 require (
-	github.com/uptrace/bun/dialect/pgdialect v1.2.11
-	github.com/uptrace/bun/driver/pgdriver v1.2.11
+	github.com/uptrace/bun/dialect/pgdialect v1.2.12
+	github.com/uptrace/bun/driver/pgdriver v1.2.12
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
