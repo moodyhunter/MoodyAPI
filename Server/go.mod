@@ -1,6 +1,6 @@
 module api.mooody.me
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
@@ -20,7 +20,7 @@ require (
 	go.opentelemetry.io/otel v1.40.0 // indirect
 	go.opentelemetry.io/otel/trace v1.40.0 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260209200024-4cfbd4190f57 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260217215200-42d3e9bedb6d // indirect
 	mellium.im/sasl v0.3.2 // indirect
 )
 
