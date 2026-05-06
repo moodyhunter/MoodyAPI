@@ -5,9 +5,9 @@ go 1.25.0
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/uptrace/bun v1.2.18
-	google.golang.org/grpc v1.80.0
+	google.golang.org/grpc v1.81.0
 	google.golang.org/protobuf v1.36.11
-	gopkg.in/ini.v1 v1.67.1
+	gopkg.in/ini.v1 v1.67.2
 )
 
 require (
@@ -20,7 +20,7 @@ require (
 	go.opentelemetry.io/otel v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	golang.org/x/crypto v0.50.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260427160629-7cedc36a6bc4 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260504160031-60b97b32f348 // indirect
 	mellium.im/sasl v0.3.2 // indirect
 )
 
