@@ -8,7 +8,7 @@ version = "0.1.0"
 [dependencies]
 bluer = {version = "0.17.0", features = ["bluetoothd"]}
 chrono = "0.4.24"
-futures = "0.3.28"
+futures = "0.3.30"
 num-derive = "0.4.2"
 num-traits = "0.2"
 paho-mqtt = "0.12"
